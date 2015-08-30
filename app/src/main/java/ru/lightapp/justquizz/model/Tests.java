@@ -30,7 +30,7 @@ public class Tests {
 
     private final String FOLDER_WITH_TESTS = "tests";  // Папка с тестами
     private final String NAME_OF_TEST_FILE = "/test";   // имя тест-файла
-    private final String FILE_EXTENSION = ".jqzz";   // имя тест-файла
+    private final String FILE_EXTENSION = ".jqz";   // имя тест-файла
     private final String TITLE = "title";
 
 

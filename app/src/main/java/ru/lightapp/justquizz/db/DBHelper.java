@@ -32,7 +32,7 @@ public class DBHelper {
 
         this.context = context;
         openHelper = new OpenHelper(this.context);
-        // подключаемся к БД:
+        // РїРѕРґРєР»СЋС‡Р°РµРјСЃСЏ Рє Р‘Р”:
         this.db = openHelper.getWritableDatabase();
 
     }
@@ -40,25 +40,25 @@ public class DBHelper {
     public List getAll(){
 
         ArrayList<String> list = new ArrayList<>();
-        // Делаем запрос в базу данных:
+        // Р”РµР»Р°РµРј Р·Р°РїСЂРѕСЃ РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…:
         Cursor  cursor = this.db.query(TEST_TABLE, null, null, null, null, null, null);
 
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
+        // СЃС‚Р°РІРёРј РїРѕР·РёС†РёСЋ РєСѓСЂСЃРѕСЂР° РЅР° РїРµСЂРІСѓСЋ СЃС‚СЂРѕРєСѓ РІС‹Р±РѕСЂРєРё
+        // РµСЃР»Рё РІ РІС‹Р±РѕСЂРєРµ РЅРµС‚ СЃС‚СЂРѕРє, РІРµСЂРЅРµС‚СЃСЏ false
         if (cursor.moveToFirst()) {
 
-            // определяем номера столбцов по имени в выборке
+            // РѕРїСЂРµРґРµР»СЏРµРј РЅРѕРјРµСЂР° СЃС‚РѕР»Р±С†РѕРІ РїРѕ РёРјРµРЅРё РІ РІС‹Р±РѕСЂРєРµ
             int idColIndex = cursor.getColumnIndex("id");
             int test_nameColIndex = cursor.getColumnIndex("test_name");
             int hashColIndex = cursor.getColumnIndex("hash");
 
             do {
-                // получаем значения по номерам столбцов и пишем все в лог
+                // РїРѕР»СѓС‡Р°РµРј Р·РЅР°С‡РµРЅРёСЏ РїРѕ РЅРѕРјРµСЂР°Рј СЃС‚РѕР»Р±С†РѕРІ Рё РїРёС€РµРј РІСЃРµ РІ Р»РѕРі
                 System.out.println(" --- " + "ID = " + cursor.getInt(idColIndex) +
                                 ", name = " + cursor.getString(test_nameColIndex) +
                                 ", email = " + cursor.getString(hashColIndex));
-                // переход на следующую строку
-                // а если следующей нет (текущая - последняя), то false - выходим из цикла
+                // РїРµСЂРµС…РѕРґ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ СЃС‚СЂРѕРєСѓ
+                // Р° РµСЃР»Рё СЃР»РµРґСѓСЋС‰РµР№ РЅРµС‚ (С‚РµРєСѓС‰Р°СЏ - РїРѕСЃР»РµРґРЅСЏСЏ), С‚Рѕ false - РІС‹С…РѕРґРёРј РёР· С†РёРєР»Р°
             } while (cursor.moveToNext());
         } else
             System.out.println(" --- 0 rows");
@@ -74,11 +74,11 @@ public class DBHelper {
 
     public long insertNewTest(String test_name, String hash){
 
-        // создаем объект для данных
+        // СЃРѕР·РґР°РµРј РѕР±СЉРµРєС‚ РґР»СЏ РґР°РЅРЅС‹С…
         ContentValues contentValues = new ContentValues();
         contentValues.put("test_name", test_name);
         contentValues.put("hash", hash);
-        // вставляем запись и получаем ее ID:
+        // РІСЃС‚Р°РІР»СЏРµРј Р·Р°РїРёСЃСЊ Рё РїРѕР»СѓС‡Р°РµРј РµРµ ID:
         long rowID =  db.insert(TEST_TABLE, null, contentValues);
 
         openHelper.close();
@@ -87,7 +87,7 @@ public class DBHelper {
     }
 
     public int clearTable(){
-        // удаляем все записи
+        // СѓРґР°Р»СЏРµРј РІСЃРµ Р·Р°РїРёСЃРё
         int clearCount = db.delete(TEST_TABLE, null, null);
 
         openHelper.close();
