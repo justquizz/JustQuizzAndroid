@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Just Quizz</string>
+    <string name="text_greeting">Привет, введи свое имя:</string>
+    <string name="text_make_choice">Выбери один из тестов:</string>
+    <string name="button_start_test">Ну что же, начнем тест! \n Нажми меня.</string>
+    <string name="button_start_download">Найти и загрузить тесты с сервера.\n Нажми меня.</string>
+
+
+    <string name="action_settings">Настройки</string>
+    <string name="download_test_from_server">Найти и загрузить тест</string>
+
+    <string name="some_text">У лукоморья дуб зелёный</string>
+    <string name="about_title">О программе</string>
+
+
+    <string name="button_answer">Ответить</string>
+    <string name="button_next">Далее</string>
+    <string name="button_previous">Назад</string>
+    <string name="nameQuestion">Здесь выведен вопрос</string>
+    <string name="text_number_of_question">Вопрос №</string>
+    <string name="timer">00:00</string>
+    <string name="toast_must_make_choice">Вам нужно выбрать хотя бы один вариант ответа</string>
+    <string name="toast_do_u_wanna_finish_test">Для завершения теста нажми еще раз \"Назад\"</string>
+
+
+    <string name="checkBox1">1.</string>
+    <string name="checkBox2">2.</string>
+    <string name="checkBox3">3.</string>
+    <string name="checkBox4">4.</string>
+
+
+
+    <string name="text_your_result"><b>Ваши резульаты:</b> \n \n</string>
+    <string name="text_your_choice"> вариант </string>
+
+
+
+
+</resources>

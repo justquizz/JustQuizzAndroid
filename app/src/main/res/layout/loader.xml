@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Загрузить из интернета"
+            android:id="@+id/button_download"
+            android:onClick="onClickDownloadFile"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вставить строку"
+            android:id="@+id/button_insert"
+            android:onClick="onClickInsertInDB"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Удалить что?"
+            android:id="@+id/button_delete"
+            android:onClick="onClickDeleteDB"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбрать все"
+            android:id="@+id/button_select_all"
+            android:onClick="onClickGetAll"/>
+
+    </LinearLayout>
+</ScrollView>
