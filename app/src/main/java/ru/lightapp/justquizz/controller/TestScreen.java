@@ -58,7 +58,7 @@ public class TestScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_body);
+        setContentView(R.layout.test_screen);
 
         // Здесь получаем null, а заполнение объекта происходит методом question.nextQuestion();
         question = Question.getInstance();
@@ -311,7 +311,7 @@ public class TestScreen extends Activity {
 
     /*
     * Метод загружает на экран сохраненный вариант ответа юзера
-     */
+    */
     private void loadSavedUserAnswer(){
 
         // Выводим на экран сохраненное время ответа на данный вопрос:
@@ -383,19 +383,16 @@ public class TestScreen extends Activity {
         public void run() {
 
             try {
-
                 while (true){
 
                     if(isStart){
                         countTime();
                     }
-
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException e) {
                 System.out.println(" --- something wrong....hm");
             }
-
         }
 
 

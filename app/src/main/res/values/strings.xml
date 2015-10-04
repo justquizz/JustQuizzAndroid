@@ -33,6 +33,13 @@
     <string name="text_your_result"><b>Ваши резульаты:</b> \n \n</string>
     <string name="text_your_choice"> вариант </string>
 
+    <string name="button_download">Загрузить</string>
+    <string name="toast_download_start">Загрузка.....</string>
+    <string name="press_key">Для загрузки нажми кнопку</string>
+    <string name="choice_category">Выбери категорию:</string>
+
+    <string name="error_server_not_found">Сервер не найден, проверьте ваше интернет соединение....</string>
+
 
 
 

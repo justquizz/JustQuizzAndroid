@@ -22,7 +22,7 @@ public class ShowUserResult extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_test_result);
+        setContentView(R.layout.show_user_result);
 
 
         TextView textField = (TextView) findViewById(R.id.result);

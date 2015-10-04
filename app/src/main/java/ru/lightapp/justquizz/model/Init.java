@@ -16,9 +16,10 @@ public class Init {
 
     private static Init init = null;
 
+    private static final String SERVER = "http://lightapp.ru/justquizz/";
 
     private static String questionsFile;  // путь к файлу с вопросами -  path file with the questions
-    private static final String CONFIG_FILE="config.ini"; // имя файла с настройками - name of config file
+    //private static final String CONFIG_FILE="config.ini"; // имя файла с настройками - name of config file
     private static int qtyQuestions; // количество вопросов в тесте - Quantity questions in a test
     private static int qtyAnswers; // количество вариантов ответов в каждом вопросе - Quantity answer in each questions
 
@@ -109,6 +110,10 @@ public class Init {
 
     public static int[] getQtyTrueAndFalseAnswers(){
         return qtyTrueAndFalseAnswers;
+    }
+
+    public static String getSERVER() {
+        return SERVER;
     }
 
     // SETTERS:

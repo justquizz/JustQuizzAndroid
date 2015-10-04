@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import ru.lightapp.justquizz.controller.*;
 import ru.lightapp.justquizz.model.*;
@@ -22,9 +21,9 @@ import ru.lightapp.justquizz.model.*;
 public class MainActivity extends ActionBarActivity {
 
     // Список названий всех доступных тестов:
-    ArrayList<String> testTitles = new ArrayList<String>();
+    ArrayList<String> testTitles = new ArrayList<>();
 
-    // Строка с выбранным тетов:
+    // Строка с выбранным тестом:
     private String selectedTest;
 
     @Override
@@ -40,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
 
             // Находим список, создаем адаптер и присваеваем адаптер списку:
             ListView listTest = (ListView) findViewById(R.id.listTest);
-            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testTitles);
+            ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testTitles);
             listTest.setAdapter(mAdapter);
             // Устанавливаем слушатель:
             listTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
     *   Обработка нажатия кнопки начала тестирования:
      */
     public void onClick(View view){
-         // Если загркжен список тестов, то:
+         // Если загружен список тестов, то:
         if(!testTitles.isEmpty()) {
 
             // Проверка - выбрал ли пользователь один из тестов
@@ -77,7 +76,6 @@ public class MainActivity extends ActionBarActivity {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Выберите один из тестов", Toast.LENGTH_SHORT);
                 toast.show();
-
             }
         }else{
             //Toast toast = Toast.makeText(getApplicationContext(), "Пусто", Toast.LENGTH_SHORT);
@@ -137,6 +135,5 @@ public class MainActivity extends ActionBarActivity {
 
         Intent intent = new Intent(MainActivity.this, LoaderTestFromServer.class);
         startActivity(intent);
-
     }
 }

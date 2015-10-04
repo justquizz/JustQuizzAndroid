@@ -8,7 +8,6 @@
 
 
     <style name="TestListView" parent="@android:style/Widget.ListView">
-
         <item name="android:fastScrollEnabled">true</item>
     </style>
 

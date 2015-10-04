@@ -12,6 +12,8 @@ import java.net.URLConnection;
 
 /**
  * Created by eugen on 02.08.2015.
+ *
+ *
  */
 public class DownloadFile implements Runnable {
     @Override
@@ -28,7 +30,7 @@ public class DownloadFile implements Runnable {
             File root = android.os.Environment.getExternalStorageDirectory();
 
             File dir = new File (root.getAbsolutePath() + "/justquizz/test");
-            if(dir.exists()==false) {
+            if(!dir.exists()) {
                 dir.mkdirs();
             }
 
