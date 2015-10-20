@@ -28,8 +28,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class ServerManager {
 
     private String urlGetCategories = "http://lightapp.ru/justquizz/api.php?void=get_categories";
-    private String urlGetTestsByCategory = "http://lightapp.ru/justquizz/api.php?void=get_tests&category=";
-
+    private String templateUrlGetTestsByCategory = "http://lightapp.ru/justquizz/api.php?void=get_tests_by_category&category=";
+    private String urlGetTestsByCategory;
 
     public ArrayList[] getCategories(){
         //System.out.println(" --- start xml");
@@ -69,7 +69,8 @@ public class ServerManager {
             * - второй - описания каждой категории;
             * - третий - возможные ошибки.
              */
-            ArrayList[] categories = new ArrayList[3];
+            ArrayList[] categories = new ArrayList[4];
+            ArrayList<Integer> id = new ArrayList<>();
             ArrayList<String> title = new ArrayList<>();
             ArrayList<String> description = new ArrayList<>();
             ArrayList<String> error = new ArrayList<>();
@@ -90,7 +91,7 @@ public class ServerManager {
                 NodeList nodeList = doc.getElementsByTagName("category");
 
                 /*
-                * Проходим в цикле по массиву с тегами и считывем атрибуты
+                * Проходим в цикле по массиву с тегами и считываем атрибуты
                 * с названием теста и его описанием.
                 * Названия складываем в один массив, описание в другой:
                  */
@@ -99,30 +100,40 @@ public class ServerManager {
                     Node node = nodeList.item(i);
                     // Затем список его атрибутов:
                     NamedNodeMap attributes = node.getAttributes();
+
+                    //Получаем атрибут id и его значение:
+                    Node idAttribute  = attributes.getNamedItem("id");
+                    int idCategory = Integer.parseInt(idAttribute.getNodeValue());
+
                     //Получаем атрибут title и его значение:
                     Node titleAttribute  = attributes.getNamedItem("title");
                     String titleCategory = titleAttribute.getNodeValue();
+
                     //Получаем атрибут description и его значение:
                     Node descriptionAttribute  = attributes.getNamedItem("description");
                     String descriptionCategory = descriptionAttribute.getNodeValue();
+
                     // Кладем все полученное в массивы:
+                    id.add(idCategory);
                     title.add(titleCategory);
                     description.add(descriptionCategory);
 
                     //System.out.println(titleCategory + " --- " + descriptionCategory);
                 }
-
-                categories[0] = title;
-                categories[1] = description;
+                // Кладем наши масивы во внутрь массива categories:
+                categories[0] = id;
+                categories[1] = title;
+                categories[2] = description;
             }catch (UnknownHostException e) {
                 System.out.println(" --- Unable to resolve host lightapp.ru");
                 error.add("check your Internet connection.....");
-                categories[2] = error;
+                categories[3] = error;
 
             }catch (Exception e) {
                 System.out.println(" --- Что еще за ошибка?)");
                 e.printStackTrace();
-                error.add("check your Internet connection.....");
+                error.add("Server have problem, try later.....");
+                categories[3] = error;
                 System.out.println(" --- end trace");
             }
 
@@ -136,9 +147,9 @@ public class ServerManager {
     * Метод делает запрос на сервер на получение списка тестов
     * какой-то одной определенной категории:
     */
-    public ArrayList[] getTestsByCategory(String selectedCategory) {
+    public ArrayList[] getTestsByCategory(int selectedCategory) {
 
-        String urlRequest = urlGetTestsByCategory + selectedCategory;
+        urlGetTestsByCategory = templateUrlGetTestsByCategory + selectedCategory;
 
         long start = new Date().getTime();
 
@@ -162,6 +173,18 @@ public class ServerManager {
 
         System.out.println(((new Date().getTime()) - start) + " ms --- xml processing......");
 
+        ArrayList<String> title = tests[0];
+
+        if(title != null) {
+
+            for (String str : title) {
+
+                System.out.println(" --- " + str);
+
+            }
+        }else{
+            System.out.println(" --- null!");
+        }
 
         return tests;
     }
@@ -177,9 +200,13 @@ public class ServerManager {
             * - второй - описания каждого теста;
             * - третий - возможные ошибки.
              */
-            ArrayList[] tests = new ArrayList[3];
-            ArrayList<String> title = new ArrayList<>();
-            ArrayList<String> description = new ArrayList<>();
+            ArrayList[] tests = new ArrayList[6];
+            ArrayList<String> titleArray = new ArrayList<>();
+            ArrayList<String> fileNameArray = new ArrayList<>();
+            ArrayList<String> descriptionArray = new ArrayList<>();
+            ArrayList<Integer> downloadsArray = new ArrayList<>();
+            ArrayList<String> authorArray = new ArrayList<>();
+
             ArrayList<String> error = new ArrayList<>();
 
             try{
@@ -187,6 +214,8 @@ public class ServerManager {
                 готовим API, позволяющий выполнять разбор документа
                 загружаем в парсер полученный ответ и вызываем метод parse
                 */
+                System.out.println(" --- " + urlGetTestsByCategory);
+
                 URL url = new URL(urlGetTestsByCategory);
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 DocumentBuilder db = dbf.newDocumentBuilder();
@@ -194,8 +223,10 @@ public class ServerManager {
                 Document doc = db.parse(new InputSource(url.openStream()));
                 // Что это?
                 doc.getDocumentElement().normalize();
-                // Получаем массив со всеми тегами <category />:
-                NodeList nodeList = doc.getElementsByTagName("category");
+                // Получаем массив со всеми тегами <test />:
+                NodeList nodeList = doc.getElementsByTagName("test");
+
+                System.out.println(" --- кол-во элементов" + nodeList.getLength() );
 
                 /*
                 * Проходим в цикле по массиву с тегами и считывем атрибуты
@@ -203,25 +234,47 @@ public class ServerManager {
                 * Названия складываем в один массив, описание в другой:
                  */
                 for(int i=0; i<nodeList.getLength(); i++){
+
+                    System.out.print(" --- " + i + " --- ");
+
                     // Получаем узел из массива:
                     Node node = nodeList.item(i);
                     // Затем список его атрибутов:
                     NamedNodeMap attributes = node.getAttributes();
+
                     //Получаем атрибут title и его значение:
-                    Node titleAttribute  = attributes.getNamedItem("title");
-                    String titleCategory = titleAttribute.getNodeValue();
+                    Node titleAttribute  = attributes.getNamedItem("test_title");
+                    String testTitle = titleAttribute.getNodeValue();
+
+                    //Получаем атрибут file_name и его значение:
+                    Node fileNameAttribute  = attributes.getNamedItem("file_name");
+                    String fileName = fileNameAttribute.getNodeValue();
+
                     //Получаем атрибут description и его значение:
                     Node descriptionAttribute  = attributes.getNamedItem("description");
-                    String descriptionCategory = descriptionAttribute.getNodeValue();
-                    // Кладем все полученное в массивы:
-                    title.add(titleCategory);
-                    description.add(descriptionCategory);
+                    String description = descriptionAttribute.getNodeValue();
 
-                    //System.out.println(titleCategory + " --- " + descriptionCategory);
+                    //Получаем атрибут downloads и его значение:
+                    Node downloadsAttribute  = attributes.getNamedItem("downloads");
+                    int downloads = Integer.parseInt(downloadsAttribute.getNodeValue());
+
+                    // Кладем все полученное в массивы:
+                    titleArray.add(testTitle);
+                    fileNameArray.add(fileName);
+                    descriptionArray.add(description);
+                    downloadsArray.add(downloads);
+
+
+                    System.out.println(testTitle + " --- " + fileName);
                 }
 
-                //categories[0] = title;
-                //categories[1] = description;
+                tests[0] = titleArray;
+                tests[1] = fileNameArray;
+                tests[2] = descriptionArray;
+                tests[3] = downloadsArray;
+
+
+
             }catch (UnknownHostException e) {
                 System.out.println(" --- Unable to resolve host lightapp.ru");
                 error.add("check your Internet connection.....");
@@ -232,6 +285,7 @@ public class ServerManager {
                 e.printStackTrace();
                 error.add("check your Internet connection.....");
                 System.out.println(" --- end trace");
+                tests[5] = error;
             }
 
             return tests;

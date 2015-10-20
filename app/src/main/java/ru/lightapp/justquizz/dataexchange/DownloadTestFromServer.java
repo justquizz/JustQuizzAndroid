@@ -1,87 +1,111 @@
 package ru.lightapp.justquizz.dataexchange;
 
-import ru.lightapp.justquizz.R;
-import ru.lightapp.justquizz.model.Init;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
+import java.net.URLConnection;
+import org.apache.http.util.ByteArrayBuffer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.TextView;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by eugen on 07.09.2015.
+ *
+ *
+ *
  */
-public class DownloadTestFromServer implements Runnable {
+public class DownloadTestFromServer extends Thread {
 
-    private String xmlFolder = Init.getSERVER() + "xml";
+    /*
+    * Путь к папке с тестами на сервере:
+    */
+    private String folderWithTest = "http://lightapp.ru/justquizz/test_md5/";
+
+    /*
+    * Имя файла, который нужно загрузить:
+    */
+    private String fileName;
+
+    /*
+    * Полный путь к файлу:
+    * состоит из пути к папке на серверу + имя файла + расширение
+    */
+    private String urlForFile;
+
+
+    public DownloadTestFromServer(String md5_name){
+
+        String md5_nameLowerCase = md5_name.toLowerCase();
+
+        this.fileName = md5_nameLowerCase + ".jqzz";
+
+
+        this.urlForFile = folderWithTest + fileName;
+        start();
+    }
+
 
     @Override
     public void run() {
 
-    getCategory();
+        System.out.println(" --- конструктор " + fileName);
 
+        try {
 
+            System.out.println(" --- " + urlForFile);
 
+            File root = android.os.Environment.getExternalStorageDirectory();
 
-    }
+            File dir = new File (root.getAbsolutePath() + "/justquizz/test");
+            if(!dir.exists()) {
+                dir.mkdirs();
+            }
 
-    private void getCategory() {
+            URL url = new URL(urlForFile); //you can write here any link
+            File file = new File(dir, fileName);
 
-        System.out.println(" --- start xml");
+            long startTime = System.currentTimeMillis();
+            //Log.d("DownloadManager", "download begining");
+            //Log.d("DownloadManager", "download url:" + url);
+            //Log.d("DownloadManager", "downloaded file name:" + fileName);
 
-        long start = new Date().getTime();
-        //TextView tv = (TextView) findViewById(R.id.textView888);
+           /* Open a connection to that URL. */
+            URLConnection ucon = url.openConnection();
 
-        try{
-         /*
-          определяем URL сервиса
-          готовим API, позволяющий выполнять разбор документа
-          загружаем в парсер полученный ответ и вызываем метод parse
-          */
-            URL url = new URL("http://lightapp.ru/justquizz/api.php?void=get_categories");
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(url.openStream()));
-            doc.getDocumentElement().normalize();
-             /* получаем агрегатный узел с дочерними узлами с атрибутами, хранящими значения валют;
-             * в ответе всего два узла, мы возьмем первый, а при необходимости тут вполне можно
-             * запустить цикл с nodeList.getLength
+           /*
+            * Define InputStreams to read from the URLConnection.
             */
+            InputStream is = ucon.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
 
-            NodeList nodeList = doc.getElementsByTagName("categories");
-            Node node = nodeList.item(0);
-            // опускаемся на узел ниже и получаем список его атрибутов
-            NamedNodeMap attributes = node.getFirstChild().getAttributes();
-            //получаем значение атрибут buy
-            Node currencyAttribEUR  = attributes.getNamedItem("name");
-            // ... и его значение
-            String currencyValueEUR = currencyAttribEUR.getNodeValue();
-
-            System.out.println(currencyValueEUR + " --- ");
-
-        }
+           /*
+            * Read bytes to the Buffer until there is nothing more to read(-1).
+            */
+            ByteArrayBuffer baf = new ByteArrayBuffer(5000);
+            int current = 0;
+            while ((current = bis.read()) != -1) {
+                baf.append((byte) current);
+            }
 
 
-        catch (Exception e) {
-            System.out.println(" --- Не удалось выполнить операцию");
+           /* Convert the Bytes read to a String. */
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(baf.toByteArray());
+            fos.flush();
+            fos.close();
+            //Log.d("DownloadManager", "download ready in" + ((System.currentTimeMillis() - startTime) / 1000) + " sec");
+
+            System.out.println(" --- Done!");
+
+        } catch (IOException e) {
+            System.out.println(" --- start trace");
             e.printStackTrace();
-        }
+            System.out.println(" --- end trace");
 
-        System.out.println(((new Date().getTime()) - start) + " ms --- ");
+        }
     }
+
+
 }

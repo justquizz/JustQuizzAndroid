@@ -2,11 +2,10 @@ package ru.lightapp.justquizz.controller;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import ru.lightapp.justquizz.R;
+import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
 
 
@@ -24,103 +24,200 @@ import ru.lightapp.justquizz.dataexchange.ServerManager;
  */
 public class LoaderTestFromServer extends Activity {
 
-    //private TextView info = (TextView) findViewById(R.id.download_txt_info);
+    // Элементы Activity:
+    private TextView info;
+    private ListView listCategories;
+    private ListView listTests;
+    private ArrayAdapter<String> mAdapterCategories;
+    private ArrayAdapter<String> mAdapterTests;
+    private Button button_back;
+    private Button button_download;
+
+
+    // Массив с тестами:
+    ArrayList[] tests;
 
     // Строка с выбранной категорией:
     private String selectedCategory;
+
+    // Строка с именем файла выбранного теста:
+    private String fileName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loader_test_from_server);
 
-        //Button download = (Button) findViewById(R.id.button_download);
-        TextView info = (TextView) findViewById(R.id.download_txt_info);
+        /*
+        * Инициализируем элементы экрана:
+        * - кнопка НАЗАД;
+        * - кнопка ЗАГРУЗИТЬ,
+        * - информационное (TextView) поле;
+        * - список, в который загрузим категории, доступные на севере;
+        * - список, в который загрузим доступные на севере тесты для данной категории(скрываем его);
+        */
+
+        button_back = (Button) findViewById(R.id.button_back);
+        button_back.setEnabled(false);
+
+        button_download = (Button) findViewById(R.id.button_download);
+
+        info = (TextView) findViewById(R.id.download_txt_info);
         info.setText(R.string.press_key);
+
+        listCategories = (ListView) findViewById(R.id.listCategories);
+
+        listTests = (ListView) findViewById(R.id.listTests);
+        listTests.setVisibility(View.GONE);
 
     }
 
 
+    /*
+    * Обработчик кнопки ЗАГРУЗИТЬ:
+    * - выводим Тост о начале загрузки,
+    * - делаем неактивной кнопуку ЗАГРУЗИТЬ,
+    * - обращаемся на сервер и получаем список категорий тестов,
+    *
+    */
+
     public void onClickGetCategories(final View view) {
+
+
 
         Toast toast = Toast.makeText(getApplicationContext(),
                 R.string.toast_download_start, Toast.LENGTH_SHORT);
         toast.show();
 
 
+        if(fileName == null) {
+
         /*
         * Создаем объект для работы с сервером,
         * который и получит для нас массив с названиями категорий и их описанием
         */
-        final ServerManager server = new ServerManager();
-        ArrayList[] categories = server.getCategories();
+            final ServerManager server = new ServerManager();
+            ArrayList[] categories = server.getCategories();
 
         /*
-        * Если получение списка категорий было неудачно (сзь с инетом), то
-        * в categories[2] будет содержатся список этих ошибок - выводим сообщение об ошибке.
+        * Если получение списка категорий было неудачно (связь с инетом), то
+        * в categories[3] будет содержатся список этих ошибок - выводим сообщение об ошибке.
         *
         * Если ошибок нет, то выводим на экран список категорий, полученных с сервера:
          */
-        ArrayList<String> error = categories[2];
-        if(error != null){
-            toast = Toast.makeText(getApplicationContext(),
-                    R.string.error_server_not_found, Toast.LENGTH_LONG);
-            toast.show();
+            ArrayList<String> error = categories[3];
+            if (error != null) {
+                toast = Toast.makeText(getApplicationContext(),
+                        R.string.error_server_not_found, Toast.LENGTH_LONG);
+                toast.show();
 
-        }else {
+            } else {
+                final ArrayList<Integer> idCategory = categories[0];
+                ArrayList<String> titleCategories = categories[1];
+                final ArrayList<String> descriptionCategories = categories[2];
 
-            ArrayList<String> titleCategories = categories[0];
-            final ArrayList<String> descriptionCategories = categories[1];
+                try {
 
-            //System.out.println(titleCategories + " --- " + descriptionCategories);
-            // Находим наш информационный TextView:
-            final TextView info = (TextView) findViewById(R.id.download_txt_info);
-
-            try {
-                // Находим список, создаем адаптер и присваеваем адаптер списку:
-                final ListView listCategories = (ListView) findViewById(R.id.listCategories);
-                ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titleCategories);
-                listCategories.setAdapter(mAdapter);
-                // Устанавливаем слушатель:
-                listCategories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-
-                        System.out.println(id + " --- " + position);
-                        info.setText(descriptionCategories.get(position));
-                        TextView textView = (TextView) itemClicked;
-                        selectedCategory = (String) textView.getText();
-
-                        System.out.println(" --- " + selectedCategory);
-
-                        ArrayList[] tests = server.getTestsByCategory(selectedCategory);
-
-
-
+                    // Создаем адаптер и присваеваем адаптер списку категорий:
+                    mAdapterCategories = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titleCategories);
+                    listCategories.setAdapter(mAdapterCategories);
+                /*
+                * Обработчик нажатия на список категорий тестов:
+                */
+                    listCategories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
 
                         /*
-                        if (position == 1) {
-                            listCategories.setVisibility(View.GONE);
-
-                        }
-                        if (position == 0) {
-                            listCategories.setVisibility(View.VISIBLE);
-                        }
+                        * При выборе категории теста, из массива извлекается  ее id.
+                        * И по id с сервера получается масссив со список доступных тестов этой категории.
                         */
-                    }
-                });
+                            info.setText(descriptionCategories.get(position));
+                            TextView textView = (TextView) itemClicked;
+                            selectedCategory = (String) textView.getText();
+                            tests = server.getTestsByCategory(idCategory.get(position));
+                            ArrayList<String> titleTests = tests[0];
+
+                        /*
+                        * Создаем адаптер и выводим на экран этот список:
+                        */
+                            mAdapterTests = new ArrayAdapter<>(LoaderTestFromServer.this, android.R.layout.simple_list_item_1, titleTests);
+                            listTests.setAdapter(mAdapterTests);
+
+                        /*
+                        * Меняем состояние элементов экран:
+                        *  - скрываем список с категориями,
+                        * - делаем активной кнопку НАЗАД,
+                        * - делаем видимым список с тестами,
+                        * - делаем неактивной кнопку ЗАГРУЗИТЬ:
+                        */
+                            listCategories.setVisibility(View.GONE);
+                            button_back.setEnabled(true);
+                            listTests.setVisibility(View.VISIBLE);
+                            button_download.setEnabled(false);
+
+                        }
+                    });
+
+                /*
+                * Обработчик нажатия на выбранный тест:
+                */
+                    listTests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+
+                            button_download.setEnabled(true);
+
+                            ArrayList<String> fileNameArray = tests[1];
+
+                            fileName = fileNameArray.get(position);
+
+                            //System.out.println(" --- выбран файл - " + fileName);
 
 
+                        }
+                    });
 
+                } catch (Exception e) {
+                    System.out.println(" --- start trace");
+                    e.printStackTrace();
+                    System.out.println(" --- end trace");
+                }
 
-            } catch (Exception e) {
-                System.out.println(" --- start trace");
+                // Выводим ообщение о необходимости выбора категории:
+                info.setText(R.string.choice_category);
+            }
+        }else{
+
+            DownloadTestFromServer loader = new DownloadTestFromServer(fileName);
+
+            try {
+                loader.join();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-                System.out.println(" --- end trace");
             }
 
-            info.setText(R.string.choice_category);
+            System.out.println(" --- поток завершен!");
+
+
         }
+    }
+
+
+    /*
+    * Обработчик кноки НАЗАД.
+    * - скрывает список с доступными тестами,
+    * - показывает список с категориями,
+    * - деактивизирует кнопку НАЗАД,
+    * - выводит сообщение о необходимости выбора категории.
+     */
+    public void onClickButtonBack(View view) {
+
+        listTests.setVisibility(View.GONE);
+        listCategories.setVisibility(View.VISIBLE);
+        button_back.setEnabled(false);
+        info.setText(R.string.choice_category);
     }
 
 

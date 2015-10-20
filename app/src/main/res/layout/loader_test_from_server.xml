@@ -6,28 +6,47 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/button_download"
-        android:id="@+id/button_download"
-        android:onClick="onClickGetCategories"/>
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@color/background_question_field"
+        android:gravity = "center_horizontal"
+        android:weightSum="1">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/button_back"
+            android:id="@+id/button_back"
+            android:onClick="onClickButtonBack"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/progressBar"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/button_download"
+            android:id="@+id/button_download"
+            android:onClick="onClickGetCategories"/>
+
+    </LinearLayout>
 
     <TextView
+        android:id="@+id/download_txt_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="..."
-        android:id="@+id/download_txt_info"/>
+        android:text=""
+        android:background="@color/background_name_test" />
 
     <ListView
         android:layout_width="match_parent"
@@ -35,6 +54,15 @@
         android:id="@+id/listCategories"
         style="@style/TestListView"
         android:listSelector="@color/background_question_field"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listTests"
+        style="@style/TestListView"
+        android:listSelector="@color/background_question_field"/>
+
+
 
 
 </LinearLayout>
