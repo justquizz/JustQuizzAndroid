@@ -30,7 +30,7 @@ public class Init {
     private String nameUser;
     //private static String titleTest; // Название теста выбранного юзером
         // Номер выбранного теста, файл /test[XXX].ini
-    //private static String numberOfTest;
+    private static String numberOfTest;
         // Номер текущего вопроса
     private static int numberOfQuestion;
         // Массив объектов, содержащих информацию об ответах юзера:
@@ -46,13 +46,7 @@ public class Init {
 
     private Init(String titleTest){
 
-        /*
-        * Путь к файлу с тестом:
-        */
-        //questionsFile =
 
-
-        /*
 
         //Init.titleTest = titleTest; // Название теста
         numberOfTest = parseNumberOfTest(titleTest); // Парсим в строке цифру - номер теста
@@ -69,7 +63,7 @@ public class Init {
         // Сбрасываем кол-во правильных и неправильных ответов:
         qtyTrueAndFalseAnswers = new int[]{0, 0};
 
-        */
+
 
     }
 
