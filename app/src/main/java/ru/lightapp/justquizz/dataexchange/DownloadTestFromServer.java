@@ -30,7 +30,7 @@ public class DownloadTestFromServer extends Thread {
 
     /*
     * Полный путь к файлу:
-    * состоит из пути к папке на серверу + имя файла + расширение
+    * состоит из пути к папке на сервере + имя файла + расширение
     */
     private String urlForFile;
 
@@ -50,26 +50,21 @@ public class DownloadTestFromServer extends Thread {
     @Override
     public void run() {
 
-        System.out.println(" --- конструктор " + fileName);
+        //System.out.println(" --- конструктор " + fileName);
 
         try {
 
-            System.out.println(" --- " + urlForFile);
+            //System.out.println(" --- " + urlForFile);
 
             File root = android.os.Environment.getExternalStorageDirectory();
 
-            File dir = new File (root.getAbsolutePath() + "/justquizz/test");
+            File dir = new File (root.getAbsolutePath() + "/justquizz/tests");
             if(!dir.exists()) {
                 dir.mkdirs();
             }
 
             URL url = new URL(urlForFile); //you can write here any link
             File file = new File(dir, fileName);
-
-            long startTime = System.currentTimeMillis();
-            //Log.d("DownloadManager", "download begining");
-            //Log.d("DownloadManager", "download url:" + url);
-            //Log.d("DownloadManager", "downloaded file name:" + fileName);
 
            /* Open a connection to that URL. */
             URLConnection ucon = url.openConnection();
@@ -84,7 +79,7 @@ public class DownloadTestFromServer extends Thread {
             * Read bytes to the Buffer until there is nothing more to read(-1).
             */
             ByteArrayBuffer baf = new ByteArrayBuffer(5000);
-            int current = 0;
+            int current;
             while ((current = bis.read()) != -1) {
                 baf.append((byte) current);
             }
@@ -95,7 +90,6 @@ public class DownloadTestFromServer extends Thread {
             fos.write(baf.toByteArray());
             fos.flush();
             fos.close();
-            //Log.d("DownloadManager", "download ready in" + ((System.currentTimeMillis() - startTime) / 1000) + " sec");
 
             System.out.println(" --- Done!");
 

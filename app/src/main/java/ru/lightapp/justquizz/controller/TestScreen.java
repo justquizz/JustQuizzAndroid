@@ -8,11 +8,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import android.os.Handler;
 import android.os.Message;
-
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.model.AnswerOfUser;
 import ru.lightapp.justquizz.model.Init;

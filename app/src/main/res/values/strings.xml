@@ -35,11 +35,11 @@
 
     <string name="button_download">Загрузить</string>
     <string name="button_back">Назад</string>
-    <string name="toast_download_start">Загрузка.....</string>
+    <string name="toast_download_start">Загрузка...</string>
     <string name="press_key">Для загрузки нажми кнопку</string>
     <string name="choice_category">Выбери категорию:</string>
 
-    <string name="error_server_not_found">Сервер не найден, проверьте ваше интернет соединение....</string>
+    <string name="error_server_not_found">Сервер не найден, проверьте ваше интернет соединение.</string>
 
 
 

@@ -1,6 +1,6 @@
 package ru.lightapp.justquizz;
 
-//import android.app.ListActivity;
+
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.controller.*;
+import ru.lightapp.justquizz.db.DBManager;
 import ru.lightapp.justquizz.model.*;
 
 
@@ -31,9 +32,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        DBManager db = new DBManager(this);
+
         // Получаем массив с названиями всех доступных тестов:
         Tests tests = new Tests();
-        testTitles = tests.getTestTitles();
+        //testTitles = tests.getTestTitles();
+
+        testTitles = db.getTestTitles();
 
         if(!testTitles.isEmpty())  {
 
@@ -84,14 +89,6 @@ public class MainActivity extends ActionBarActivity {
 
         }
     }
-
-
-
-
-
-
-
-
 
 
 

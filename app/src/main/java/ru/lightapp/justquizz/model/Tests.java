@@ -1,7 +1,6 @@
 package ru.lightapp.justquizz.model;
 
 import android.os.Environment;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -18,26 +17,28 @@ import java.util.ArrayList;
 public class Tests {
 
     private ArrayList<String> testTitles; // массив с названиями всех тестов из папки ..tests/
-    //private String[] testTitlesArray;
-    //public static final String PATH_OF_TEST_FILE = "tests/test";
-    //public static final String PATH_OF_TEST_FILE = "/sdcard/tests/test"; // path file for Android       +API17      -API19
-    //public static final String PATH_OF_TEST_FILE = "/storage/sdcard0/tests/test"; // path file for Android 4.2.2 API17
-    //public static final String PATH_OF_TEST_FILE = "/mnt/extSdCard/tests/test"; // path file for Android    -API19
-    //public static final String PATH_OF_TEST_FILE = "/storage/extSdCard/tests/test"; // path file for Android ---
-    //public static final String PATH_OF_TEST_FILE = "/storage/emulated/0/tests/test"; // path file for Android   -API19
-                                                     //storage/emulated/0/tests
+
     public static String PATH_OF_TEST_FILE = "";
 
-    private final String FOLDER_WITH_TESTS = "tests";  // Папка с тестами
+    /*
+    * Путь к папке с тетами:
+    */
+    private final String FOLDER_WITH_TESTS = "justquizz/tests";  // Папка с тестами
+
+
     private final String NAME_OF_TEST_FILE = "/test";   // имя тест-файла
-    private final String FILE_EXTENSION = ".jqz";   // имя тест-файла
+
+    /*
+    * Расширение файла .jqzz
+    */
+    private final String FILE_EXTENSION = ".jqzz";   // имя тест-файла
     private final String TITLE = "title";
 
 
 
     public Tests(){
 
-        PATH_OF_TEST_FILE = getPathToSdCard();
+        PATH_OF_TEST_FILE = getPathToStorage();
 
         String nameFile;
         String nameTest;
@@ -56,7 +57,7 @@ public class Tests {
 
     }
 
-    public String getPathToSdCard(){
+    public String getPathToStorage(){
 
         String path = "";
 

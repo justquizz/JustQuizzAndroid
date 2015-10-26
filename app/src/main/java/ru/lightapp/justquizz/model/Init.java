@@ -18,6 +18,9 @@ public class Init {
 
     private static final String SERVER = "http://lightapp.ru/justquizz/";
 
+    //private static final String StorageDirectory;
+
+
     private static String questionsFile;  // путь к файлу с вопросами -  path file with the questions
     //private static final String CONFIG_FILE="config.ini"; // имя файла с настройками - name of config file
     private static int qtyQuestions; // количество вопросов в тесте - Quantity questions in a test
@@ -27,7 +30,7 @@ public class Init {
     private String nameUser;
     //private static String titleTest; // Название теста выбранного юзером
         // Номер выбранного теста, файл /test[XXX].ini
-    private static String numberOfTest;
+    //private static String numberOfTest;
         // Номер текущего вопроса
     private static int numberOfQuestion;
         // Массив объектов, содержащих информацию об ответах юзера:
@@ -43,6 +46,14 @@ public class Init {
 
     private Init(String titleTest){
 
+        /*
+        * Путь к файлу с тестом:
+        */
+        //questionsFile =
+
+
+        /*
+
         //Init.titleTest = titleTest; // Название теста
         numberOfTest = parseNumberOfTest(titleTest); // Парсим в строке цифру - номер теста
         questionsFile = Tests.PATH_OF_TEST_FILE + numberOfTest + ".ini"; // собираем путь к файлу с тестом
@@ -57,6 +68,8 @@ public class Init {
 
         // Сбрасываем кол-во правильных и неправильных ответов:
         qtyTrueAndFalseAnswers = new int[]{0, 0};
+
+        */
 
     }
 

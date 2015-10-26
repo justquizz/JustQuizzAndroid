@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
+import ru.lightapp.justquizz.db.DBManager;
 
 
 /**
@@ -24,7 +25,9 @@ import ru.lightapp.justquizz.dataexchange.ServerManager;
  */
 public class LoaderTestFromServer extends Activity {
 
-    // Элементы Activity:
+    /*
+    * Элементы Activity:
+    */
     private TextView info;
     private ListView listCategories;
     private ListView listTests;
@@ -34,14 +37,30 @@ public class LoaderTestFromServer extends Activity {
     private Button button_download;
 
 
-    // Массив с тестами:
+    /*
+    * Массив с тестами полученными от сервера:
+    */
     ArrayList[] tests;
 
-    // Строка с выбранной категорией:
+    /*
+    * Номер выбранного теста в массиве:
+    */
+    int numberOfTest;
+
+    /*
+    * Сформированные поля выбранного теста для загрузки:
+    */
+    private String currentTestTitle;
+    private String currentFileName;
+    private String currentDescription;
+    private String currentAuthor;
+    private String currentLinkAuthor;
+
+    /*
+    * Строка с выбранной категорией:
+    */
     private String selectedCategory;
 
-    // Строка с именем файла выбранного теста:
-    private String fileName;
 
 
     @Override
@@ -91,7 +110,7 @@ public class LoaderTestFromServer extends Activity {
         toast.show();
 
 
-        if(fileName == null) {
+        if(currentFileName == null) {
 
         /*
         * Создаем объект для работы с сервером,
@@ -162,6 +181,11 @@ public class LoaderTestFromServer extends Activity {
 
                 /*
                 * Обработчик нажатия на выбранный тест:
+                *
+                * - делаем активной кнопку ЗАГРУЗИТЬ,
+                * - получаем номер теста в массиве,
+                * - и его имя файла
+                *
                 */
                     listTests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -169,11 +193,32 @@ public class LoaderTestFromServer extends Activity {
 
                             button_download.setEnabled(true);
 
-                            ArrayList<String> fileNameArray = tests[1];
+                            numberOfTest = position;
 
-                            fileName = fileNameArray.get(position);
+                            //System.out.println( " --- numberOfTest" + numberOfTest);
 
-                            //System.out.println(" --- выбран файл - " + fileName);
+                            //ArrayList<String> fileNameArray = tests[1];
+                            //currentFileName = fileNameArray.get(numberOfTest);
+
+                            currentTestTitle = (String) tests[0].get(numberOfTest);
+                            currentFileName = (String) tests[1].get(numberOfTest);
+                            currentDescription = (String) tests[2].get(numberOfTest);
+                            //currentAuthor = (String) tests[4].get(numberOfTest);
+                            currentAuthor = "Jack";
+                            currentLinkAuthor = "http://lightapp.ru/justquizz/people/id7";
+
+
+                            /*
+                            ArrayList arrayList;
+
+                            for(int i = 0; i < tests.length-2; i++){
+
+                                arrayList = tests[i];
+                                System.out.println(" --- " + " " + arrayList.get(numberOfTest));
+
+                            }
+                            */
+
 
 
                         }
@@ -190,7 +235,7 @@ public class LoaderTestFromServer extends Activity {
             }
         }else{
 
-            DownloadTestFromServer loader = new DownloadTestFromServer(fileName);
+            DownloadTestFromServer loader = new DownloadTestFromServer(currentFileName);
 
             try {
                 loader.join();
@@ -199,6 +244,24 @@ public class LoaderTestFromServer extends Activity {
             }
 
             System.out.println(" --- поток завершен!");
+
+            /*
+            * TODO здесь нужно проверить загружен ли файл на самом деле
+            *
+            * Например, fileManager.isFileExist()
+            */
+
+
+
+            /*
+            * Заносим новый тест в базу:
+            */
+            DBManager db = new DBManager(this);
+            //db.insertNewTest(titleTest, fileName, category, author, linkAuthorPage, description);
+            db.insertNewTest(currentTestTitle, currentFileName, selectedCategory, currentAuthor, currentLinkAuthor, currentDescription);
+
+
+
 
 
         }
@@ -221,35 +284,23 @@ public class LoaderTestFromServer extends Activity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     /*
     public void onClickInsertInDB(View view){
 
-        DBHelper database = new DBHelper(this);
+        DBManager database = new DBManager(this);
         long num = database.insertNewTest("Привет, как дела", "wrfwfq");
         System.out.println(" --- строка вставлена " + num);
 
     }
 
     public void onClickDeleteDB(View view){
-        DBHelper database = new DBHelper(this);
+        DBManager database = new DBManager(this);
         int numDelete = database.clearTable();
         System.out.println(" --- удалено строк " + numDelete);
     }
 
     public void onClickGetAll(View view){
-        DBHelper database = new DBHelper(this);
+        DBManager database = new DBManager(this);
         List<String> list = database.getAll();
 
         for(String item: list){

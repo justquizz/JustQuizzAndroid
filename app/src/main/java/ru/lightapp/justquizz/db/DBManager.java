@@ -13,9 +13,9 @@ import java.util.List;
 /**
  * Created by eugen on 02.08.2015.
  */
-public class DBHelper {
+public class DBManager {
 
-    private static final String DATABASE_NAME = "jqzz.db";
+    private static final String DATABASE_NAME = "jqzz3.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String TEST_TABLE = "tests";
@@ -28,7 +28,7 @@ public class DBHelper {
 
     OpenHelper openHelper;
 
-    public DBHelper(Context context){
+    public DBManager(Context context){
 
         this.context = context;
         openHelper = new OpenHelper(this.context);
@@ -52,6 +52,7 @@ public class DBHelper {
             int test_nameColIndex = cursor.getColumnIndex("test_name");
             int hashColIndex = cursor.getColumnIndex("hash");
 
+            /*
             do {
                 // получаем значения по номерам столбцов и пишем все в лог
                 System.out.println(" --- " + "ID = " + cursor.getInt(idColIndex) +
@@ -63,7 +64,8 @@ public class DBHelper {
         } else
             System.out.println(" --- 0 rows");
         cursor.close();
-
+        */
+        }
         list.add("one");
         list.add("two");
         list.add("three");
@@ -71,19 +73,32 @@ public class DBHelper {
         openHelper.close();
         return list;
     }
+    /*
+    * Метод вставляет в БД информацию о новом тесте:
+    */
+    public long insertNewTest(String titleTest, String fileName, String category, String author, String link_author_page, String description){
 
-    public long insertNewTest(String test_name, String hash){
+        System.out.println(" --- " + titleTest + " - " + fileName + " - " + category + " - " + author + " - " + link_author_page + " - " + description);
 
-        // создаем объект для данных
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
         ContentValues contentValues = new ContentValues();
-        contentValues.put("test_name", test_name);
-        contentValues.put("hash", hash);
+        contentValues.put("title_test", titleTest);
+        contentValues.put("file_name", fileName);
+        contentValues.put("category", category);
+        contentValues.put("author", author);
+        contentValues.put("link_author_page", link_author_page);
+        contentValues.put("description", description);
+
+
         // вставляем запись и получаем ее ID:
         long rowID =  db.insert(TEST_TABLE, null, contentValues);
 
+        System.out.println(" --- вставка в бд" + rowID);
+
         openHelper.close();
         return rowID;
-
     }
 
     public int clearTable(){
@@ -94,6 +109,37 @@ public class DBHelper {
         return clearCount;
     }
 
+
+    /*
+    * Метод получает из БД названия всех тестов и возвращает:
+    */
+    public ArrayList<String> getTestTitles() {
+
+        // Создадим массив, который будем возвращать:
+        ArrayList<String> list = new ArrayList<>();
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(TEST_TABLE,
+                new String[] {"title_test"},
+                null, null, null, null, null);
+
+        if(cursor.moveToFirst()){
+
+            do{
+                list.add(cursor.getString(0));
+
+            }while(cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        //list.add("one");
+        //list.add("two");
+        //list.add("three");
+
+        openHelper.close();
+        return list;
+    }
 
 
     private  static class OpenHelper extends SQLiteOpenHelper {
@@ -107,8 +153,12 @@ public class DBHelper {
 
             db.execSQL("CREATE TABLE " + TEST_TABLE + "(" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "test_name TEXT, " +
-                    "hash Text )");
+                    "title_test TEXT, " +
+                    "file_name TEXT, " +
+                    "category TEXT, " +
+                    "author TEXT, " +
+                    "link_author_page TEXT, " +
+                    "description Text )");
         }
 
         @Override
