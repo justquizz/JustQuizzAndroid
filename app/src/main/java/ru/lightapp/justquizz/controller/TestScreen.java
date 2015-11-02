@@ -59,7 +59,9 @@ public class TestScreen extends Activity {
         setContentView(R.layout.test_screen);
 
         // Здесь получаем null, а заполнение объекта происходит методом question.nextQuestion();
-        question = Question.getInstance();
+        //question = Question.getInstance();
+        question = new Question();
+
 
         // Описываем элементы на экране:
         nameQuestion = (TextView) findViewById(R.id.nameQuestion);
@@ -78,7 +80,10 @@ public class TestScreen extends Activity {
         // Создаем часы:
         clock = new Clock();
 
-        // Получаем текст первого вопроса и варианты ответов:
+        /*
+        * Получаем текст первого вопроса и варианты ответов,
+        * и загружаем их на экран:
+        */
         question.nextQuestion();
         loadNextQuestion();
     }

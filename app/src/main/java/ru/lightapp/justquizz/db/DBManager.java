@@ -10,15 +10,23 @@ import android.database.sqlite.SQLiteStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.lightapp.justquizz.dataexchange.FileManager;
+import ru.lightapp.justquizz.model.Init;
+
 /**
  * Created by eugen on 02.08.2015.
+ *
+ * TODO Singleton;
+ *
+ *
  */
 public class DBManager {
 
-    private static final String DATABASE_NAME = "jqzz3.db";
+    private static final String DATABASE_NAME = "jqzz4.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String TEST_TABLE = "tests";
+    private static final String INIT_TABLE = "init";
 
     private Context context;
     private SQLiteDatabase db;
@@ -31,52 +39,21 @@ public class DBManager {
     public DBManager(Context context){
 
         this.context = context;
+
         openHelper = new OpenHelper(this.context);
         // подключаемся к БД:
         this.db = openHelper.getWritableDatabase();
 
     }
 
-    public List getAll(){
 
-        ArrayList<String> list = new ArrayList<>();
-        // Делаем запрос в базу данных:
-        Cursor  cursor = this.db.query(TEST_TABLE, null, null, null, null, null, null);
 
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
-        if (cursor.moveToFirst()) {
-
-            // определяем номера столбцов по имени в выборке
-            int idColIndex = cursor.getColumnIndex("id");
-            int test_nameColIndex = cursor.getColumnIndex("test_name");
-            int hashColIndex = cursor.getColumnIndex("hash");
-
-            /*
-            do {
-                // получаем значения по номерам столбцов и пишем все в лог
-                System.out.println(" --- " + "ID = " + cursor.getInt(idColIndex) +
-                                ", name = " + cursor.getString(test_nameColIndex) +
-                                ", email = " + cursor.getString(hashColIndex));
-                // переход на следующую строку
-                // а если следующей нет (текущая - последняя), то false - выходим из цикла
-            } while (cursor.moveToNext());
-        } else
-            System.out.println(" --- 0 rows");
-        cursor.close();
-        */
-        }
-        list.add("one");
-        list.add("two");
-        list.add("three");
-
-        openHelper.close();
-        return list;
-    }
     /*
     * Метод вставляет в БД информацию о новом тесте:
     */
     public long insertNewTest(String titleTest, String fileName, String category, String author, String link_author_page, String description){
+
+        openHelper = new OpenHelper(this.context);
 
         System.out.println(" --- " + titleTest + " - " + fileName + " - " + category + " - " + author + " - " + link_author_page + " - " + description);
 
@@ -91,7 +68,6 @@ public class DBManager {
         contentValues.put("link_author_page", link_author_page);
         contentValues.put("description", description);
 
-
         // вставляем запись и получаем ее ID:
         long rowID =  db.insert(TEST_TABLE, null, contentValues);
 
@@ -101,6 +77,8 @@ public class DBManager {
         return rowID;
     }
 
+
+    //////////////////////////////////////////////////////////////
     public int clearTable(){
         // удаляем все записи
         int clearCount = db.delete(TEST_TABLE, null, null);
@@ -108,12 +86,16 @@ public class DBManager {
         openHelper.close();
         return clearCount;
     }
+    ///////////////////////////////////////////////////////////////
+
 
 
     /*
     * Метод получает из БД названия всех тестов и возвращает:
     */
     public ArrayList<String> getTestTitles() {
+
+        openHelper = new OpenHelper(this.context);
 
         // Создадим массив, который будем возвращать:
         ArrayList<String> list = new ArrayList<>();
@@ -123,22 +105,98 @@ public class DBManager {
                 new String[] {"title_test"},
                 null, null, null, null, null);
 
+        /*
+        * Если результат запроса существует, то
+        * заносим каждый элемент в массив:
+        */
         if(cursor.moveToFirst()){
 
+            int columnTitleTest = cursor.getColumnIndex("title_test");
+
             do{
-                list.add(cursor.getString(0));
+                //list.add(cursor.getString(0));
+                list.add(cursor.getString(columnTitleTest));
 
             }while(cursor.moveToNext());
         }
 
         cursor.close();
-
-        //list.add("one");
-        //list.add("two");
-        //list.add("three");
-
         openHelper.close();
         return list;
+    }
+
+    /*
+    * Метод формирует полный путь к файлу и записывает его в базу данных:
+    */
+    public void createPathToFile(String selectedTest) {
+
+
+
+
+        String fileName = getFileName(selectedTest);
+
+        FileManager fileManager = FileManager.getInstance();
+        String pathToFileWithTest = fileManager.getStorageDirectory() + Init.directoryMD5 + fileName + ".jqzz";
+
+        insertPathToFileInDataBase(pathToFileWithTest);
+
+    }
+
+
+    private String getFileName(String selectedTest){
+
+        openHelper = new OpenHelper(this.context);
+
+        // Создадим строку, которую будем возвращать:
+        String fileName = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(TEST_TABLE,
+                new String[] {"file_name"},
+                "title_test = ?",
+                new String[]{selectedTest},
+                null, null, null);
+
+        /*
+        * Если результат запроса существует, то
+        * получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("file_name");
+
+            fileName = cursor.getString(columnFileName);
+        }
+
+        cursor.close();
+        openHelper.close();
+
+        System.out.println(" ---  из базы данных - " + fileName);
+
+        return fileName;
+    }
+
+    private long insertPathToFileInDataBase(String pathToFileWithTest) {
+
+        openHelper = new OpenHelper(this.context);
+
+        System.out.println(" --- путь к файлу - " + pathToFileWithTest);
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("path_to_file", pathToFileWithTest);
+
+        // вставляем запись и получаем ее ID:
+        long rowID =  db.insert(INIT_TABLE, null, contentValues);
+
+        System.out.println(" --- вставка в бд путь к файлу " + rowID + " - " + pathToFileWithTest);
+
+        openHelper.close();
+        return rowID;
+
     }
 
 
@@ -159,13 +217,23 @@ public class DBManager {
                     "author TEXT, " +
                     "link_author_page TEXT, " +
                     "description Text )");
+
+            db.execSQL("CREATE TABLE " + INIT_TABLE + "(" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "path_to_file TEXT, " +
+                    "file_name TEXT, " +
+                    "directory_md5 TEXT, " +
+                    "author TEXT, " +
+                    "link_author_page TEXT, " +
+                    "description Text )");
+
+
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
         }
-
     }
 
 }

@@ -1,6 +1,12 @@
 package ru.lightapp.justquizz.model;
 
+import android.content.Context;
+
 import java.util.ArrayList;
+
+import ru.lightapp.justquizz.dataexchange.DataExchange;
+import ru.lightapp.justquizz.dataexchange.FileManager;
+import ru.lightapp.justquizz.db.DBManager;
 
 
 /**
@@ -12,7 +18,7 @@ import java.util.ArrayList;
  * -
  *
  */
-public class Init {
+public class Init extends Thread {
 
     private static Init init = null;
 
@@ -38,24 +44,85 @@ public class Init {
         // Массив содержащий кол-во верных и ошибочных вариантов ответов юзера:
     public static int[] qtyTrueAndFalseAnswers;
 
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    /*
+    * Имя файла теста:
+    */
+    private static String selectedTest;
+
+    /*
+    * Путь к файловой системе
+    */
+    private String path;
+
+    /*
+    * Context для создание объекта БД:
+    */
+    private static Context context;
+
+    /*
+    * Путь к папке с тестами:
+    * TODO перенести его в базу данных в таблицу init
+     */
+    public static String directoryMD5 = "/justquizz/tests/";
 
 
 
 
+    /*
+    * Метод делает инициализацию приложения в отдельном потоке:
+    */
+    public static void initialize(Context context, String selectedTest) {
+
+        System.out.println("--- initialize begin...");
+
+        Init.context = context;
+        Init.selectedTest = selectedTest;
+
+        if(init == null) {
+            init = new Init();
+        }
+    }
+
+    private Init(){
+
+        //System.out.println(" --- конструктор Init");
+
+        start();
+
+    }
 
 
-    private Init(String titleTest){
+    @Override
+    public void run() {
+
+        //System.out.println(" --- запустили поток...");
+
+        DataExchange dataExchange = DataExchange.getInstance(context);
+
+        /*
+        * Формируем и сохраняем полный путь к файлу с тестом:
+        */
+        dataExchange.createPathToFile(selectedTest);
+
+
+
 
 
 
         //Init.titleTest = titleTest; // Название теста
-        numberOfTest = parseNumberOfTest(titleTest); // Парсим в строке цифру - номер теста
-        questionsFile = Tests.PATH_OF_TEST_FILE + numberOfTest + ".ini"; // собираем путь к файлу с тестом
+        //numberOfTest = parseNumberOfTest(titleTest); // Парсим в строке цифру - номер теста
+        //questionsFile = Tests.PATH_OF_TEST_FILE + numberOfTest + ".ini"; // собираем путь к файлу с тестом
 
         answersOfUser = new ArrayList<>();
 
         qtyQuestions = Integer.parseInt(new PropertyItemGetter().getItem("qtyQuestions", questionsFile));
         qtyAnswers = Integer.parseInt(new PropertyItemGetter().getItem("qtyAnswers", questionsFile));
+
+
+
+
 
         // Сбрасывем номер вопроса на начало:
         numberOfQuestion = 0;
@@ -64,8 +131,18 @@ public class Init {
         qtyTrueAndFalseAnswers = new int[]{0, 0};
 
 
-
     }
+
+
+
+
+
+
+
+
+
+
+
 
     // Метод парсит строку, вытаскивая из названия выбранного теста цифры - номер теста:
     private String parseNumberOfTest(String titleTest) {
@@ -81,7 +158,7 @@ public class Init {
 
     public static Init getInstance(String titleTest){
 
-        init = new Init(titleTest);
+        init = new Init();
         return init;
     }
 
@@ -125,6 +202,13 @@ public class Init {
 
     // SETTERS:
 
+    public static void setFileName(String fileName){
+        Init.selectedTest = fileName;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////
+
     public static void incrementNumberOfQuestion() {
        numberOfQuestion++;
     }
@@ -160,4 +244,6 @@ public class Init {
     public static void incrementFalseUserAnswer(){
         Init.qtyTrueAndFalseAnswers[1]++;
     }
+
+
 }

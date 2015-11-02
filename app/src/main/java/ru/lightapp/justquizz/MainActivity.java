@@ -32,12 +32,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        DBManager db = new DBManager(this);
 
-        // Получаем массив с названиями всех доступных тестов:
-        Tests tests = new Tests();
+
+
+        //Tests tests = new Tests();
         //testTitles = tests.getTestTitles();
-
+        // Получаем массив с названиями всех доступных тестов:
+        DBManager db = new DBManager(this);
         testTitles = db.getTestTitles();
 
         if(!testTitles.isEmpty())  {
@@ -71,8 +72,15 @@ public class MainActivity extends ActionBarActivity {
 
             // Проверка - выбрал ли пользователь один из тестов
             if (selectedTest != null) {
+
+                //Init.setFileName(selectedTest);
+
                 // Инициализируем программу выбранным тестом:
-                Init init = Init.getInstance(selectedTest);
+                // В конструктор бередаем Contaxt и выбранный тест:
+                Init.initialize(this, selectedTest);
+
+                //Init init = Init.getInstance(selectedTest);
+                //Init.initialize(selectedTest);
                 //Init.resetNumberOfQuestion();
 
                 Intent intent = new Intent(MainActivity.this, TestScreen.class);
@@ -83,10 +91,8 @@ public class MainActivity extends ActionBarActivity {
                 toast.show();
             }
         }else{
-            //Toast toast = Toast.makeText(getApplicationContext(), "Пусто", Toast.LENGTH_SHORT);
-            //toast.show();
-            startDownloadActivity();
 
+            startDownloadActivity();
         }
     }
 

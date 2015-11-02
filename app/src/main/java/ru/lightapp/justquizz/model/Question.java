@@ -1,5 +1,7 @@
 package ru.lightapp.justquizz.model;
 
+import ru.lightapp.justquizz.dataexchange.FileManager;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eugen
@@ -15,34 +17,71 @@ package ru.lightapp.justquizz.model;
  */
 public class Question {
 
-    private static Question question = null;
+    //private static Question question = null;
 
-    private int numberOfQuestion; // номер текущего вопроса на экране;
-    private String titleQuestion; // Сам вопрос
-    private int trueAnswer; //  Правильный ответ
-    private String[] arrayAnswers = new String[Init.getQtyAnswers() + 1]; // Массив с вариантами ответов
+    /*
+    * Номер текущего вопроса на экране;
+    */
+    private int numberOfQuestion = 0;
 
-    private Question(){
+    /*
+    * Текст вопроса:
+    */
+    private String titleQuestion;
+
+    /*
+    * Правильный ответ:
+    */
+    private int trueAnswer;
+
+    /*
+    * Массив с вариантами ответов юзера:
+     */
+    private String[] arrayAnswers;
+
+    /*
+    * Объект для работы с файлами:
+    */
+    FileManager fileManager;
+
+
+
+    public Question(){
+
+        fileManager = FileManager.getInstance();
+
+        /*
+        * Получаем общее количество вопросов в тесте
+        * и создаем массив для хранения ответов юзера:
+        */
+        int quantityAnswers = fileManager.getQuantityAnswers();
+        arrayAnswers = new String[quantityAnswers + 1];
+
+
 
     }
 
+    /*
     public static Question getInstance(){
         if(question == null)
             question = new Question();
 
         return question;
 
-    }
+    }   */
+
+
 
     /*
     * Метод изменяет состояние объекта, наполняя его СЛЕДУЮЩИМ вопросом
      */
     public void nextQuestion(){
 
-        Init.incrementNumberOfQuestion();
-        numberOfQuestion = Init.getNumberOfQuestion();
+        numberOfQuestion++;
+        //numberOfQuestion = Init.getNumberOfQuestion();
 
-        titleQuestion = new PropertyItemGetter().getItem("q" + numberOfQuestion, Init.getQuestionsFile());
+        //titleQuestion = new PropertyItemGetter().getItem("q" + numberOfQuestion, Init.getQuestionsFile());
+        titleQuestion = fileManager.getQuestion(numberOfQuestion);
         trueAnswer = Integer.parseInt(new PropertyItemGetter().getItem("q" + numberOfQuestion + ".true", Init.getQuestionsFile()));
 
         // Собираем массив с вариантами ответов
