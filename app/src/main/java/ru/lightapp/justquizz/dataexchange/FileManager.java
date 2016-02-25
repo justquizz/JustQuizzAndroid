@@ -1,39 +1,30 @@
 package ru.lightapp.justquizz.dataexchange;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Properties;
 
+import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.db.DBManager;
+import ru.lightapp.justquizz.model.PropertyItemGetter;
 
 /**
  * Created by eugen on 20.10.2015.
  *
- * Класс предназначен для работы с файловой системой.
+ * РљР»Р°СЃСЃ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјРѕР№.
+ * РџСЂРµРґРѕСЃС‚Р°РІСЏРµС‚ РёРЅС‚РµСЂС„РµР№СЃ РѕР±СЂР°С‰РµРЅРёСЏ Рє С„Р°Р№Р»Р°Рј.
  *
- * Предоставяет интерфейс обращения к файлам.
- *
- * TODO make this class singleton!
+ * Р‘С‹Р» Singleton. РР·РјРµРЅРёР».
  *
  */
 public class FileManager {
 
     /*
-    * Единственный экземпляр данного класса
-    */
-    private static FileManager instance;
-
-
-    /*
-    * Путь к файловой системе
-    */
-    private String storageDirectory;
-
-    /*
-    * Путь к папке с тестами на устройстве:
-    */
-    private String testDirectory;
-
-    /*
-    * Путь к файлу текущего теста:
+    * РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ С‚РµРєСѓС‰РµРіРѕ С‚РµСЃС‚Р°:
     */
     private  String pathToFile;
 
@@ -41,29 +32,25 @@ public class FileManager {
 
 
     /*
-    * Скрываем конструктор и инициализируем основные переменные:
+    * РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РѕСЃРЅРѕРІРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ:
+    * - РїСѓС‚СЊ Рє С‚РµРєСѓС‰РµРјСѓ С‚РµСЃС‚Сѓ,
+    *
     */
-    private FileManager(){
+    public FileManager(String pathToFile){
+
+    this.pathToFile = pathToFile;
 
 
-        /*
-        * Получаем путь к файловой системе:
-        */
-        File root = android.os.Environment.getExternalStorageDirectory();
-        storageDirectory = root.getAbsolutePath();
 
-        /*
-        * Получаем путь к папке с тестами на устройстве:
-        */
 
 
 
 
     }
 
-    /*
-    * Реализация Singleton c двойной блокировкой:
-    */
+    /* Р Р°РЅРµРµ СЌС‚РѕС‚ РєР»Р°СЃСЃ Р±С‹Р» Singleton, РёР·РјРµРЅРёР».
+    * Р РµР°Р»РёР·Р°С†РёСЏ Singleton c РґРІРѕР№РЅРѕР№ Р±Р»РѕРєРёСЂРѕРІРєРѕР№:
+
     public static FileManager getInstance(){
         if(instance == null){
             synchronized (FileManager.class) {
@@ -73,7 +60,7 @@ public class FileManager {
             }
         }
         return instance;
-    }
+    }   */
 
 
     /*
@@ -81,31 +68,89 @@ public class FileManager {
     */
 
 
-    /*
-    * Получаем путь к файловой системе
-    */
-    public String getStorageDirectory(){
 
-        return this.storageDirectory;
-    }
 
 
     /*
-    * Получаем количество вопросов в тесте:
-    */
-    public int getQuantityAnswers(){
-
-        return 1;
-    }
-
-    /*
-    * Поучаем текст вопроса по его номеру:
+    * РџРѕР»СѓС‡Р°РµРј С‚РµРєСЃС‚ РІРѕРїСЂРѕСЃР° РїРѕ РµРіРѕ РЅРѕРјРµСЂСѓ:
     */
     public String getQuestion(int numberQuestion){
 
-        return "";
+        return getDataFromTest("q" + numberQuestion, pathToFile);
+    }
+
+    /*
+    * РџРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РІРѕРїСЂРѕСЃРѕРІ РІ С‚РµСЃС‚Рµ:
+    */
+    public int getQuantityAnswers(){
+
+        return Integer.parseInt(getDataFromTest("qtyAnswers", pathToFile));
+    }
+
+    /**
+     * РџРѕР»СѓС‡Р°РµРј РЅРѕРјРµСЂ РїСЂР°РІРёР»СЊРЅРѕРіРѕ РѕС‚РІРµС‚Р°:
+     */
+    public int getTrueAnswer(int numberOfQuestion){
+
+        return Integer.parseInt(getDataFromTest("q" + numberOfQuestion + ".true", pathToFile));
+    }
+
+    /**
+     * РџРѕР»СѓС‡РёС‚СЊ СЃРѕРґРµСЂР¶Р°РЅРёРµ РІР°СЂРёР°РЅС‚Р° РѕС‚РІРµС‚Р° РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РѕРїСЂРѕСЃР°,
+     * РјРµС‚РѕРґ РїРѕР»СѓС‡Р°РµС‚ РЅР° РІС…РѕРґ РЅРѕРјРµСЂ РІРѕРїСЂРѕСЃР° Рё РЅРѕРјРµСЂ РІР°СЂРёР°РЅС‚Р° РѕС‚РІРµС‚Р°.
+     */
+    public String getAnswer(int numberOfQuestion, int numberAnswer){
+
+        return getDataFromTest("q" + numberOfQuestion + "." + numberAnswer, pathToFile);
     }
 
 
+
+
+
+    /*
+    * РњРµС‚РѕРґ РґР»СЏ РёР·РІР»РµС‡РµРЅРёСЏ РґР°РЅРЅС‹С… РёР· С„Р°Р№Р»Р° СЃ С‚РµСЃС‚Р°РјРё.
+    * РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ Properties.
+    * РџРµСЂРµРґР°РµС‚СЃСЏ РґРІР° РїР°СЂР°РјРµС‚СЂР°:
+    *  - РРјСЏ РєР»СЋС‡Р°, Р·РЅР°С‡РµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ РЅСѓР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ
+    *  - РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СЃ РґР°РЅРЅС‹РјРё.
+    */
+    private String getDataFromTest(String nameItem, String nameFile){
+
+        String item;
+
+        FileInputStream fis = null;
+        Reader reader = null;
+
+        try {
+            //load a properties file
+
+            fis = new FileInputStream(nameFile);
+            reader = new InputStreamReader(fis, "UTF-8");
+            Properties prop = new Properties();
+            prop.load(reader);
+
+            // get item from file
+            item = prop.getProperty(nameItem);
+
+            fis.close();
+            reader.close();
+
+        } catch (FileNotFoundException e){
+            System.out.println("error: FileNotFoundException!" + nameFile);
+            item = null;
+
+        } catch (IOException ex) {
+            System.out.println("error: IOException!" + nameFile);
+            item = null;
+
+        } finally {
+            // Close resource FileInputStream and Reader:
+            //fis.close();
+            //reader.close();
+        }
+
+        return item;
+    }
 
 }

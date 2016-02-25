@@ -9,10 +9,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
-
 import ru.lightapp.justquizz.R;
+import ru.lightapp.justquizz.dataexchange.DataExchange;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
 import ru.lightapp.justquizz.db.DBManager;
@@ -21,7 +20,12 @@ import ru.lightapp.justquizz.db.DBManager;
 /**
  * Created by Eugen on 20.07.2015.
  *
- * Активити формирует экран загрузки новых тестов с сервера
+ * Активити формирует экран загрузки новых тестов с сервера.
+ *
+ * Содержит методы:
+ * - Получения от сервера категорий тестов,
+ * - Обработки нажатия кнопки НАЗДАД
+ * - Обработки нажатия кнопки ЗАГРУЗИТЬ
  */
 public class LoaderTestFromServer extends Activity {
 
@@ -31,7 +35,6 @@ public class LoaderTestFromServer extends Activity {
     private TextView info;
     private ListView listCategories;
     private ListView listTests;
-    private ArrayAdapter<String> mAdapterCategories;
     private ArrayAdapter<String> mAdapterTests;
     private Button button_back;
     private Button button_download;
@@ -61,6 +64,16 @@ public class LoaderTestFromServer extends Activity {
     */
     private String selectedCategory;
 
+    /*
+    * Объект для обмена данными:
+    */
+    DataExchange dataExchange;
+
+
+    Toast toast;
+
+
+
 
 
     @Override
@@ -78,9 +91,10 @@ public class LoaderTestFromServer extends Activity {
         */
 
         button_back = (Button) findViewById(R.id.button_back);
-        button_back.setEnabled(false);
+        button_back.setVisibility(View.INVISIBLE);
 
         button_download = (Button) findViewById(R.id.button_download);
+        button_download.setVisibility(View.INVISIBLE);
 
         info = (TextView) findViewById(R.id.download_txt_info);
         info.setText(R.string.press_key);
@@ -90,41 +104,34 @@ public class LoaderTestFromServer extends Activity {
         listTests = (ListView) findViewById(R.id.listTests);
         listTests.setVisibility(View.GONE);
 
+        // Получаем объект для обмена данными:
+        dataExchange = DataExchange.getInstance();
+        dataExchange.initDataExchange(this, "");
+
+        // Загружаем категории тестов с сервера:
+        onClickGetCategories();
+
     }
 
 
     /*
-    * Обработчик кнопки ЗАГРУЗИТЬ:
-    * - выводим Тост о начале загрузки,
-    * - делаем неактивной кнопуку ЗАГРУЗИТЬ,
-    * - обращаемся на сервер и получаем список категорий тестов,
-    *
+    * Метод получает от сервера список доступных категорий тестов:
     */
-
-    public void onClickGetCategories(final View view) {
-
-
-
-        Toast toast = Toast.makeText(getApplicationContext(),
-                R.string.toast_download_start, Toast.LENGTH_SHORT);
-        toast.show();
-
-
-        if(currentFileName == null) {
+    public void onClickGetCategories() {
 
         /*
         * Создаем объект для работы с сервером,
         * который и получит для нас массив с названиями категорий и их описанием
         */
-            final ServerManager server = new ServerManager();
-            ArrayList[] categories = server.getCategories();
+        ArrayList[] categories = dataExchange.getCategories();
+
 
         /*
         * Если получение списка категорий было неудачно (связь с инетом), то
         * в categories[3] будет содержатся список этих ошибок - выводим сообщение об ошибке.
         *
         * Если ошибок нет, то выводим на экран список категорий, полученных с сервера:
-         */
+        */
             ArrayList<String> error = categories[3];
             if (error != null) {
                 toast = Toast.makeText(getApplicationContext(),
@@ -139,11 +146,12 @@ public class LoaderTestFromServer extends Activity {
                 try {
 
                     // Создаем адаптер и присваеваем адаптер списку категорий:
-                    mAdapterCategories = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titleCategories);
+                    ArrayAdapter<String> mAdapterCategories = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titleCategories);
                     listCategories.setAdapter(mAdapterCategories);
-                /*
-                * Обработчик нажатия на список категорий тестов:
-                */
+
+                    /*
+                    * Обработчик нажатия на список категорий тестов:
+                    */
                     listCategories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
@@ -155,7 +163,7 @@ public class LoaderTestFromServer extends Activity {
                             info.setText(descriptionCategories.get(position));
                             TextView textView = (TextView) itemClicked;
                             selectedCategory = (String) textView.getText();
-                            tests = server.getTestsByCategory(idCategory.get(position));
+                            tests = dataExchange.getTestsByCategory(idCategory.get(position));
                             ArrayList<String> titleTests = tests[0];
 
                         /*
@@ -165,16 +173,16 @@ public class LoaderTestFromServer extends Activity {
                             listTests.setAdapter(mAdapterTests);
 
                         /*
-                        * Меняем состояние элементов экран:
+                        * Меняем состояние элементов экрана:
                         *  - скрываем список с категориями,
-                        * - делаем активной кнопку НАЗАД,
+                        * - делаем видимой кнопку НАЗАД,
                         * - делаем видимым список с тестами,
-                        * - делаем неактивной кнопку ЗАГРУЗИТЬ:
+                        * - делаем невидимой кнопку ЗАГРУЗИТЬ:
                         */
                             listCategories.setVisibility(View.GONE);
-                            button_back.setEnabled(true);
+                            button_back.setVisibility(View.VISIBLE);
                             listTests.setVisibility(View.VISIBLE);
-                            button_download.setEnabled(false);
+                            button_download.setVisibility(View.INVISIBLE);
 
                         }
                     });
@@ -191,7 +199,7 @@ public class LoaderTestFromServer extends Activity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
 
-                            button_download.setEnabled(true);
+                            button_download.setVisibility(View.VISIBLE);
 
                             numberOfTest = position;
 
@@ -219,8 +227,6 @@ public class LoaderTestFromServer extends Activity {
                             }
                             */
 
-
-
                         }
                     });
 
@@ -233,38 +239,6 @@ public class LoaderTestFromServer extends Activity {
                 // Выводим ообщение о необходимости выбора категории:
                 info.setText(R.string.choice_category);
             }
-        }else{
-
-            DownloadTestFromServer loader = new DownloadTestFromServer(currentFileName);
-
-            try {
-                loader.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println(" --- поток завершен!");
-
-            /*
-            * TODO здесь нужно проверить загружен ли файл на самом деле
-            *
-            * Например, fileManager.isFileExist()
-            */
-
-
-
-            /*
-            * Заносим новый тест в базу:
-            */
-            DBManager db = new DBManager(this);
-            //db.insertNewTest(titleTest, fileName, category, author, linkAuthorPage, description);
-            db.insertNewTest(currentTestTitle, currentFileName, selectedCategory, currentAuthor, currentLinkAuthor, currentDescription);
-
-
-
-
-
-        }
     }
 
 
@@ -274,39 +248,50 @@ public class LoaderTestFromServer extends Activity {
     * - показывает список с категориями,
     * - деактивизирует кнопку НАЗАД,
     * - выводит сообщение о необходимости выбора категории.
-     */
+    */
     public void onClickButtonBack(View view) {
 
         listTests.setVisibility(View.GONE);
         listCategories.setVisibility(View.VISIBLE);
-        button_back.setEnabled(false);
+        button_back.setVisibility(View.INVISIBLE);
         info.setText(R.string.choice_category);
     }
 
 
     /*
-    public void onClickInsertInDB(View view){
+    * Обработчик кнопки ЗАГРУЗИТЬ выбранный тест.
+    * - выводим Тост о начале загрузки,
+    * - делаем неактивной кнопуку ЗАГРУЗИТЬ,
+    * - обращаемся на сервер и получаем список категорий тестов,
+    */
+    public void onClickDownloadTest(View view) {
 
-        DBManager database = new DBManager(this);
-        long num = database.insertNewTest("Привет, как дела", "wrfwfq");
-        System.out.println(" --- строка вставлена " + num);
 
-    }
+        DownloadTestFromServer loader = new DownloadTestFromServer(currentFileName);
 
-    public void onClickDeleteDB(View view){
-        DBManager database = new DBManager(this);
-        int numDelete = database.clearTable();
-        System.out.println(" --- удалено строк " + numDelete);
-    }
+        try {
+            loader.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-    public void onClickGetAll(View view){
-        DBManager database = new DBManager(this);
-        List<String> list = database.getAll();
+        System.out.println(" --- файл скачан!");
 
-        for(String item: list){
-            System.out.println(" --- getAll:" + item);
+        /*
+        * TODO здесь нужно проверить загружен ли файл на самом деле
+        *
+        * Например, fileManager.isFileExist()
+        */
+
+        /*
+        * Заносим новый тест в базу:
+        */
+        long num = dataExchange.insertNewTest(currentTestTitle, currentFileName, selectedCategory, currentAuthor, currentLinkAuthor, currentDescription);
+
+        if(num > 0) {
+            toast = Toast.makeText(getApplicationContext(), R.string.toast_download_success, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
-    */
 
 }

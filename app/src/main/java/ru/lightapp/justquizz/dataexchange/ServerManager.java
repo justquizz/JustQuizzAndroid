@@ -22,7 +22,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created by Eugen on 20.07.2015.
  *
  * Экземпляр класса предоставляет доступ к API сервера с тестами.
- * TODO make Singleton.
  *
  */
 public class ServerManager {
@@ -178,9 +177,7 @@ public class ServerManager {
         if(title != null) {
 
             for (String str : title) {
-
                 System.out.println(" --- " + str);
-
             }
         }else{
             System.out.println(" --- null!");
@@ -286,7 +283,7 @@ public class ServerManager {
             }catch (Exception e) {
                 System.out.println(" --- Что еще за ошибка?)");
                 e.printStackTrace();
-                error.add("check your Internet connection.....");
+                error.add("Something wrong.... hmm.");
                 System.out.println(" --- end trace");
                 tests[5] = error;
             }

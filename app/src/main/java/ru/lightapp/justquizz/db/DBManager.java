@@ -71,7 +71,7 @@ public class DBManager {
         // вставляем запись и получаем ее ID:
         long rowID =  db.insert(TEST_TABLE, null, contentValues);
 
-        System.out.println(" --- вставка в бд" + rowID);
+        System.out.println(" --- вставка в бд " + rowID);
 
         openHelper.close();
         return rowID;
@@ -117,7 +117,8 @@ public class DBManager {
                 //list.add(cursor.getString(0));
                 list.add(cursor.getString(columnTitleTest));
 
-            }while(cursor.moveToNext());
+            }
+            while(cursor.moveToNext());
         }
 
         cursor.close();
@@ -135,10 +136,10 @@ public class DBManager {
 
         String fileName = getFileName(selectedTest);
 
-        FileManager fileManager = FileManager.getInstance();
-        String pathToFileWithTest = fileManager.getStorageDirectory() + Init.directoryMD5 + fileName + ".jqzz";
+        //FileManager fileManager = FileManager.getInstance();
+        //String pathToFileWithTest = fileManager.getStorageDirectory() + Init.directoryMD5 + fileName + ".jqzz";
 
-        insertPathToFileInDataBase(pathToFileWithTest);
+        //insertPathToFileInDataBase(pathToFileWithTest);
 
     }
 

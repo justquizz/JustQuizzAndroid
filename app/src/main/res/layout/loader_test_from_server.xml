@@ -36,7 +36,7 @@
             android:layout_gravity="end"
             android:text="@string/button_download"
             android:id="@+id/button_download"
-            android:onClick="onClickGetCategories"/>
+            android:onClick="onClickDownloadTest"/>
 
     </LinearLayout>
 

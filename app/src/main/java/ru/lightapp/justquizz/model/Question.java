@@ -1,6 +1,6 @@
 package ru.lightapp.justquizz.model;
 
-import ru.lightapp.justquizz.dataexchange.FileManager;
+import ru.lightapp.justquizz.dataexchange.DataExchange;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +17,6 @@ import ru.lightapp.justquizz.dataexchange.FileManager;
  */
 public class Question {
 
-    //private static Question question = null;
-
     /*
     * Номер текущего вопроса на экране;
     */
@@ -34,59 +32,57 @@ public class Question {
     */
     private int trueAnswer;
 
+    /**
+     * Кол-во вариантов ответов в тесте
+     */
+    private int quantityAnswers;
+
     /*
-    * Массив с вариантами ответов юзера:
+    * Массив с вариантами ответов:
      */
     private String[] arrayAnswers;
 
-    /*
-    * Объект для работы с файлами:
-    */
-    FileManager fileManager;
+    /**
+     * Объект для получения и передачи данных:
+     */
+    private DataExchange dataExchange;
 
 
 
     public Question(){
 
-        fileManager = FileManager.getInstance();
+        dataExchange = DataExchange.getInstance();
 
         /*
         * Получаем общее количество вопросов в тесте
-        * и создаем массив для хранения ответов юзера:
+        * и создаем массив для хранения вариантов ответов:
         */
-        int quantityAnswers = fileManager.getQuantityAnswers();
+        quantityAnswers = dataExchange.getQuantityAnswers();
         arrayAnswers = new String[quantityAnswers + 1];
 
 
 
     }
 
-    /*
-    public static Question getInstance(){
-        if(question == null)
-            question = new Question();
 
-        return question;
-
-    }   */
-
-
-
-    /*
-    * Метод изменяет состояние объекта, наполняя его СЛЕДУЮЩИМ вопросом
+    /**
+     * Метод изменяет состояние объекта, наполняя его СЛЕДУЮЩИМ вопросом
+     * - увеличиваем номер вопроса на 1,
+     * - получаем содержание вопроса,
+     * - получаем номер правильного ответа,
+     * - наполняем массив вариантами ответов(для вывода их на экран).
      */
     public void nextQuestion(){
 
         numberOfQuestion++;
-        //numberOfQuestion = Init.getNumberOfQuestion();
 
-        //titleQuestion = new PropertyItemGetter().getItem("q" + numberOfQuestion, Init.getQuestionsFile());
-        titleQuestion = fileManager.getQuestion(numberOfQuestion);
-        trueAnswer = Integer.parseInt(new PropertyItemGetter().getItem("q" + numberOfQuestion + ".true", Init.getQuestionsFile()));
+        titleQuestion = dataExchange.getQuestion(numberOfQuestion);
+
+        trueAnswer = dataExchange.getTrueAnswer(numberOfQuestion);
 
         // Собираем массив с вариантами ответов
-        for(int i = 1; i <= Init.getQtyAnswers(); i++){
-            arrayAnswers[i] = new PropertyItemGetter().getItem("q" + numberOfQuestion + "." + i, Init.getQuestionsFile());
+        for(int i = 1; i <= quantityAnswers; i++){
+            arrayAnswers[i] = dataExchange.getAnswer(numberOfQuestion, i);
             System.out.println(i + " --- " + arrayAnswers[i]);
         }
     }
@@ -96,15 +92,15 @@ public class Question {
      */
     public void previousQuestion(){
 
-        Init.decrementNumberOfQuestion();
-        numberOfQuestion = Init.getNumberOfQuestion();
+        numberOfQuestion--;
 
-        titleQuestion = new PropertyItemGetter().getItem("q" + numberOfQuestion, Init.getQuestionsFile());
-        trueAnswer = Integer.parseInt(new PropertyItemGetter().getItem("q" + numberOfQuestion + ".true", Init.getQuestionsFile()));
+        titleQuestion = dataExchange.getQuestion(numberOfQuestion);
+
+        trueAnswer = dataExchange.getTrueAnswer(numberOfQuestion);
 
         // Собираем массив с вариантами ответов
-        for(int i = 1; i <= Init.getQtyAnswers(); i++){
-            arrayAnswers[i] = new PropertyItemGetter().getItem("q" + numberOfQuestion + "." + i, Init.getQuestionsFile());
+        for(int i = 1; i <= quantityAnswers; i++){
+            arrayAnswers[i] = dataExchange.getAnswer(numberOfQuestion, i);
             System.out.println(i + " --- " + arrayAnswers[i]);
         }
     }

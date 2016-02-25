@@ -15,11 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.controller.*;
-import ru.lightapp.justquizz.db.DBManager;
+import ru.lightapp.justquizz.dataexchange.DataExchange;
 import ru.lightapp.justquizz.model.*;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    /*
+    * Элементы Activity:
+    */
+    Button button_start;
+
 
     // Список названий всех доступных тестов:
     ArrayList<String> testTitles = new ArrayList<>();
@@ -32,14 +38,25 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        button_start = (Button) findViewById(R.id.button_start);
 
+        showTestTitles();
 
+    }
 
-        //Tests tests = new Tests();
-        //testTitles = tests.getTestTitles();
-        // Получаем массив с названиями всех доступных тестов:
-        DBManager db = new DBManager(this);
-        testTitles = db.getTestTitles();
+    /*
+    * Метод наполняет экран названиями тестов из БД:
+    */
+    private void showTestTitles(){
+       /*
+       * Создаем объект занимающийся работой с данными.
+       * Инициализируем его.
+       * Получаем массив доступных тестов:
+       */
+        DataExchange dataExchange = DataExchange.getInstance();
+        dataExchange.initDataExchange(this, "");
+        testTitles = dataExchange.getTestTitles();
+
 
         if(!testTitles.isEmpty())  {
 
@@ -53,19 +70,19 @@ public class MainActivity extends ActionBarActivity {
                 public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                     TextView textView = (TextView) itemClicked;
                     selectedTest = (String) textView.getText();
+                    //button_start.setText(R.string.button_start_test);
+
                 }
             });
         } else{
-            Button button_start = (Button) findViewById(R.id.button_start);
+
             button_start.setText(R.string.button_start_download);
         }
-
     }
 
-
     /*
-    *   Обработка нажатия кнопки начала тестирования:
-     */
+    * Обработка нажатия кнопки начала тестирования:
+    */
     public void onClick(View view){
          // Если загружен список тестов, то:
         if(!testTitles.isEmpty()) {
@@ -73,15 +90,9 @@ public class MainActivity extends ActionBarActivity {
             // Проверка - выбрал ли пользователь один из тестов
             if (selectedTest != null) {
 
-                //Init.setFileName(selectedTest);
-
                 // Инициализируем программу выбранным тестом:
-                // В конструктор бередаем Contaxt и выбранный тест:
+                // В конструктор передаем Context и выбранный тест:
                 Init.initialize(this, selectedTest);
-
-                //Init init = Init.getInstance(selectedTest);
-                //Init.initialize(selectedTest);
-                //Init.resetNumberOfQuestion();
 
                 Intent intent = new Intent(MainActivity.this, TestScreen.class);
                 startActivity(intent);
@@ -96,6 +107,17 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+
+    /*
+    * Метод вызывается по завершению активности для загрузки
+    * новых тестов с сервера (LoaderTestFromServer).
+    * И на экране обновляется список с названиями тестов:
+    * */
+    @Override
+    public void onActivityResult(int request, int request2, Intent intent){
+
+        showTestTitles();
+    }
 
 
     @Override
@@ -134,9 +156,15 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    /*
+    * Создаем активность для загрузки новых тестов с сервера - LoaderTestFromServer.
+    * По ее завершению запускается onActivityResult()
+     * и на экране обновляется список с названиями тестов:
+    * */
     private void startDownloadActivity() {
 
         Intent intent = new Intent(MainActivity.this, LoaderTestFromServer.class);
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 }
