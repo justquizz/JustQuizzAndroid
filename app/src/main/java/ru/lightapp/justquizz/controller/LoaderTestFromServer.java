@@ -69,26 +69,22 @@ public class LoaderTestFromServer extends Activity {
     */
     DataExchange dataExchange;
 
-
+    // Элемент UI:
     Toast toast;
 
 
-
-
-
+    /*
+    * Инициализируем элементы экрана:
+    * - кнопка НАЗАД;
+    * - кнопка ЗАГРУЗИТЬ,
+    * - информационное (TextView) поле;
+    * - список, в который загрузим категории, доступные на севере;
+    * - список, в который загрузим доступные на севере тесты для данной категории(скрываем его);
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loader_test_from_server);
-
-        /*
-        * Инициализируем элементы экрана:
-        * - кнопка НАЗАД;
-        * - кнопка ЗАГРУЗИТЬ,
-        * - информационное (TextView) поле;
-        * - список, в который загрузим категории, доступные на севере;
-        * - список, в который загрузим доступные на севере тесты для данной категории(скрываем его);
-        */
 
         button_back = (Button) findViewById(R.id.button_back);
         button_back.setVisibility(View.INVISIBLE);
@@ -97,7 +93,7 @@ public class LoaderTestFromServer extends Activity {
         button_download.setVisibility(View.INVISIBLE);
 
         info = (TextView) findViewById(R.id.download_txt_info);
-        info.setText(R.string.press_key);
+        //info.setText(R.string.press_key);
 
         listCategories = (ListView) findViewById(R.id.listCategories);
 
@@ -137,6 +133,7 @@ public class LoaderTestFromServer extends Activity {
                 toast = Toast.makeText(getApplicationContext(),
                         R.string.error_server_not_found, Toast.LENGTH_LONG);
                 toast.show();
+                info.setText(R.string.error_server_not_found);
 
             } else {
                 final ArrayList<Integer> idCategory = categories[0];

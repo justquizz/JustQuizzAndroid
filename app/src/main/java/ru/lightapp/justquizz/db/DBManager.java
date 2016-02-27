@@ -26,7 +26,7 @@ public class DBManager {
     private static final int DATABASE_VERSION = 1;
 
     private static final String TEST_TABLE = "tests";
-    private static final String INIT_TABLE = "init";
+    private static final String GLOBAL_STRINGS = "global_strings";
 
     private Context context;
     private SQLiteDatabase db;
@@ -131,9 +131,6 @@ public class DBManager {
     */
     public void createPathToFile(String selectedTest) {
 
-
-
-
         String fileName = getFileName(selectedTest);
 
         //FileManager fileManager = FileManager.getInstance();
@@ -191,7 +188,7 @@ public class DBManager {
         contentValues.put("path_to_file", pathToFileWithTest);
 
         // вставляем запись и получаем ее ID:
-        long rowID =  db.insert(INIT_TABLE, null, contentValues);
+        long rowID =  db.insert(GLOBAL_STRINGS, null, contentValues);
 
         System.out.println(" --- вставка в бд путь к файлу " + rowID + " - " + pathToFileWithTest);
 
@@ -219,10 +216,9 @@ public class DBManager {
                     "link_author_page TEXT, " +
                     "description Text )");
 
-            db.execSQL("CREATE TABLE " + INIT_TABLE + "(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "path_to_file TEXT, " +
+            db.execSQL("CREATE TABLE " + GLOBAL_STRINGS + "(" +
                     "file_name TEXT, " +
+                    "path_to_file TEXT, " +
                     "directory_md5 TEXT, " +
                     "author TEXT, " +
                     "link_author_page TEXT, " +

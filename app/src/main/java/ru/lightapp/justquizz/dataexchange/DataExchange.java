@@ -90,13 +90,16 @@ public class DataExchange {
             this.pathToFile = pathToFile;
 
         // создаем объект для работы с базой данных:
-        db = new DBManager(context);
+        if(db == null)
+            db = new DBManager(context);
 
         // оздаем объект для работы с файлами:
-        fileManager = new FileManager(pathToFile);
+        if(fileManager == null)
+            fileManager = new FileManager(pathToFile);
 
         // создаем объект для работы с сервером:
-        server = new ServerManager();
+        if(server == null)
+            server = new ServerManager();
 
     }
 

@@ -64,13 +64,15 @@ public class MainActivity extends ActionBarActivity {
             ListView listTest = (ListView) findViewById(R.id.listTest);
             ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testTitles);
             listTest.setAdapter(mAdapter);
+            // Меняем надпись на кнопке:
+            button_start.setText(R.string.button_start_test);
             // Устанавливаем слушатель:
             listTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                     TextView textView = (TextView) itemClicked;
                     selectedTest = (String) textView.getText();
-                    //button_start.setText(R.string.button_start_test);
+
 
                 }
             });

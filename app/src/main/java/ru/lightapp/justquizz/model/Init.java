@@ -18,9 +18,8 @@ public class Init extends Thread {
     private static String questionsFile;  // путь к файлу с вопросами -  path file with the questions
     //private static final String CONFIG_FILE="config.ini"; // имя файла с настройками - name of config file
     private static int qtyQuestions; // количество вопросов в тесте - Quantity questions in a test
-    private static int qtyAnswers; // количество вариантов ответов в каждом вопросе - Quantity answer in each questions
 
-        // Массив объектов, содержащих информацию об ответах юзера:
+    // Массив объектов, содержащих информацию об ответах юзера:
     private static ArrayList<AnswerOfUser> answersOfUser;
         // Массив содержащий кол-во верных и ошибочных вариантов ответов юзера:
     public static int[] qtyTrueAndFalseAnswers;
@@ -75,7 +74,7 @@ public class Init extends Thread {
     @Override
     public void run() {
 
-        //System.out.println(" --- запустили поток...");
+        System.out.println(" --- запустили поток...");
 
         DataExchange dataExchange = DataExchange.getInstance();
         dataExchange.initDataExchange(context, selectedTest);
@@ -89,7 +88,7 @@ public class Init extends Thread {
         answersOfUser = new ArrayList<>();
 
         qtyQuestions = Integer.parseInt(new PropertyItemGetter().getItem("qtyQuestions", questionsFile));
-        qtyAnswers = Integer.parseInt(new PropertyItemGetter().getItem("qtyAnswers", questionsFile));
+        int qtyAnswers = Integer.parseInt(new PropertyItemGetter().getItem("qtyAnswers", questionsFile));
 
 
         // Сбрасываем кол-во правильных и неправильных ответов:
