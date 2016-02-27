@@ -22,6 +22,9 @@ import ru.lightapp.justquizz.model.Question;
  * Created by Eugen on 22.03.2015.
  *
  * Класс управляет окном с вопросом и вариантами ответа
+ *
+ * редактируем на работе
+ *
  */
 public class TestScreen extends Activity {
 
