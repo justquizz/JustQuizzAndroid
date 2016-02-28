@@ -1,0 +1,35 @@
+# Built application files
+*.apk
+*.ap_
+
+# Files for the Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+
+# Gradle files
+.gradle/
+build/
+/*/build/
+gradle/
+
+*.gradle
+gradlew
+
+# Local configuration file (sdk path, etc)
+/*.properties
+
+# Log Files
+*.log
+
+# My DATA, IDEA files
+__DATA/
+.idea/
+*.iml
+*.pro
+*.bat
