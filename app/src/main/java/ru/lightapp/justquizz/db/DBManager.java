@@ -6,12 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-
 import java.util.ArrayList;
-import java.util.List;
 
-import ru.lightapp.justquizz.dataexchange.FileManager;
-import ru.lightapp.justquizz.model.Init;
 
 /**
  * Created by eugen on 02.08.2015.
@@ -22,7 +18,7 @@ import ru.lightapp.justquizz.model.Init;
  */
 public class DBManager {
 
-    private static final String DATABASE_NAME = "jqzz4.db";
+    private static final String DATABASE_NAME = "jqzz5.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String TEST_TABLE = "tests";
@@ -78,18 +74,6 @@ public class DBManager {
     }
 
 
-    //////////////////////////////////////////////////////////////
-    public int clearTable(){
-        // удаляем все записи
-        int clearCount = db.delete(TEST_TABLE, null, null);
-
-        openHelper.close();
-        return clearCount;
-    }
-    ///////////////////////////////////////////////////////////////
-
-
-
     /*
     * Метод получает из БД названия всех тестов и возвращает:
     */
@@ -106,17 +90,14 @@ public class DBManager {
                 null, null, null, null, null);
 
         /*
-        * Если результат запроса существует, то
-        * заносим каждый элемент в массив:
+        * Если результат запроса существует, то заносим элемент в массив:
         */
         if(cursor.moveToFirst()){
 
             int columnTitleTest = cursor.getColumnIndex("title_test");
 
             do{
-                //list.add(cursor.getString(0));
                 list.add(cursor.getString(columnTitleTest));
-
             }
             while(cursor.moveToNext());
         }
@@ -126,21 +107,47 @@ public class DBManager {
         return list;
     }
 
+
     /*
-    * Метод формирует полный путь к файлу и записывает его в базу данных:
+    * Метод формирует полный путь к файлу и записывает его в базу данных.
+    * Собираем строку: каталог с тестами + имя файла + расширение файла,
+    * и записываем ее в БД в таблицу глобальных переменных.
     */
     public void createPathToFile(String selectedTest) {
 
-        String fileName = getFileName(selectedTest);
-
-        //FileManager fileManager = FileManager.getInstance();
-        //String pathToFileWithTest = fileManager.getStorageDirectory() + Init.directoryMD5 + fileName + ".jqzz";
-
-        //insertPathToFileInDataBase(pathToFileWithTest);
+        String pathToFileTest = getDirectoryMD5() + getFileName(selectedTest) + getFileExtension();
+        System.out.println(" --- имя файла " + pathToFileTest);
+        insertPathToFileInDataBase(pathToFileTest);
 
     }
 
+    /*
+    * Метод получает из таблицы глобальных переменных путь к папке с тестами
+    */
+    private String getDirectoryMD5() {
 
+        String directory_md5 = "";
+
+        // Делаем запрос в БД:
+        Cursor cursor = db.rawQuery("select directory_md5 from " + GLOBAL_STRINGS + " where id = ?", new String[] { "1" });
+
+        /*
+        * Если результат запроса существует, то
+        * получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("directory_md5");
+            directory_md5 = cursor.getString(columnFileName);
+        }
+
+        System.out.println(" --- directory_md5 " + directory_md5);
+        return directory_md5;
+    }
+
+    /*
+    * Метод получает по названию теста его имя файла
+    */
     private String getFileName(String selectedTest){
 
         openHelper = new OpenHelper(this.context);
@@ -175,11 +182,22 @@ public class DBManager {
         return fileName;
     }
 
+    /*
+    * Метод получет из таблицы глобальных переменных расширение теста-файла - .jqzz
+    */
+    private String getFileExtension() {
+
+        return ".jqzz";
+    }
+
+    /*
+    * Метод вставляет в таблицу глобальных перменных путь к тесту-файлу
+    */
     private long insertPathToFileInDataBase(String pathToFileWithTest) {
 
         openHelper = new OpenHelper(this.context);
 
-        System.out.println(" --- путь к файлу - " + pathToFileWithTest);
+        System.out.println(" --- пишем путь к файлу - " + pathToFileWithTest);
 
         /*
         * Создаем объект для наших данных и наполняем его:
@@ -187,13 +205,15 @@ public class DBManager {
         ContentValues contentValues = new ContentValues();
         contentValues.put("path_to_file", pathToFileWithTest);
 
-        // вставляем запись и получаем ее ID:
-        long rowID =  db.insert(GLOBAL_STRINGS, null, contentValues);
+        int rowId = db.update(GLOBAL_STRINGS,
+                contentValues,
+                "id = ?",
+                new String[]{"1"});
 
-        System.out.println(" --- вставка в бд путь к файлу " + rowID + " - " + pathToFileWithTest);
+        System.out.println(" --- записали путь к файлу " + rowId);
 
         openHelper.close();
-        return rowID;
+        return rowId;
 
     }
 
@@ -207,6 +227,9 @@ public class DBManager {
         @Override
         public void onCreate(SQLiteDatabase db) {
 
+            /*
+            * Создаем таблицу в которой будем хранить тесты
+            */
             db.execSQL("CREATE TABLE " + TEST_TABLE + "(" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "title_test TEXT, " +
@@ -216,14 +239,32 @@ public class DBManager {
                     "link_author_page TEXT, " +
                     "description Text )");
 
+
+            /*
+            * Создаем таблицу в которой будем хранить настройки программы
+            */
             db.execSQL("CREATE TABLE " + GLOBAL_STRINGS + "(" +
+                    "id INTEGER, " +
                     "file_name TEXT, " +
                     "path_to_file TEXT, " +
                     "directory_md5 TEXT, " +
-                    "author TEXT, " +
-                    "link_author_page TEXT, " +
-                    "description Text )");
+                    "file_extension TEXT)");
 
+            /*
+            * Создаем объект для наших данных и наполняем его:
+            */
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("id", "1");
+            contentValues.put("file_name", "");
+            contentValues.put("path_to_file", "");
+            contentValues.put("directory_md5", "/justquizz/tests/");
+            contentValues.put("file_extension", ".jqzz");
+
+
+            // вставляем запись и получаем ее ID:
+            long rowID =  db.insert(GLOBAL_STRINGS, null, contentValues);
+
+            System.out.println(" --- вставка в таблицу global_strings " + rowID);
 
         }
 

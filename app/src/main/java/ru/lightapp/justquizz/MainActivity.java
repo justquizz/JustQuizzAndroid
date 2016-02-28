@@ -27,11 +27,20 @@ public class MainActivity extends ActionBarActivity {
     Button button_start;
 
 
-    // Список названий всех доступных тестов:
+    /*
+    * Список названий всех доступных тестов:
+    */
     ArrayList<String> testTitles = new ArrayList<>();
 
-    // Строка с выбранным тестом:
+    /*
+    * Строка с выбранным тестом:
+    */
     private String selectedTest;
+
+    /*
+    * Обект для работы с данными
+    */
+    DataExchange dataExchange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
        * Инициализируем его.
        * Получаем массив доступных тестов:
        */
-        DataExchange dataExchange = DataExchange.getInstance(this, "");
+        dataExchange = DataExchange.getInstance(this, "");
         //dataExchange.initDataExchange(this, "");
         testTitles = dataExchange.getTestTitles();
 
@@ -94,7 +103,8 @@ public class MainActivity extends ActionBarActivity {
 
                 // Инициализируем программу выбранным тестом:
                 // В конструктор передаем Context и выбранный тест:
-                Init.initialize(this, selectedTest);
+                dataExchange.setPathToFile(selectedTest);
+                //Init.initialize(this, selectedTest);
 
                 Intent intent = new Intent(MainActivity.this, TestScreen.class);
                 startActivity(intent);

@@ -144,8 +144,9 @@ public class DataExchange {
      */
     public String getAnswer(int numberOfQuestion, int numberAnswer){
 
-        return fileManager.getAnswer( numberOfQuestion, numberAnswer);
+        return fileManager.getAnswer(numberOfQuestion, numberAnswer);
     }
+
 
 
 
@@ -158,7 +159,7 @@ public class DataExchange {
     /*
     * Сформировать и сохранить в БД путь к файлу текущего теста:
     */
-    public void createPathToFile(String selectedTest){
+    public void setPathToFile(String selectedTest){
         db.createPathToFile(selectedTest);
 
     }
@@ -199,6 +200,7 @@ public class DataExchange {
     public ArrayList[] getTestsByCategory(Integer category) {
         return server.getTestsByCategory(category);
     }
+
 
 
 }
