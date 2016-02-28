@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DataExchange;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
-import ru.lightapp.justquizz.dataexchange.ServerManager;
-import ru.lightapp.justquizz.db.DBManager;
 
 
 /**
@@ -24,7 +22,7 @@ import ru.lightapp.justquizz.db.DBManager;
  *
  * Содержит методы:
  * - Получения от сервера категорий тестов,
- * - Обработки нажатия кнопки НАЗДАД
+ * - Обработки нажатия кнопки НАЗАД
  * - Обработки нажатия кнопки ЗАГРУЗИТЬ
  */
 public class LoaderTestFromServer extends Activity {
@@ -100,9 +98,9 @@ public class LoaderTestFromServer extends Activity {
         listTests = (ListView) findViewById(R.id.listTests);
         listTests.setVisibility(View.GONE);
 
-        // Получаем объект для обмена данными:
-        dataExchange = DataExchange.getInstance();
-        dataExchange.initDataExchange(this, "");
+        // Получаем объект для обмена данными с сервером:
+        dataExchange = DataExchange.getInstance(this, "");
+        //dataExchange.initDataExchange(this, "");
 
         // Загружаем категории тестов с сервера:
         onClickGetCategories();

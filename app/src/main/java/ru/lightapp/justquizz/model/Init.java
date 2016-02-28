@@ -76,8 +76,8 @@ public class Init extends Thread {
 
         System.out.println(" --- запустили поток...");
 
-        DataExchange dataExchange = DataExchange.getInstance();
-        dataExchange.initDataExchange(context, selectedTest);
+        DataExchange dataExchange = DataExchange.getInstance(context, selectedTest);
+        //dataExchange.initDataExchange(context, selectedTest);
 
         /**
         * Формируем и сохраняем полный путь к файлу с тестом:

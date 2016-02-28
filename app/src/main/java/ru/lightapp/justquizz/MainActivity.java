@@ -53,8 +53,8 @@ public class MainActivity extends ActionBarActivity {
        * Инициализируем его.
        * Получаем массив доступных тестов:
        */
-        DataExchange dataExchange = DataExchange.getInstance();
-        dataExchange.initDataExchange(this, "");
+        DataExchange dataExchange = DataExchange.getInstance(this, "");
+        //dataExchange.initDataExchange(this, "");
         testTitles = dataExchange.getTestTitles();
 
 

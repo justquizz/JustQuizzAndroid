@@ -1,10 +1,8 @@
 package ru.lightapp.justquizz.dataexchange;
 
 import android.content.Context;
-
 import java.util.ArrayList;
-
-import ru.lightapp.justquizz.db.DBManager;
+import ru.lightapp.justquizz.db.*;
 
 /**
  * Created by eugen on 02.11.2015.
@@ -28,25 +26,25 @@ public class DataExchange {
     /*
     * Объект для работы с файлами:
     */
-    private FileManager fileManager;
+    static private FileManager fileManager;
 
     /*
     * Объект для работы с базой данных,
     * и Context для нее:
     */
-    private DBManager db;
-    Context context;
+    static private DBManager db;
+    //static Context context;
 
     /**
      * Объект для работы с внешним сервером:
      */
-    ServerManager server;
+    static ServerManager server;
 
 
-    /**
-     * Путь к файлу с текущим тестом:
-     */
-    String pathToFile;
+    /*
+    * Путь к файлу с текущим тестом:
+    */
+    //static String pathToFile;
 
 
 
@@ -63,8 +61,11 @@ public class DataExchange {
 
     /*
     * Реализация Singleton c двойной блокировкой:
+    *
+    * - context     - нужен для работы с БД, обычно передается просто 'this';
+    * - pathToFile  - полный путь к файлу с тестом. Если не известен, то передаем 'null'.
     */
-    public static DataExchange getInstance(){
+    public static DataExchange getInstance(Context context, String pathToFile){
         if(instance == null){
             synchronized (DataExchange.class) {
                 if(instance == null){
@@ -73,6 +74,10 @@ public class DataExchange {
                 }
             }
         }
+
+        // инициализируем dataExchange перед отдачей:
+        initDataExchange(context, pathToFile);
+
         System.out.println(" --- отдаем объект DataExchange");
         return instance;
     }
@@ -81,25 +86,23 @@ public class DataExchange {
     /**
      * Метод инициализации объекта
      */
-    public void initDataExchange (Context context, String pathToFile){
+    private static void initDataExchange (Context context, String pathToFile){
 
-        if(context != null)
-            this.context = context;
+        //DataExchange.context = context;
 
-        if(pathToFile != null)
-            this.pathToFile = pathToFile;
+        //DataExchange.pathToFile = pathToFile;
 
         // создаем объект для работы с базой данных:
-        if(db == null)
-            db = new DBManager(context);
+        if(DataExchange.db == null)
+            DataExchange.db = new DBManager(context);
 
-        // оздаем объект для работы с файлами:
-        if(fileManager == null)
-            fileManager = new FileManager(pathToFile);
+        // создаем объект для работы с файлами:
+        if(DataExchange.fileManager == null)
+            DataExchange.fileManager = new FileManager(pathToFile);
 
         // создаем объект для работы с сервером:
-        if(server == null)
-            server = new ServerManager();
+        if(DataExchange.server == null)
+            DataExchange.server = new ServerManager();
 
     }
 

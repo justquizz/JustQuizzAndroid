@@ -23,8 +23,6 @@ import ru.lightapp.justquizz.model.Question;
  *
  * Класс управляет окном с вопросом и вариантами ответа
  *
- * редактируем на работе
- *
  */
 public class TestScreen extends Activity {
 
