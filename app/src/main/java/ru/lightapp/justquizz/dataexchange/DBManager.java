@@ -1,4 +1,4 @@
-package ru.lightapp.justquizz.db;
+package ru.lightapp.justquizz.dataexchange;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -215,6 +215,45 @@ public class DBManager {
         openHelper.close();
         return rowId;
 
+    }
+
+    /*
+    * Получить из БД путь к тест-файлу:
+    */
+    public String getPathToFile() {
+
+        System.out.println(" --- получаем имя файла из БД...  " );
+
+        openHelper = new OpenHelper(this.context);
+
+        // Создадим строку, которую будем возвращать:
+        String pathToFile = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[] {"path_to_file"},
+                "id = ?",
+                new String[]{"1"},
+                null, null, null);
+
+        /*
+        * Если результат запроса существует, то
+        * получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("path_to_file");
+
+            pathToFile = cursor.getString(columnFileName);
+        }
+
+        cursor.close();
+        openHelper.close();
+
+        System.out.println(" --- путь к файл-тесту  из базы данных - " + pathToFile);
+
+        return pathToFile;
     }
 
 

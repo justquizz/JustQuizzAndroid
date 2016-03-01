@@ -51,7 +51,7 @@ public class Question {
 
     public Question(){
 
-        //dataExchange = DataExchange.getInstance(null, "");
+        dataExchange = DataExchange.getInstance(null, "");
 
         /*
         * Получаем общее количество вопросов в тесте

@@ -19,7 +19,7 @@ public class DownloadFile implements Runnable {
     @Override
     public void run() {
 
-        DownloadFromUrl("http://lightapp.ru/pic/pc_config.png", "test1");
+        //DownloadFromUrl("http://lightapp.ru/pic/pc_config.png", "test1");
 
 
     }

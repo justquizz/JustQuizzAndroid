@@ -28,6 +28,11 @@ public class FileManager {
     */
     private  String pathToFile;
 
+    /*
+    * Объект для получения пути к файлу из БД:
+    */
+    private DataExchange dataExchange;
+
 
 
 
@@ -38,9 +43,12 @@ public class FileManager {
     */
     public FileManager(String pathToFile){
 
-    this.pathToFile = pathToFile;
+    //this.pathToFile = pathToFile;
 
+        System.out.println(" --- конструктор FileManager ");
 
+    //dataExchange = DataExchange.getInstance(null, "");
+    this.pathToFile = DataExchange.getPathToFile("");
 
 
 
@@ -124,14 +132,13 @@ public class FileManager {
 
         try {
             //load a properties file
-
             fis = new FileInputStream(nameFile);
             reader = new InputStreamReader(fis, "UTF-8");
-            Properties prop = new Properties();
-            prop.load(reader);
+            Properties propertyFile = new Properties();
+            propertyFile.load(reader);
 
             // get item from file
-            item = prop.getProperty(nameItem);
+            item = propertyFile.getProperty(nameItem);
 
             fis.close();
             reader.close();

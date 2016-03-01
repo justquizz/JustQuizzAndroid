@@ -83,6 +83,15 @@ public class DataExchange {
     }
 
 
+    /*
+    * Метод получения имени файл-теста из БД:
+    */
+    public static String getPathToFile(String pathToFile){
+
+        return db.getPathToFile();
+    }
+
+
     /**
      * Метод инициализации объекта
      */
@@ -138,7 +147,7 @@ public class DataExchange {
         return fileManager.getTrueAnswer(numberOfQuestion);
     }
 
-    /**
+    /*
      * Получить содержание варианта ответа определенного опроса,
      * метод получает на вход номер вопроса и номер варианта ответа.
      */
@@ -161,7 +170,14 @@ public class DataExchange {
     */
     public void setPathToFile(String selectedTest){
         db.createPathToFile(selectedTest);
+    }
 
+    /*
+    * Получить из БД путь к тест-файлу:
+    */
+    public String getPathToFile() {
+
+        return db.getPathToFile();
     }
 
     /*
