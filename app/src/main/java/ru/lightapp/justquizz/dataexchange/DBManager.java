@@ -11,28 +11,58 @@ import java.util.ArrayList;
 
 /**
  * Created by eugen on 02.08.2015.
- *
- * TODO Singleton;
- *
+ * -
  *
  */
 public class DBManager {
 
+    /*
+    * Единственный экземпляр класса
+    */
+    private static DBManager instance;
+
+    /*
+    * Имя БД и ее версия:
+    */
     private static final String DATABASE_NAME = "jqzz5.db";
     private static final int DATABASE_VERSION = 1;
 
+    /*
+    * Названия таблиц с тестами и с глобальными переменными:
+    */
     private static final String TEST_TABLE = "tests";
     private static final String GLOBAL_STRINGS = "global_strings";
 
     private Context context;
     private SQLiteDatabase db;
 
-    //private static final String INSERT = "insert into " + TEST_TABLE + " (test_name) values (?)";
     private SQLiteStatement insertStmt;
 
     OpenHelper openHelper;
 
-    public DBManager(Context context){
+
+    /*
+    * Реализация Singleton c двойной блокировкой:
+    * - context     - нужен для работы с БД, обычно передается просто 'this';
+    */
+    public static DBManager getInstance(Context context){
+        if(instance == null){
+            synchronized (DBManager.class) {
+                if(instance == null){
+                    instance = new DBManager(context);
+                    System.out.println(" --- делаем объект DBManager");
+                }
+            }
+        }
+        System.out.println(" --- отдаем объект DBManager");
+        return instance;
+    }
+
+
+    /*
+    * Скрывем конструктор:
+    */
+    private DBManager(Context context){
 
         this.context = context;
 

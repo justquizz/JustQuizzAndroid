@@ -11,8 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.R;
+import ru.lightapp.justquizz.dataexchange.DBManager;
 import ru.lightapp.justquizz.dataexchange.DataExchange;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
+import ru.lightapp.justquizz.dataexchange.ServerManager;
 
 
 /**
@@ -41,12 +43,12 @@ public class LoaderTestFromServer extends Activity {
     /*
     * Массив с тестами полученными от сервера:
     */
-    ArrayList[] tests;
+    private ArrayList[] tests;
 
     /*
     * Номер выбранного теста в массиве:
     */
-    int numberOfTest;
+    private int numberOfTest;
 
     /*
     * Сформированные поля выбранного теста для загрузки:
@@ -65,10 +67,12 @@ public class LoaderTestFromServer extends Activity {
     /*
     * Объект для обмена данными:
     */
-    DataExchange dataExchange;
+    //DataExchange dataExchange;
+    private ServerManager server;
+    private DBManager db;
 
     // Элемент UI:
-    Toast toast;
+    private Toast toast;
 
 
     /*
@@ -99,7 +103,8 @@ public class LoaderTestFromServer extends Activity {
         listTests.setVisibility(View.GONE);
 
         // Получаем объект для обмена данными с сервером:
-        dataExchange = DataExchange.getInstance(this, "");
+        server = ServerManager.getInstance();
+        db = DBManager.getInstance(this);
         //dataExchange.initDataExchange(this, "");
 
         // Загружаем категории тестов с сервера:
@@ -117,7 +122,7 @@ public class LoaderTestFromServer extends Activity {
         * Создаем объект для работы с сервером,
         * который и получит для нас массив с названиями категорий и их описанием
         */
-        ArrayList[] categories = dataExchange.getCategories();
+        ArrayList[] categories = server.getCategories();
 
 
         /*
@@ -158,7 +163,7 @@ public class LoaderTestFromServer extends Activity {
                             info.setText(descriptionCategories.get(position));
                             TextView textView = (TextView) itemClicked;
                             selectedCategory = (String) textView.getText();
-                            tests = dataExchange.getTestsByCategory(idCategory.get(position));
+                            tests = server.getTestsByCategory(idCategory.get(position));
                             ArrayList<String> titleTests = tests[0];
 
                         /*
@@ -281,7 +286,7 @@ public class LoaderTestFromServer extends Activity {
         /*
         * Заносим новый тест в базу:
         */
-        long num = dataExchange.insertNewTest(currentTestTitle, currentFileName, selectedCategory, currentAuthor, currentLinkAuthor, currentDescription);
+        long num = db.insertNewTest(currentTestTitle, currentFileName, selectedCategory, currentAuthor, currentLinkAuthor, currentDescription);
 
         if(num > 0) {
             toast = Toast.makeText(getApplicationContext(), R.string.toast_download_success, Toast.LENGTH_SHORT);

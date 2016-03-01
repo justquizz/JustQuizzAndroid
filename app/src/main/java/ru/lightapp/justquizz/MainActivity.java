@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.controller.*;
-import ru.lightapp.justquizz.dataexchange.DataExchange;
+import ru.lightapp.justquizz.dataexchange.*;
 import ru.lightapp.justquizz.model.*;
 
 
@@ -38,9 +38,10 @@ public class MainActivity extends ActionBarActivity {
     private String selectedTest;
 
     /*
-    * Обект для работы с данными
+    * Обект для работы с базой данных:
     */
-    DataExchange dataExchange;
+    //DataExchange dataExchange;
+    DBManager db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +59,10 @@ public class MainActivity extends ActionBarActivity {
     */
     private void showTestTitles(){
        /*
-       * Создаем объект занимающийся работой с данными.
-       * Инициализируем его.
-       * Получаем массив доступных тестов:
+       * Создаем объект занимающийся работой с данными. Получаем массив доступных тестов:
        */
-        dataExchange = DataExchange.getInstance(this, "");
-        //dataExchange.initDataExchange(this, "");
-        testTitles = dataExchange.getTestTitles();
-
+        db = DBManager.getInstance(this);
+        testTitles = db.getTestTitles();
 
         if(!testTitles.isEmpty())  {
 
@@ -98,14 +95,15 @@ public class MainActivity extends ActionBarActivity {
          // Если загружен список тестов, то:
         if(!testTitles.isEmpty()) {
 
-            // Проверка - выбрал ли пользователь один из тестов
+            /*
+            * Проверка - выбрал ли пользователь один из тестов:
+            */
             if (selectedTest != null) {
-
-                // Инициализируем программу выбранным тестом:
-                // В конструктор передаем Context и выбранный тест:
-                dataExchange.setPathToFile(selectedTest);
-                //Init.initialize(this, selectedTest);
-
+                /*
+                * Записываем путь к файлу в БД,
+                * и вызываем экран с тестом:
+                */
+                db.createPathToFile(selectedTest);
                 Intent intent = new Intent(MainActivity.this, TestScreen.class);
                 startActivity(intent);
             } else {

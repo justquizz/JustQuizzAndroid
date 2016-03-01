@@ -2,7 +2,6 @@ package ru.lightapp.justquizz.dataexchange;
 
 import android.content.Context;
 import java.util.ArrayList;
-import ru.lightapp.justquizz.db.*;
 
 /**
  * Created by eugen on 02.11.2015.
@@ -103,15 +102,15 @@ public class DataExchange {
 
         // создаем объект для работы с базой данных:
         if(DataExchange.db == null)
-            DataExchange.db = new DBManager(context);
+            //DataExchange.db = new DBManager(context);
 
         // создаем объект для работы с файлами:
         if(DataExchange.fileManager == null)
             DataExchange.fileManager = new FileManager(pathToFile);
 
         // создаем объект для работы с сервером:
-        if(DataExchange.server == null)
-            DataExchange.server = new ServerManager();
+        //if(DataExchange.server == null)
+            //DataExchange.server = new ServerManager();
 
     }
 

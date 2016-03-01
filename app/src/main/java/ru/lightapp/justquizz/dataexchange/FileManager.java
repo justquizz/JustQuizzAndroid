@@ -9,7 +9,6 @@ import java.io.Reader;
 import java.util.Properties;
 
 import ru.lightapp.justquizz.R;
-import ru.lightapp.justquizz.db.DBManager;
 import ru.lightapp.justquizz.model.PropertyItemGetter;
 
 /**

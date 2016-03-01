@@ -8,13 +8,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -26,9 +24,43 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 public class ServerManager {
 
+    /*
+    * Единственный экземпляр класса:
+    */
+    private static ServerManager instance;
+
+
+
     private String urlGetCategories = "http://lightapp.ru/justquizz/api.php?void=get_categories";
     private String templateUrlGetTestsByCategory = "http://lightapp.ru/justquizz/api.php?void=get_tests_by_category&category=";
     private String urlGetTestsByCategory;
+
+
+    /*
+    * Скрываем конструктор
+    * Возвращаем instance:
+    */
+    private  ServerManager(){
+
+    }
+
+    public static ServerManager getInstance(){
+        if(instance == null){
+            synchronized (ServerManager.class) {
+                if(instance == null){
+                    instance = new ServerManager();
+                    System.out.println(" --- делаем объект ServerManager");
+                }
+            }
+        }
+        System.out.println(" --- отдаем объект ServerManager");
+        return instance;
+    }
+
+
+
+
+
 
     public ArrayList[] getCategories(){
         //System.out.println(" --- start xml");
