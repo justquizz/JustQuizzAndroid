@@ -16,7 +16,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.controller.*;
 import ru.lightapp.justquizz.dataexchange.*;
-import ru.lightapp.justquizz.model.*;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -40,7 +39,6 @@ public class MainActivity extends ActionBarActivity {
     /*
     * Обект для работы с базой данных:
     */
-    //DataExchange dataExchange;
     DBManager db;
 
     @Override

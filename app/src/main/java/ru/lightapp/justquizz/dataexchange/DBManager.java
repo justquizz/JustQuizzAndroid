@@ -36,7 +36,7 @@ public class DBManager {
     private Context context;
     private SQLiteDatabase db;
 
-    private SQLiteStatement insertStmt;
+    //private SQLiteStatement insertStmt;
 
     OpenHelper openHelper;
 
@@ -109,7 +109,7 @@ public class DBManager {
     */
     public ArrayList<String> getTestTitles() {
 
-        openHelper = new OpenHelper(this.context);
+        //openHelper = new OpenHelper(this.context);
 
         // Создадим массив, который будем возвращать:
         ArrayList<String> list = new ArrayList<>();
@@ -133,7 +133,7 @@ public class DBManager {
         }
 
         cursor.close();
-        openHelper.close();
+        //openHelper.close();
         return list;
     }
 
@@ -145,9 +145,29 @@ public class DBManager {
     */
     public void createPathToFile(String selectedTest) {
 
-        String pathToFileTest = getDirectoryMD5() + getFileName(selectedTest) + getFileExtension();
-        System.out.println(" --- имя файла " + pathToFileTest);
-        insertPathToFileInDataBase(pathToFileTest);
+        String pathToFileWithTest = getDirectoryMD5() + getFileName(selectedTest) + getFileExtension();
+        System.out.println(" --- имя файла " + pathToFileWithTest);
+        //insertPathToFileInDataBase(pathToFileTest);
+
+        openHelper = new OpenHelper(this.context);
+
+        System.out.println(" --- пишем путь к файлу - " + pathToFileWithTest);
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("path_to_file", pathToFileWithTest);
+
+        int rowId = db.update(GLOBAL_STRINGS,
+                contentValues,
+                "id = ?",
+                new String[]{"1"});
+
+        System.out.println(" --- записали путь к файлу " + rowId);
+
+        openHelper.close();
+        //return rowId;
 
     }
 
@@ -172,6 +192,8 @@ public class DBManager {
         }
 
         System.out.println(" --- directory_md5 " + directory_md5);
+
+        cursor.close();
         return directory_md5;
     }
 
@@ -222,30 +244,13 @@ public class DBManager {
 
     /*
     * Метод вставляет в таблицу глобальных перменных путь к тесту-файлу
-    */
+
     private long insertPathToFileInDataBase(String pathToFileWithTest) {
 
-        openHelper = new OpenHelper(this.context);
 
-        System.out.println(" --- пишем путь к файлу - " + pathToFileWithTest);
-
-        /*
-        * Создаем объект для наших данных и наполняем его:
-        */
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("path_to_file", pathToFileWithTest);
-
-        int rowId = db.update(GLOBAL_STRINGS,
-                contentValues,
-                "id = ?",
-                new String[]{"1"});
-
-        System.out.println(" --- записали путь к файлу " + rowId);
-
-        openHelper.close();
-        return rowId;
 
     }
+    */
 
     /*
     * Получить из БД путь к тест-файлу:

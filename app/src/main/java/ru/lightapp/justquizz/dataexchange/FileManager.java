@@ -17,10 +17,16 @@ import ru.lightapp.justquizz.model.PropertyItemGetter;
  * Класс предназначен для работы с файловой системой.
  * Предоставяет интерфейс обращения к файлам.
  *
- * Был Singleton. Изменил.
+ * Singleton
  *
  */
 public class FileManager {
+
+    /*
+    * Единственный экземпляр данного класса
+    */
+    private static FileManager instance;
+
 
     /*
     * Путь к файлу текущего теста:
@@ -30,52 +36,52 @@ public class FileManager {
     /*
     * Объект для получения пути к файлу из БД:
     */
-    private DataExchange dataExchange;
+    //private DataExchange dataExchange;
+    private DBManager db;
 
+    /*
+    * Реализация Singleton c двойной блокировкой:
+    */
+    public static FileManager getInstance(){
+        if(instance == null){
+            synchronized (FileManager.class) {
+                if(instance == null){
+                    System.out.println(" --- делаем объект FileManager");
+                    instance = new FileManager();
+                }
+            }
+        }
+        System.out.println(" --- отдаем объект FileManager");
+        return instance;
+    }
 
 
 
     /*
     * Инициализируем основные переменные:
     * - путь к текущему тесту,
-    *
     */
-    public FileManager(String pathToFile){
+    private FileManager(){
+        System.out.println(" --- конструктор FileManager start ");
+        db = DBManager.getInstance(null);
 
-    //this.pathToFile = pathToFile;
+        /*
+        * Формируем путь к файлу:
+        * [путь_к_файловой_системе]/[directory_MD5]/[имя_тест-файла].jqzz
+        */
+        String absolutePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        this.pathToFile = absolutePath + db.getPathToFile();
 
-        System.out.println(" --- конструктор FileManager ");
+        System.out.println(" --- " + this.pathToFile);
 
-    //dataExchange = DataExchange.getInstance(null, "");
-    this.pathToFile = DataExchange.getPathToFile("");
-
-
-
-
+        System.out.println(" --- конструктор FileManager end");
 
     }
 
-    /* Ранее этот класс был Singleton, изменил.
-    * Реализация Singleton c двойной блокировкой:
-
-    public static FileManager getInstance(){
-        if(instance == null){
-            synchronized (FileManager.class) {
-                if(instance == null){
-                    instance = new FileManager();
-                }
-            }
-        }
-        return instance;
-    }   */
-
-
+    ///////////////////////////////////////////////////////
     /*
     * GETTERS:
     */
-
-
-
 
 
     /*

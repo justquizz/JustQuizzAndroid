@@ -12,7 +12,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
-import ru.lightapp.justquizz.dataexchange.DataExchange;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
 
@@ -67,7 +66,6 @@ public class LoaderTestFromServer extends Activity {
     /*
     * Объект для обмена данными:
     */
-    //DataExchange dataExchange;
     private ServerManager server;
     private DBManager db;
 

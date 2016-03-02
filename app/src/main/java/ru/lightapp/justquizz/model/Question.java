@@ -1,6 +1,7 @@
 package ru.lightapp.justquizz.model;
 
 import ru.lightapp.justquizz.dataexchange.DataExchange;
+import ru.lightapp.justquizz.dataexchange.FileManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,22 +44,27 @@ public class Question {
     private String[] arrayAnswers;
 
     /**
-     * Объект для получения и передачи данных:
+     * Объект для работы с тест-файлом:
      */
-    private DataExchange dataExchange;
-
+    //private DataExchange dataExchange;
+    private FileManager fileManager;
 
 
     public Question(){
 
-        dataExchange = DataExchange.getInstance(null, "");
+        //dataExchange = DataExchange.getInstance(null, "");
+
+        fileManager = FileManager.getInstance();
 
         /*
         * Получаем общее количество вопросов в тесте
         * и создаем массив для хранения вариантов ответов:
         */
-        quantityAnswers = dataExchange.getQuantityAnswers();
+        //quantityAnswers = dataExchange.getQuantityAnswers();
+        quantityAnswers = fileManager.getQuantityAnswers();
+
         arrayAnswers = new String[quantityAnswers + 1];
+
 
 
 
@@ -76,13 +82,13 @@ public class Question {
 
         numberOfQuestion++;
 
-        titleQuestion = dataExchange.getQuestion(numberOfQuestion);
+        titleQuestion = fileManager.getQuestion(numberOfQuestion);
 
-        trueAnswer = dataExchange.getTrueAnswer(numberOfQuestion);
+        trueAnswer = fileManager.getTrueAnswer(numberOfQuestion);
 
         // Собираем массив с вариантами ответов
         for(int i = 1; i <= quantityAnswers; i++){
-            arrayAnswers[i] = dataExchange.getAnswer(numberOfQuestion, i);
+            arrayAnswers[i] = fileManager.getAnswer(numberOfQuestion, i);
             System.out.println(i + " --- " + arrayAnswers[i]);
         }
     }
@@ -94,13 +100,13 @@ public class Question {
 
         numberOfQuestion--;
 
-        titleQuestion = dataExchange.getQuestion(numberOfQuestion);
+        titleQuestion = fileManager.getQuestion(numberOfQuestion);
 
-        trueAnswer = dataExchange.getTrueAnswer(numberOfQuestion);
+        trueAnswer = fileManager.getTrueAnswer(numberOfQuestion);
 
         // Собираем массив с вариантами ответов
         for(int i = 1; i <= quantityAnswers; i++){
-            arrayAnswers[i] = dataExchange.getAnswer(numberOfQuestion, i);
+            arrayAnswers[i] = fileManager.getAnswer(numberOfQuestion, i);
             System.out.println(i + " --- " + arrayAnswers[i]);
         }
     }

@@ -101,12 +101,12 @@ public class DataExchange {
         //DataExchange.pathToFile = pathToFile;
 
         // создаем объект для работы с базой данных:
-        if(DataExchange.db == null)
+        //if(DataExchange.db == null)
             //DataExchange.db = new DBManager(context);
 
         // создаем объект для работы с файлами:
-        if(DataExchange.fileManager == null)
-            DataExchange.fileManager = new FileManager(pathToFile);
+        //if(DataExchange.fileManager == null)
+            //DataExchange.fileManager = new FileManager(pathToFile);
 
         // создаем объект для работы с сервером:
         //if(DataExchange.server == null)
