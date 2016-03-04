@@ -87,7 +87,7 @@ public class LoaderTestFromServer extends Activity {
         setContentView(R.layout.loader_test_from_server);
 
         button_back = (Button) findViewById(R.id.button_back);
-        button_back.setVisibility(View.INVISIBLE);
+        //button_back.setVisibility(View.INVISIBLE);
 
         button_download = (Button) findViewById(R.id.button_download);
         button_download.setVisibility(View.INVISIBLE);
@@ -201,10 +201,6 @@ public class LoaderTestFromServer extends Activity {
 
                             numberOfTest = position;
 
-                            //System.out.println( " --- numberOfTest" + numberOfTest);
-
-                            //ArrayList<String> fileNameArray = tests[1];
-                            //currentFileName = fileNameArray.get(numberOfTest);
 
                             currentTestTitle = (String) tests[0].get(numberOfTest);
                             currentFileName = (String) tests[1].get(numberOfTest);
@@ -212,18 +208,6 @@ public class LoaderTestFromServer extends Activity {
                             //currentAuthor = (String) tests[4].get(numberOfTest);
                             currentAuthor = "Jack";
                             currentLinkAuthor = "http://lightapp.ru/justquizz/people/id7";
-
-
-                            /*
-                            ArrayList arrayList;
-
-                            for(int i = 0; i < tests.length-2; i++){
-
-                                arrayList = tests[i];
-                                System.out.println(" --- " + " " + arrayList.get(numberOfTest));
-
-                            }
-                            */
 
                         }
                     });
@@ -245,13 +229,18 @@ public class LoaderTestFromServer extends Activity {
     * - скрывает список с доступными тестами,
     * - показывает список с категориями,
     * - деактивизирует кнопку НАЗАД,
+    * - скрывает кнопку ЗАГРУЗИТЬ,
     * - выводит сообщение о необходимости выбора категории.
     */
     public void onClickButtonBack(View view) {
 
+        if(listCategories.getVisibility() == View.VISIBLE)
+            this.finish();
+
         listTests.setVisibility(View.GONE);
+        //button_back.setVisibility(View.INVISIBLE);
         listCategories.setVisibility(View.VISIBLE);
-        button_back.setVisibility(View.INVISIBLE);
+        button_download.setVisibility(View.INVISIBLE);
         info.setText(R.string.choice_category);
     }
 

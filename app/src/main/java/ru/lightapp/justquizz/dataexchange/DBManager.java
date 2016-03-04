@@ -24,7 +24,7 @@ public class DBManager {
     /*
     * Имя БД и ее версия:
     */
-    private static final String DATABASE_NAME = "jqzz5.db";
+    private static final String DATABASE_NAME = "jqzz6.db";
     private static final int DATABASE_VERSION = 1;
 
     /*
@@ -116,7 +116,7 @@ public class DBManager {
 
         // Делаем запрос в базу данных:
         Cursor  cursor = this.db.query(TEST_TABLE,
-                new String[] {"title_test"},
+                new String[]{"title_test"},
                 null, null, null, null, null);
 
         /*
@@ -147,7 +147,6 @@ public class DBManager {
 
         String pathToFileWithTest = getDirectoryMD5() + getFileName(selectedTest) + getFileExtension();
         System.out.println(" --- имя файла " + pathToFileWithTest);
-        //insertPathToFileInDataBase(pathToFileTest);
 
         openHelper = new OpenHelper(this.context);
 
@@ -179,7 +178,7 @@ public class DBManager {
         String directory_md5 = "";
 
         // Делаем запрос в БД:
-        Cursor cursor = db.rawQuery("select directory_md5 from " + GLOBAL_STRINGS + " where id = ?", new String[] { "1" });
+        Cursor cursor = db.rawQuery("select directory_md5 from " + GLOBAL_STRINGS + " where id = ?", new String[]{"1"});
 
         /*
         * Если результат запроса существует, то
@@ -210,7 +209,7 @@ public class DBManager {
 
         // Делаем запрос в базу данных:
         Cursor  cursor = this.db.query(TEST_TABLE,
-                new String[] {"file_name"},
+                new String[]{"file_name"},
                 "title_test = ?",
                 new String[]{selectedTest},
                 null, null, null);
@@ -242,15 +241,6 @@ public class DBManager {
         return ".jqzz";
     }
 
-    /*
-    * Метод вставляет в таблицу глобальных перменных путь к тесту-файлу
-
-    private long insertPathToFileInDataBase(String pathToFileWithTest) {
-
-
-
-    }
-    */
 
     /*
     * Получить из БД путь к тест-файлу:
@@ -292,6 +282,73 @@ public class DBManager {
     }
 
 
+    /*
+    * Метод записывает в таблицу глобальных переменных строку с результатами теста:
+    */
+    public void saveTestResult(String result) {
+
+        openHelper = new OpenHelper(this.context);
+
+        System.out.println(" --- пишем результат теста");
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("test_result", result);
+
+        int rowId = db.update(GLOBAL_STRINGS,
+                contentValues,
+                "id = ?",
+                new String[]{"1"});
+
+        System.out.println(" --- записали путь к файлу " + rowId);
+
+        openHelper.close();
+
+    }
+
+    /*
+    * Получить из БД стрку с результатом теста:
+    */
+    public String getSavedResult() {
+
+        System.out.println(" --- получаем строку с результатом теста из БД..." );
+
+        openHelper = new OpenHelper(this.context);
+
+        // Создадим строку, которую будем возвращать:
+        String savedResult = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[] {"test_result"},
+                "id = ?",
+                new String[]{"1"},
+                null, null, null);
+
+        /*
+        * Если результат запроса существует, то
+        * получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("test_result");
+
+            savedResult = cursor.getString(columnFileName);
+        }
+
+        cursor.close();
+        openHelper.close();
+
+        System.out.println(" --- строка с результатом теста из БД получена");
+
+        return savedResult;
+
+    }
+
+
     private  static class OpenHelper extends SQLiteOpenHelper {
 
         public OpenHelper(Context context) {
@@ -322,7 +379,8 @@ public class DBManager {
                     "file_name TEXT, " +
                     "path_to_file TEXT, " +
                     "directory_md5 TEXT, " +
-                    "file_extension TEXT)");
+                    "file_extension TEXT, " +
+                    "test_result TEXT )");
 
             /*
             * Создаем объект для наших данных и наполняем его:
@@ -333,6 +391,7 @@ public class DBManager {
             contentValues.put("path_to_file", "");
             contentValues.put("directory_md5", "/justquizz/tests/");
             contentValues.put("file_extension", ".jqzz");
+            contentValues.put("test_result", "");
 
 
             // вставляем запись и получаем ее ID:

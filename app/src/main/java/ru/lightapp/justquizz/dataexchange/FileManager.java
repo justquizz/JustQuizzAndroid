@@ -1,15 +1,11 @@
 package ru.lightapp.justquizz.dataexchange;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
-
-import ru.lightapp.justquizz.R;
-import ru.lightapp.justquizz.model.PropertyItemGetter;
 
 /**
  * Created by eugen on 20.10.2015.
@@ -31,13 +27,8 @@ public class FileManager {
     /*
     * Путь к файлу текущего теста:
     */
-    private  String pathToFile;
+    private static String pathToFile;
 
-    /*
-    * Объект для получения пути к файлу из БД:
-    */
-    //private DataExchange dataExchange;
-    private DBManager db;
 
     /*
     * Реализация Singleton c двойной блокировкой:
@@ -51,10 +42,26 @@ public class FileManager {
                 }
             }
         }
+
+        initPathToFile();
         System.out.println(" --- отдаем объект FileManager");
         return instance;
     }
 
+    private static void initPathToFile() {
+
+        /*
+        * Объект для получения пути к файлу из БД:
+        */
+        DBManager db = DBManager.getInstance(null);
+
+        /*
+        * Формируем путь к файлу:
+        * [путь_к_файловой_системе]/[directory_MD5]/[имя_тест-файла].jqzz
+        */
+        String absolutePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        FileManager.pathToFile = absolutePath + db.getPathToFile();
+    }
 
 
     /*
@@ -63,16 +70,20 @@ public class FileManager {
     */
     private FileManager(){
         System.out.println(" --- конструктор FileManager start ");
-        db = DBManager.getInstance(null);
+
+        /*
+        * Объект для получения пути к файлу из БД:
+        */
+        //DBManager db = DBManager.getInstance(null);
 
         /*
         * Формируем путь к файлу:
         * [путь_к_файловой_системе]/[directory_MD5]/[имя_тест-файла].jqzz
         */
-        String absolutePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
-        this.pathToFile = absolutePath + db.getPathToFile();
+        //String absolutePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        //this.pathToFile = absolutePath + db.initPathToFile();
 
-        System.out.println(" --- " + this.pathToFile);
+        System.out.println(" --- полный путь к файлу - " + this.pathToFile);
 
         System.out.println(" --- конструктор FileManager end");
 
@@ -93,11 +104,19 @@ public class FileManager {
     }
 
     /*
-    * Получаем количество вопросов в тесте:
+    * Получаем количество ответов в тесте:
     */
     public int getQuantityAnswers(){
 
         return Integer.parseInt(getDataFromTest("qtyAnswers", pathToFile));
+    }
+
+    /*
+    * Получаем количество вопросов в тесте:
+    */
+    public int getQuantityQuestions() {
+
+        return Integer.parseInt(getDataFromTest("qtyQuestions", pathToFile));
     }
 
     /**

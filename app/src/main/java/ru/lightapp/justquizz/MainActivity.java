@@ -172,7 +172,6 @@ public class MainActivity extends ActionBarActivity {
     private void startDownloadActivity() {
 
         Intent intent = new Intent(MainActivity.this, LoaderTestFromServer.class);
-        //startActivity(intent);
         startActivityForResult(intent, 1);
     }
 }

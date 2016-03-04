@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import android.os.Handler;
 import android.os.Message;
 import ru.lightapp.justquizz.R;
-import ru.lightapp.justquizz.model.AnswerOfUser;
-import ru.lightapp.justquizz.model.Init;
+import ru.lightapp.justquizz.dataexchange.DBManager;
+import ru.lightapp.justquizz.model.Answer;
+import ru.lightapp.justquizz.model.ArrayUsersAnswer;
 import ru.lightapp.justquizz.model.Question;
 
 
@@ -26,12 +27,16 @@ import ru.lightapp.justquizz.model.Question;
  */
 public class TestScreen extends Activity {
 
-    private Question question;      // экземпляр класса сдержит информацию о текущем вопросе
-
+    /*
+    * Элементы экрана:
+    */
     private TextView nameQuestion;  // Поле с текстом вопроса
     private TextView timer;         // Поле, в котором тикают секунды и считают время ответа юзера
     private Button button_next;     // Кнопка "Ответить/Далее"
+
+    private Question question;      // экземпляр класса сдержит информацию о текущем вопросе
     private ArrayList<CheckBox> checkBoxes = new ArrayList<>(4); // Масссив содержачий все checkbox
+
 
     // Флаг "Был ли обработан ответ юзера" (нажата кнопка "Ответить")
     private boolean isUserReply = false;
@@ -53,6 +58,11 @@ public class TestScreen extends Activity {
     };
 
 
+    /*
+    * Объект, содержащий все ответы и информацию о тесте:
+    */
+    private  ArrayUsersAnswer arrayUsersAnswer = new ArrayUsersAnswer();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +74,9 @@ public class TestScreen extends Activity {
         question = new Question();
 
 
-        // Описываем элементы на экране:
+        /*
+        * Описываем элементы на экране:
+        */
         nameQuestion = (TextView) findViewById(R.id.nameQuestion);
         timer = (TextView) findViewById(R.id.timer);
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
@@ -110,7 +122,6 @@ public class TestScreen extends Activity {
             *   т.е. юзер еще не дал ответ на вопрос:
             */
 
-            //System.out.println(" --- pressed Reply");
 
             /*
             * Делаем проверку, выбрал ли пользователь какой-либо вариант ответа:
@@ -126,7 +137,7 @@ public class TestScreen extends Activity {
             if(isChecked) {
 
                 // Создаем объект, который будет содержать всю информацию об ответе юзера:
-                AnswerOfUser answerOfUser = new AnswerOfUser();
+                Answer answer = new Answer();
 
                 /*
                 * Работаем со временем:
@@ -136,14 +147,13 @@ public class TestScreen extends Activity {
                 * - обнуляем счетчик;
                 */
                 clock.stopClock();
-                answerOfUser.setTime(clock.getTime());
-                timer.setText(answerOfUser.getTime());
+                answer.setTime(clock.getTime());
+                timer.setText(answer.getTime());
                 clock.resetClock();
 
 
                 // Сохраняем номер вопроса:
-                answerOfUser.setNumberOfQuestion(question.getNumberOfQuestion());
-
+                answer.setNumberOfQuestion(question.getNumberOfQuestion());
 
 
                 // устанавливаем флажок, что юзер дал верный ответ:
@@ -161,35 +171,35 @@ public class TestScreen extends Activity {
 
                         // Если ответ правильный отмечаем "true", (цвет фона меняем позже):
                         if (i == question.getTrueAnswer() - 1) {
-                            answerOfUser.checked[i] = true;
+                            answer.checked[i] = true;
                         }
 
                         // Если ответ неправильный выделяем его, отмечаем "false" и сбрасываем флаг правильного ответа:
                         if (i != question.getTrueAnswer() - 1) {
                             checkBoxes.get(i).setBackgroundColor(getResources().getColor(R.color.background_wrong_answer));
-                            answerOfUser.checked[i] = false;
+                            answer.checked[i] = false;
                             rightAnswer = false;
                         }
                     }
                 }
 
                 /*
-                * Если юзер дал верный ответ, то инкрементируем кол-во правильных ответов @Init
+                * Если юзер дал верный ответ, то инкрементируем кол-во правильных ответов @ArrayUsersAnswer
                 * и помечаем флаг вопроса - true,
                 * иначе - инкрементируем кол-во непраправильных:
                 */
                 if(rightAnswer) {
-                    Init.incrementRightUserAnswer();
-                    answerOfUser.setRightUserAnswer();
+                    arrayUsersAnswer.incrementRightUserAnswer();
+                    answer.setRightUserAnswer();
                 }
                 else
-                    Init.incrementFalseUserAnswer();
+                    arrayUsersAnswer.incrementFalseUserAnswer();
 
 
                 // Выделяем правильный вариант:
                 checkBoxes.get(question.getTrueAnswer() - 1).setBackgroundColor(getResources().getColor(R.color.background_right_answer));
                 // Кладем ответ пользователя в массив:
-                Init.putAnswerOfUser(answerOfUser);
+                arrayUsersAnswer.addAnswerOfUser(answer);
                 // устанавливаем флажок, что ответ юзера был обработан
                 isUserReply = true;
                 // Меняем надпись на кнопке
@@ -208,10 +218,17 @@ public class TestScreen extends Activity {
             /*
             *    Обрабатываем нажатие "Далее"
             */
-            //System.out.println(" --- pressed Next");
 
-                // если это последний вопрос теста, то открываем окно с результатами:
-            if(question.getNumberOfQuestion() >= Init.getQtyQuestions()){
+
+            /*
+            * Если это последний вопрос теста, то
+            * - записываем результат в БД;
+            * - открываем окно с результатами.
+            */
+            if(question.getNumberOfQuestion() >= question.getQuantityQuestions()){
+
+                saveTestResult();
+
                 Intent intent = new Intent(TestScreen.this, ShowUserResult.class);
                 startActivity(intent);
             }else {
@@ -225,8 +242,7 @@ public class TestScreen extends Activity {
                 *  - перисовываем экран методом loadNextQuestion();
                 */
 
-
-                if(Init.getSizeAnswerOfUser() > question.getNumberOfQuestion()){
+                if(arrayUsersAnswer.getSizeAnswerOfUser() > question.getNumberOfQuestion()){
 
                     question.nextQuestion();
                     loadSavedUserAnswer();
@@ -247,6 +263,57 @@ public class TestScreen extends Activity {
     }
 
     /*
+    * - получаем строку с результатом теста;
+    * - записываем ее в БД.
+    */
+    private void saveTestResult() {
+
+        String result = buildTheString();
+
+        //Объект для работы с БД:
+        DBManager db = DBManager.getInstance(this);
+        db.saveTestResult(result);
+    }
+
+    /*
+    * Собираем строку для вывода на экран:
+    * - строка содержит номер вопроса и указание "верно" или "не верно";
+     * - общее кол-во правильных и неправильных ответов.
+    */
+    private String buildTheString() {
+
+        StringBuilder stringWithResult = new StringBuilder();
+
+
+        stringWithResult.append(getString(R.string.text_your_result)); // "Ваши результаты: \n"
+        for(Answer oneItem : arrayUsersAnswer.getAnswers()){
+
+
+            stringWithResult.append(getString(R.string.text_number_of_question)); // "Вопрос №"
+            stringWithResult.append(oneItem.getNumberOfQuestion()); // Присоединяем номер вопроса
+            stringWithResult.append(" - ");
+
+            if(oneItem.isRightUserAnswer())
+                stringWithResult.append("верно - " + oneItem.getTime() + ".\n");
+            else
+                stringWithResult.append("не верно - " + oneItem.getTime() + ".\n");
+        }
+
+        stringWithResult.append("\n \n");
+        stringWithResult.append("Правильных ответов - ");
+        stringWithResult.append(arrayUsersAnswer.getQtyTrueAndFalseAnswers()[0]);
+        stringWithResult.append("\n");
+        stringWithResult.append("Неправильных ответов - ");
+        stringWithResult.append(arrayUsersAnswer.getQtyTrueAndFalseAnswers()[1]);
+
+        System.out.println(" --- на экран: " + stringWithResult);
+
+        return stringWithResult.toString();
+
+    }
+
+
+    /*
     *   Обработчик нажатия клавиши "Назад"
     */
     public void onClickPrevious(View view){
@@ -263,7 +330,8 @@ public class TestScreen extends Activity {
             */
             Toast toast = Toast.makeText(getApplicationContext(),
                     R.string.toast_do_u_wanna_finish_test, Toast.LENGTH_SHORT);
-            toast.show();
+            //toast.show();
+            this.finish();
         }else {
 
             /*
@@ -319,13 +387,13 @@ public class TestScreen extends Activity {
     private void loadSavedUserAnswer(){
 
         // Выводим на экран сохраненное время ответа на данный вопрос:
-        String savedTime = Init.getAnswersOfUser().get(question.getNumberOfQuestion() - 1).getTime();
+        String savedTime = arrayUsersAnswer.getAnswers().get(question.getNumberOfQuestion() - 1).getTime();
         timer.setText(savedTime);
         clearCheckBoxAndSetTitleOfQuestion();
 
         /*
         * Проходим в цикле по всем checkbox'ам и заполняеем их информацией,
-        * которая хранится в массиве Init.getAnswersOfUser():
+        * которая хранится в массиве ArrayUsersAnswer.getAnswers():
         * - ставим галочку там, где это необходимо;
         * - делам нужный фон, красный ошибка - зеленый верно;
          */
@@ -335,20 +403,20 @@ public class TestScreen extends Activity {
             checkBoxes.get(i).setText(question.getArrayAnswers()[i + 1]);
 
             // Это не выбранный юзером вариант, его не обрабатываем:
-            if(Init.getAnswersOfUser().get(question.getNumberOfQuestion() - 1).getChecked()[i] == null) {
+            if(arrayUsersAnswer.getAnswers().get(question.getNumberOfQuestion() - 1).getChecked()[i] == null) {
                 continue;
             }
 
             // Правильный ответ юзера - ставим галочку,
             // (цвет фона правильного ответа устанавливается далее):
             // (изменить это место вставив else)
-            if(Init.getAnswersOfUser().get(question.getNumberOfQuestion() - 1).getChecked()[i]) {
+            if(arrayUsersAnswer.getAnswers().get(question.getNumberOfQuestion() - 1).getChecked()[i]) {
                 checkBoxes.get(i).setChecked(true);
                 //checkBoxes.get(i).setBackgroundColor(getResources().getColor(R.color.background_right_answer));
                 continue;
             }
             // Неправильный вариант юзера - ставим галочку и меняем цвет фона
-            if(!Init.getAnswersOfUser().get(question.getNumberOfQuestion() - 1).getChecked()[i]) {
+            if(!arrayUsersAnswer.getAnswers().get(question.getNumberOfQuestion() - 1).getChecked()[i]) {
                 checkBoxes.get(i).setChecked(true);
                 checkBoxes.get(i).setBackgroundColor(getResources().getColor(R.color.background_wrong_answer));
                 //continue;

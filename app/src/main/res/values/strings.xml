@@ -2,14 +2,13 @@
     <string name="app_name">Just Quizz</string>
     <string name="text_greeting">Привет, введи свое имя:</string>
     <string name="text_make_choice">Выбери один из тестов:</string>
-    <string name="button_start_test">Ну что же, начнем тест! \n Нажми меня.</string>
-    <string name="button_start_download">Найти и загрузить тесты с сервера.\n Нажми меня.</string>
+    <string name="button_start_test">Начать тест</string>
+    <string name="button_start_download">Загрузить тесты из интернета</string>
 
 
     <string name="action_settings">Настройки</string>
-    <string name="download_test_from_server">Найти и загрузить тест</string>
+    <string name="download_test_from_server">Загрузить тест из интернета</string>
 
-    <string name="some_text">У лукоморья дуб зелёный</string>
     <string name="about_title">О программе</string>
 
 
@@ -30,12 +29,12 @@
 
 
 
-    <string name="text_your_result"><b>Ваши резульаты:</b> \n \n</string>
+    <string name="text_your_result"><b>Ваши результаты:</b> \n \n</string>
     <string name="text_your_choice"> вариант </string>
 
     <string name="button_download">Загрузить</string>
     <string name="button_back">Назад</string>
-    <string name="toast_download_start">Загрузка...</string>
+    <string name="toast_download_start">Загрузка теста</string>
     <string name="toast_download_success">Загрузка завершена</string>
     <string name="press_key">Для загрузки нажми кнопку</string>
     <string name="choice_category">Выбери категорию:</string>

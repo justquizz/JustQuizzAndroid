@@ -1,6 +1,5 @@
 package ru.lightapp.justquizz.model;
 
-import ru.lightapp.justquizz.dataexchange.DataExchange;
 import ru.lightapp.justquizz.dataexchange.FileManager;
 
 /**
@@ -10,7 +9,8 @@ import ru.lightapp.justquizz.dataexchange.FileManager;
  * Экземпляр данного класса содержит:
  *  - номер текущего вопроса на экране;
  *  - вопрос, его содержание;
- *  -  правильный ответ;
+ *  - правильный ответ;
+ *  - кол-во вариантов ответов в тесте
  *  - массив с вариантами ответов;
  *
  * - метод nextQuestion() меняет состояние объекта, наполняя его новыми данными
@@ -19,19 +19,17 @@ import ru.lightapp.justquizz.dataexchange.FileManager;
 public class Question {
 
     /*
-    * Номер текущего вопроса на экране;
+    * Поля, которые указываеют на элемента активити с TestScreen:
+    * - Номер текущего вопроса на экране;
+    * - Текст вопроса:
+    * - Правильный ответ:
+    * - Массив с вариантами ответов:
     */
     private int numberOfQuestion = 0;
-
-    /*
-    * Текст вопроса:
-    */
     private String titleQuestion;
-
-    /*
-    * Правильный ответ:
-    */
     private int trueAnswer;
+    private String[] arrayAnswers;
+
 
     /**
      * Кол-во вариантов ответов в тесте
@@ -39,20 +37,17 @@ public class Question {
     private int quantityAnswers;
 
     /*
-    * Массив с вариантами ответов:
-     */
-    private String[] arrayAnswers;
+    * Кол-во вопросов во всем тесте:
+    */
+    private int quantityQuestions;
 
-    /**
-     * Объект для работы с тест-файлом:
-     */
-    //private DataExchange dataExchange;
+    /*
+    * Объект для работы с тест-файлом:
+    */
     private FileManager fileManager;
 
 
     public Question(){
-
-        //dataExchange = DataExchange.getInstance(null, "");
 
         fileManager = FileManager.getInstance();
 
@@ -60,13 +55,10 @@ public class Question {
         * Получаем общее количество вопросов в тесте
         * и создаем массив для хранения вариантов ответов:
         */
-        //quantityAnswers = dataExchange.getQuantityAnswers();
         quantityAnswers = fileManager.getQuantityAnswers();
+        quantityQuestions = fileManager.getQuantityQuestions();
 
         arrayAnswers = new String[quantityAnswers + 1];
-
-
-
 
     }
 
@@ -128,5 +120,8 @@ public class Question {
         return arrayAnswers;
     }
 
+    public int getQuantityQuestions() {
+        return quantityQuestions;
+    }
 
 }

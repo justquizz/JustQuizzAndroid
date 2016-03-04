@@ -1,25 +1,28 @@
 package ru.lightapp.justquizz.model;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
-* Created by Eugen on 19.04.2015.
+ * Created by Eugen on 19.04.2015.
+ *
+ * Экземпляр класса хранит ответ пользователя:
+ * - номер вопроса;
+ * - отмеченные варианты ответов;
+ * - флаг-признак, правильно ли ответил на вопрос;
+ * - время, затраченное на ответ.
+ *
 */
-public class AnswerOfUser {
+public class Answer {
 
     // здесь хранится номер вопроса, на который отвечал пользователь:
     private int numberOfQuestion;
 
-    // массив вариантов ответов - отметил ли юзер тот или иной вариант.
+    // массив вариантов ответов - ответил ли юзер тот или иной вариант.
     // необходим для вывода на экран сохраненного ответа юзера:
     public Boolean[] checked = new Boolean[4];
 
     // флаг-признак, правильно ли юзер ответил на вопрос:
     private boolean isRightUserAnswer;
 
-    // Время затрачнноей юзером на ответ:
+    // Время, затраченное на ответ:
     private String time;
 
 
