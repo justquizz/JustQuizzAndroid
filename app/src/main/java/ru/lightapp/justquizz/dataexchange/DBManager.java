@@ -5,14 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import java.util.ArrayList;
+import ru.lightapp.justquizz.R;
 
 
 /**
  * Created by eugen on 02.08.2015.
- * -
  *
+ * Singleton.
+ * Экземпляр класса предоставляет доступ к БД.
  */
 public class DBManager {
 
@@ -24,7 +25,7 @@ public class DBManager {
     /*
     * Имя БД и ее версия:
     */
-    private static final String DATABASE_NAME = "jqzz6.db";
+    private static final String DATABASE_NAME = "jqzz8.db";
     private static final int DATABASE_VERSION = 1;
 
     /*
@@ -36,7 +37,6 @@ public class DBManager {
     private Context context;
     private SQLiteDatabase db;
 
-    //private SQLiteStatement insertStmt;
 
     OpenHelper openHelper;
 
@@ -145,7 +145,10 @@ public class DBManager {
     */
     public void createPathToFile(String selectedTest) {
 
-        String pathToFileWithTest = getDirectoryMD5() + getFileName(selectedTest) + getFileExtension();
+        String directoryMD5 = context.getString(R.string.directoryMD5);
+        String fileExtension = context.getString(R.string.file_extension);
+        String pathToFileWithTest = directoryMD5 + getFileName(selectedTest) + fileExtension;
+
         System.out.println(" --- имя файла " + pathToFileWithTest);
 
         openHelper = new OpenHelper(this.context);
@@ -160,30 +163,29 @@ public class DBManager {
 
         int rowId = db.update(GLOBAL_STRINGS,
                 contentValues,
-                "id = ?",
+                "_id = ?",
                 new String[]{"1"});
 
         System.out.println(" --- записали путь к файлу " + rowId);
 
         openHelper.close();
-        //return rowId;
 
     }
 
     /*
     * Метод получает из таблицы глобальных переменных путь к папке с тестами
-    */
+
     private String getDirectoryMD5() {
 
         String directory_md5 = "";
 
         // Делаем запрос в БД:
-        Cursor cursor = db.rawQuery("select directory_md5 from " + GLOBAL_STRINGS + " where id = ?", new String[]{"1"});
+        Cursor cursor = db.rawQuery("select directory_md5 from " + GLOBAL_STRINGS + " where _id = ?", new String[]{"1"});
 
         /*
         * Если результат запроса существует, то
         * получаем его:
-        */
+
         if(cursor.moveToFirst()){
 
             int columnFileName = cursor.getColumnIndex("directory_md5");
@@ -195,6 +197,8 @@ public class DBManager {
         cursor.close();
         return directory_md5;
     }
+    */
+
 
     /*
     * Метод получает по названию теста его имя файла
@@ -233,13 +237,15 @@ public class DBManager {
         return fileName;
     }
 
+
     /*
     * Метод получет из таблицы глобальных переменных расширение теста-файла - .jqzz
-    */
+
     private String getFileExtension() {
 
         return ".jqzz";
     }
+    */
 
 
     /*
@@ -258,7 +264,7 @@ public class DBManager {
         // Делаем запрос в базу данных:
         Cursor  cursor = this.db.query(GLOBAL_STRINGS,
                 new String[] {"path_to_file"},
-                "id = ?",
+                "_id = ?",
                 new String[]{"1"},
                 null, null, null);
 
@@ -299,7 +305,7 @@ public class DBManager {
 
         int rowId = db.update(GLOBAL_STRINGS,
                 contentValues,
-                "id = ?",
+                "_id = ?",
                 new String[]{"1"});
 
         System.out.println(" --- записали путь к файлу " + rowId);
@@ -324,7 +330,7 @@ public class DBManager {
         // Делаем запрос в базу данных:
         Cursor  cursor = this.db.query(GLOBAL_STRINGS,
                 new String[] {"test_result"},
-                "id = ?",
+                "_id = ?",
                 new String[]{"1"},
                 null, null, null);
 
@@ -362,7 +368,7 @@ public class DBManager {
             * Создаем таблицу в которой будем хранить тесты
             */
             db.execSQL("CREATE TABLE " + TEST_TABLE + "(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "title_test TEXT, " +
                     "file_name TEXT, " +
                     "category TEXT, " +
@@ -375,7 +381,7 @@ public class DBManager {
             * Создаем таблицу в которой будем хранить настройки программы
             */
             db.execSQL("CREATE TABLE " + GLOBAL_STRINGS + "(" +
-                    "id INTEGER, " +
+                    "_id INTEGER, " +
                     "file_name TEXT, " +
                     "path_to_file TEXT, " +
                     "directory_md5 TEXT, " +
@@ -386,7 +392,7 @@ public class DBManager {
             * Создаем объект для наших данных и наполняем его:
             */
             ContentValues contentValues = new ContentValues();
-            contentValues.put("id", "1");
+            contentValues.put("_id", "1");
             contentValues.put("file_name", "");
             contentValues.put("path_to_file", "");
             contentValues.put("directory_md5", "/justquizz/tests/");

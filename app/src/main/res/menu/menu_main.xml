@@ -5,11 +5,15 @@
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="20" app:showAsAction="never" />
 
     <item android:id="@+id/download_test_from_server"
         android:title="@string/download_test_from_server"
         android:orderInCategory="10" app:showAsAction="never" />
+
+    <item android:id="@+id/how_to"
+          android:title="@string/how_to"
+          android:orderInCategory="30" app:showAsAction="never" />
 
 
 

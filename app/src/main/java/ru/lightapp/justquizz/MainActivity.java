@@ -152,12 +152,26 @@ public class MainActivity extends ActionBarActivity {
                 showSettings();
                 return true;
 
+            case R.id.how_to:
+                showHowTo();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
 
         }
 
         //return super.onOptionsItemSelected(item);
+    }
+
+
+    /*
+    * Создаем активность, которая отображает описание как пользоваться приложением:
+    */
+    private void showHowTo() {
+
+        Intent intent = new Intent(MainActivity.this, TestScreen.class);
+        startActivity(intent);
     }
 
     private void showSettings() {

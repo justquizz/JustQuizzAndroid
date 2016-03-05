@@ -8,6 +8,8 @@
 
     <string name="action_settings">Настройки</string>
     <string name="download_test_from_server">Загрузить тест из интернета</string>
+    <string name="how_to">Как пользоваться?</string>
+
 
     <string name="about_title">О программе</string>
 
@@ -44,6 +46,8 @@
 
     <string name="error_server_not_found">Сервер не найден, проверьте ваше интернет соединение.</string>
 
+    <string name="directoryMD5">/justquizz/tests/</string>
+    <string name="file_extension">.jqzz</string>
 
 
 
