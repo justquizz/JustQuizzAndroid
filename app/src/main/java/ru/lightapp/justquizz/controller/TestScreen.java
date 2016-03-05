@@ -15,10 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
-import ru.lightapp.justquizz.model.Answer;
-import ru.lightapp.justquizz.model.ArrayUsersAnswer;
-import ru.lightapp.justquizz.model.Question;
-
+import ru.lightapp.justquizz.model.*;
 
 
 /**

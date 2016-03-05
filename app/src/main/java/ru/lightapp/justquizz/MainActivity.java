@@ -170,7 +170,7 @@ public class MainActivity extends ActionBarActivity {
     */
     private void showHowTo() {
 
-        Intent intent = new Intent(MainActivity.this, TestScreen.class);
+        Intent intent = new Intent(MainActivity.this, HowTo.class);
         startActivity(intent);
     }
 
