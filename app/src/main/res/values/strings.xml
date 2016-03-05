@@ -17,9 +17,12 @@
     <string name="button_previous">Назад</string>
     <string name="nameQuestion">Здесь выведен вопрос</string>
     <string name="text_number_of_question">Вопрос №</string>
-    <string name="timer">00:00</string>
+    <string name="timer">--:--</string>
     <string name="toast_must_make_choice">Вам нужно выбрать хотя бы один вариант ответа</string>
-    <string name="toast_do_u_wanna_finish_test">Для завершения теста нажми еще раз \"Назад\"</string>
+    <string name="string_do_u_wanna_finish_test">Вы хотите прервать тест?</string>
+    <string name="string_yes">Да</string>
+    <string name="string_no">Нет</string>
+
 
 
     <string name="checkBox1">1.</string>

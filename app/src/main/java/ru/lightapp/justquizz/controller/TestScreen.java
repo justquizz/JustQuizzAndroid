@@ -1,6 +1,8 @@
 package ru.lightapp.justquizz.controller;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -321,17 +323,39 @@ public class TestScreen extends Activity {
 
         if(question.getNumberOfQuestion() == 1){
             /*
-            * Если на первом вопросе юзер нажмет назад,
-            * то toast выведит сообщение:
-            * Для завершения теста нажми повторно "Назад"
-            *
-            * Здесь нужно будет реализовать выставление флага -
-            * при нажатии второй раз Назад, вернуться в главное меню.
-            */
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    R.string.toast_do_u_wanna_finish_test, Toast.LENGTH_SHORT);
+            * Подтверждение прерывания теста,
+            * т.е. во время первого вопроса нажата клавиша НАЗАД:
+            * - устанавливаем слушательн на кнопку ДА;
+            * - устанавливаем слушательн на кнопку НЕТ;
+             */
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.string_do_u_wanna_finish_test).setCancelable(false).
+                    setNegativeButton(R.string.string_yes, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            TestScreen.this.finish();
+                        }
+
+
+                    }).
+                    setPositiveButton(R.string.string_no, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+
+                    })
+                    ;
+            AlertDialog alert = builder.create();
+            alert.show();
+
+
+            //Toast toast = Toast.makeText(getApplicationContext(),
+            //        R.string.toast_do_u_wanna_finish_test, Toast.LENGTH_SHORT);
             //toast.show();
-            this.finish();
+            //this.finish();
         }else {
 
             /*
