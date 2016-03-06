@@ -41,6 +41,7 @@
     <string name="button_back">Назад</string>
     <string name="toast_download_start">Загрузка теста</string>
     <string name="toast_download_success">Загрузка завершена</string>
+    <string name="toast_test_exist">Тест был скачан ранее</string>
     <string name="press_key">Для загрузки нажми кнопку</string>
     <string name="choice_category">Выбери категорию:</string>
 

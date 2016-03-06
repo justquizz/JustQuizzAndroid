@@ -354,6 +354,18 @@ public class DBManager {
 
     }
 
+    /*
+    * Метод проверяет существует ли тест
+    * - пробуем получить имя тест-файла по названию теста;
+    * - если оно равно имени файла с сервера, то тест существует:
+    */
+    public boolean isTestExist(String currentFileName, String currentTestTitle) {
+
+        String gettingFileName = getFileName(currentTestTitle);
+        
+        return gettingFileName.equals(currentFileName);
+    }
+
 
     private  static class OpenHelper extends SQLiteOpenHelper {
 

@@ -7,12 +7,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
+import ru.lightapp.justquizz.dataexchange.FileManager;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
 
 
@@ -37,7 +39,7 @@ public class LoaderTestFromServer extends Activity {
     private ArrayAdapter<String> mAdapterTests;
     private Button button_back;
     private Button button_download;
-
+    //private ProgressBar progressBar;
 
     /*
     * Массив с тестами полученными от сервера:
@@ -80,6 +82,8 @@ public class LoaderTestFromServer extends Activity {
     * - информационное (TextView) поле;
     * - список, в который загрузим категории, доступные на севере;
     * - список, в который загрузим доступные на севере тесты для данной категории(скрываем его);
+    *
+    * getCateogies() наполняет элементы экрана информацией.
     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,10 @@ public class LoaderTestFromServer extends Activity {
 
         button_back = (Button) findViewById(R.id.button_back);
         //button_back.setVisibility(View.INVISIBLE);
+
+        // делаем невидимым progressBarDownloader, пока что не нужен:
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDownloader);
+        progressBar.setVisibility(View.INVISIBLE);
 
         button_download = (Button) findViewById(R.id.button_download);
         button_download.setVisibility(View.INVISIBLE);
@@ -103,10 +111,9 @@ public class LoaderTestFromServer extends Activity {
         // Получаем объект для обмена данными с сервером:
         server = ServerManager.getInstance();
         db = DBManager.getInstance(this);
-        //dataExchange.initDataExchange(this, "");
 
         // Загружаем категории тестов с сервера:
-        onClickGetCategories();
+        getCategories();
 
     }
 
@@ -114,7 +121,7 @@ public class LoaderTestFromServer extends Activity {
     /*
     * Метод получает от сервера список доступных категорий тестов:
     */
-    public void onClickGetCategories() {
+    public void getCategories() {
 
         /*
         * Создаем объект для работы с сервером,
@@ -197,17 +204,25 @@ public class LoaderTestFromServer extends Activity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
 
-                            button_download.setVisibility(View.VISIBLE);
-
                             numberOfTest = position;
-
-
                             currentTestTitle = (String) tests[0].get(numberOfTest);
                             currentFileName = (String) tests[1].get(numberOfTest);
                             currentDescription = (String) tests[2].get(numberOfTest);
                             //currentAuthor = (String) tests[4].get(numberOfTest);
                             currentAuthor = "Jack";
                             currentLinkAuthor = "http://lightapp.ru/justquizz/people/id7";
+
+                            System.out.println(" --- " + currentTestTitle + " - " + currentFileName);
+
+                            if (db.isTestExist(currentFileName, currentTestTitle)) {
+                                toast = Toast.makeText(getApplicationContext(),
+                                        R.string.toast_test_exist, Toast.LENGTH_SHORT);
+                                toast.show();
+                                button_download.setVisibility(View.INVISIBLE);
+                            } else {
+                                button_download.setVisibility(View.VISIBLE);
+                            }
+
 
                         }
                     });
@@ -235,7 +250,7 @@ public class LoaderTestFromServer extends Activity {
     public void onClickButtonBack(View view) {
 
         if(listCategories.getVisibility() == View.VISIBLE)
-            this.finish();
+            LoaderTestFromServer.this.finish();
 
         listTests.setVisibility(View.GONE);
         //button_back.setVisibility(View.INVISIBLE);
@@ -247,9 +262,9 @@ public class LoaderTestFromServer extends Activity {
 
     /*
     * Обработчик кнопки ЗАГРУЗИТЬ выбранный тест.
-    * - выводим Тост о начале загрузки,
-    * - делаем неактивной кнопуку ЗАГРУЗИТЬ,
-    * - обращаемся на сервер и получаем список категорий тестов,
+    * - загружаем тест-файл;
+    * - вставляем в БД информацию о новом тесте;
+    * - выводим toast сообщение об успешной загрузке:
     */
     public void onClickDownloadTest(View view) {
 
@@ -262,23 +277,16 @@ public class LoaderTestFromServer extends Activity {
             e.printStackTrace();
         }
 
-        System.out.println(" --- файл скачан!");
 
-        /*
-        * TODO здесь нужно проверить загружен ли файл на самом деле
-        *
-        * Например, fileManager.isFileExist()
-        */
-
-        /*
-        * Заносим новый тест в базу:
-        */
         long num = db.insertNewTest(currentTestTitle, currentFileName, selectedCategory, currentAuthor, currentLinkAuthor, currentDescription);
 
-        if(num > 0) {
+        if (num > 0) {
             toast = Toast.makeText(getApplicationContext(), R.string.toast_download_success, Toast.LENGTH_SHORT);
             toast.show();
+            button_download.setVisibility(View.INVISIBLE);
         }
+
+        System.out.println(" --- файл скачан!");
     }
 
 }

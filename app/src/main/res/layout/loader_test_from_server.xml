@@ -27,7 +27,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/progressBar"
+            android:id="@+id/progressBarDownloader"
             android:layout_weight="1"/>
 
         <Button
