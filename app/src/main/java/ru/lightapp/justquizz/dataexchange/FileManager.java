@@ -65,29 +65,12 @@ public class FileManager {
 
 
     /*
-    * Инициализируем основные переменные:
-    * - путь к текущему тесту,
+    * Скрываем конструктор:
     */
     private FileManager(){
-        System.out.println(" --- конструктор FileManager start ");
-
-        /*
-        * Объект для получения пути к файлу из БД:
-        */
-        //DBManager db = DBManager.getInstance(null);
-
-        /*
-        * Формируем путь к файлу:
-        * [путь_к_файловой_системе]/[directory_MD5]/[имя_тест-файла].jqzz
-        */
-        //String absolutePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
-        //this.pathToFile = absolutePath + db.initPathToFile();
-
-        System.out.println(" --- полный путь к файлу - " + this.pathToFile);
-
-        System.out.println(" --- конструктор FileManager end");
 
     }
+
 
     ///////////////////////////////////////////////////////
     /*

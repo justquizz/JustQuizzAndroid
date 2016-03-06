@@ -1,5 +1,7 @@
 package ru.lightapp.justquizz.dataexchange;
 
+import android.content.res.Resources;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,6 +10,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import org.apache.http.util.ByteArrayBuffer;
+
+import ru.lightapp.justquizz.R;
 
 
 /**
@@ -30,7 +34,8 @@ public class DownloadTestFromServer extends Thread {
 
     /*
     * Полный путь к файлу:
-    * состоит из пути к папке на сервере + имя файла + расширение
+    * состоит из пути к папке на сервере + имя файла + расширение,
+    * но отсутствует путь к файловой системе
     */
     private String urlForFile;
 
@@ -39,6 +44,7 @@ public class DownloadTestFromServer extends Thread {
 
         String md5_nameLowerCase = md5_name.toLowerCase();
 
+        // TODO получать расширение файла из ресурсов или из БД:
         this.fileName = md5_nameLowerCase + ".jqzz";
 
 
@@ -58,6 +64,7 @@ public class DownloadTestFromServer extends Thread {
 
             File root = android.os.Environment.getExternalStorageDirectory();
 
+            // TODO получать путь из ресурсов или БД:
             File dir = new File (root.getAbsolutePath() + "/justquizz/tests");
             if(!dir.exists()) {
                 dir.mkdirs();

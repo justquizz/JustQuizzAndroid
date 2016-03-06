@@ -240,7 +240,7 @@ public class DBManager {
 
     /*
     * Метод получет из таблицы глобальных переменных расширение теста-файла - .jqzz
-
+    TODO где хранить разрешение файла?
     private String getFileExtension() {
 
         return ".jqzz";
