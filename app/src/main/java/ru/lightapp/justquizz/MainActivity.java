@@ -1,6 +1,8 @@
 package ru.lightapp.justquizz;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -64,26 +66,75 @@ public class MainActivity extends ActionBarActivity {
 
         if(!testTitles.isEmpty())  {
 
-            // Находим список, создаем адаптер и присваеваем адаптер списку:
+            /*
+            * Находим список, создаем адаптер и присваеваем адаптер списку:
+            * Меняем надпись на кнопке:
+            */
             ListView listTest = (ListView) findViewById(R.id.listTest);
             ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testTitles);
             listTest.setAdapter(mAdapter);
-            // Меняем надпись на кнопке:
             button_start.setText(R.string.button_start_test);
-            // Устанавливаем слушатель:
+
+            /*
+            * Устанавливаем слушатель на однократное нажатие на названии теста:
+            */
             listTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                     TextView textView = (TextView) itemClicked;
                     selectedTest = (String) textView.getText();
+                }
+            });
 
+            /*
+            * Слушатель на долгое нажатие.
+            * AlertDialog предлагат удалить тест:
+            */
+            listTest.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View itemClicked, int i, long l) {
 
+                    TextView textView = (TextView) itemClicked;
+                    selectedTest = (String) textView.getText();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.delete_test).setCancelable(false).
+                            setNegativeButton(R.string.string_yes, new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    System.out.println(" --- удаляем - " + selectedTest);
+                                    deleteTest(selectedTest);
+                                }
+                            }).
+                            setPositiveButton(R.string.string_no, new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    return false;
                 }
             });
         } else{
 
             button_start.setText(R.string.button_start_download);
         }
+    }
+
+
+    /*
+    * Метод удаляет выбранный тест,
+    * затем обновляет список тестов на экране:
+    */
+    private void deleteTest(String selectedTest) {
+
+        db.deleteTest(selectedTest);
+        showTestTitles();
     }
 
     /*

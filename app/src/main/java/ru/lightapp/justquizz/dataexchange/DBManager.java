@@ -25,7 +25,7 @@ public class DBManager {
     /*
     * Имя БД и ее версия:
     */
-    private static final String DATABASE_NAME = "jqzz8.db";
+    private static final String DATABASE_NAME = "jqzz12.db";
     private static final int DATABASE_VERSION = 1;
 
     /*
@@ -93,6 +93,8 @@ public class DBManager {
         contentValues.put("author", author);
         contentValues.put("link_author_page", link_author_page);
         contentValues.put("description", description);
+        //contentValues.put("deleted", "");
+
 
         // вставляем запись и получаем ее ID:
         long rowID =  db.insert(TEST_TABLE, null, contentValues);
@@ -117,7 +119,14 @@ public class DBManager {
         // Делаем запрос в базу данных:
         Cursor  cursor = this.db.query(TEST_TABLE,
                 new String[]{"title_test"},
-                null, null, null, null, null);
+                null,
+                null,
+                //"deleted = ?",
+                //new String[]{""},
+                null,
+                null,
+                null);
+
 
         /*
         * Если результат запроса существует, то заносим элемент в массив:
@@ -214,6 +223,7 @@ public class DBManager {
         // Делаем запрос в базу данных:
         Cursor  cursor = this.db.query(TEST_TABLE,
                 new String[]{"file_name"},
+                //"title_test = ? or deleted = ?",
                 "title_test = ?",
                 new String[]{selectedTest},
                 null, null, null);
@@ -367,6 +377,41 @@ public class DBManager {
     }
 
 
+    /*
+    * Удаляем запись о тесте из БД:
+    */
+    public void deleteTest(String selectedTest) {
+
+        System.out.println(" --- здесь пишем код, помечаем запись о тесте как удаленную");
+
+        openHelper = new OpenHelper(this.context);
+
+        int rowId = db.delete(TEST_TABLE,
+                "title_test = ?",
+                new String[] {selectedTest});
+
+
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("deleted", "1");
+
+        // в этой строке ошибка
+        int rowId = db.update(TEST_TABLE,
+                contentValues,
+                "title_test = ?",
+                new String[]{selectedTest});
+        */
+        System.out.println(" --- запрос в БД при удалении теста - " + rowId);
+
+        openHelper.close();
+
+
+    }
+
+
     private  static class OpenHelper extends SQLiteOpenHelper {
 
         public OpenHelper(Context context) {
@@ -386,7 +431,8 @@ public class DBManager {
                     "category TEXT, " +
                     "author TEXT, " +
                     "link_author_page TEXT, " +
-                    "description Text )");
+                    "description TEXT)");
+                    //"deleted TEXT)");
 
 
             /*
