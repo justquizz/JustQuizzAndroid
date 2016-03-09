@@ -3,12 +3,12 @@
     <string name="text_greeting">Привет, введи свое имя:</string>
     <string name="text_make_choice">Выбери один из тестов:</string>
     <string name="button_start_test">Начать тест</string>
-    <string name="button_start_download">Загрузить тесты из интернета</string>
+    <string name="button_download_test">Загрузить тесты</string>
     <string name="delete_test">Удалить тест?</string>
 
 
     <string name="action_settings">Настройки</string>
-    <string name="download_test_from_server">Загрузить тест из интернета</string>
+    <string name="download_test_from_server">Загрузить тесты</string>
     <string name="how_to">Как пользоваться?</string>
 
 

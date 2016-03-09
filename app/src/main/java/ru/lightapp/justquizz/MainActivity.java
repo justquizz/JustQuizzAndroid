@@ -25,18 +25,20 @@ public class MainActivity extends ActionBarActivity {
     /*
     * Элементы Activity:
     */
-    Button button_start;
-
+    Button buttonTestStart;
+    Button buttonDownloadTest;
 
     /*
     * Список названий всех доступных тестов:
     */
     ArrayList<String> testTitles = new ArrayList<>();
 
+    private ListView listTest;
+
     /*
     * Строка с выбранным тестом:
     */
-    private String selectedTest;
+    private String selectedTest = "";
 
     /*
     * Обект для работы с базой данных:
@@ -48,7 +50,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        button_start = (Button) findViewById(R.id.button_start);
+        buttonTestStart = (Button) findViewById(R.id.button_start_test);
+        buttonDownloadTest = (Button) findViewById(R.id.button_download_test);
+
+       /*
+       * Создаем объект занимающийся работой с данными:
+       */
+       db = DBManager.getInstance(this);
 
         showTestTitles();
 
@@ -59,21 +67,20 @@ public class MainActivity extends ActionBarActivity {
     */
     private void showTestTitles(){
        /*
-       * Создаем объект занимающийся работой с данными. Получаем массив доступных тестов:
+       * Получаем массив доступных тестов:
        */
-        db = DBManager.getInstance(this);
         testTitles = db.getTestTitles();
+
+        selectedTest = "";
 
         if(!testTitles.isEmpty())  {
 
             /*
-            * Находим список, создаем адаптер и присваеваем адаптер списку:
-            * Меняем надпись на кнопке:
+            * Находим список, создаем адаптер и присваиваем адаптер списку:
             */
-            ListView listTest = (ListView) findViewById(R.id.listTest);
+            listTest = (ListView) findViewById(R.id.listTest);
             ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testTitles);
             listTest.setAdapter(mAdapter);
-            button_start.setText(R.string.button_start_test);
 
             /*
             * Устанавливаем слушатель на однократное нажатие на названии теста:
@@ -120,9 +127,18 @@ public class MainActivity extends ActionBarActivity {
                     return false;
                 }
             });
-        } else{
 
-            button_start.setText(R.string.button_start_download);
+            listTest.setVisibility(View.VISIBLE);
+            buttonTestStart.setText(R.string.button_start_test);
+            buttonTestStart.setVisibility(View.VISIBLE);
+
+        } else{
+            buttonTestStart.setVisibility(View.INVISIBLE);
+
+            if(listTest != null)
+                listTest.setVisibility(View.INVISIBLE);
+            //buttonTestStart.setText(R.string.button_download_test);
+
         }
     }
 
@@ -138,20 +154,53 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /*
-    * Обработка нажатия кнопки начала тестирования:
+    * Обработка нажатия кнопок:
     */
     public void onClick(View view){
-         // Если загружен список тестов, то:
+
+        switch (view.getId()){
+
+            case R.id.button_download_test:
+                startDownloadActivity();
+                break;
+
+
+            case R.id.button_start_test:
+                if (selectedTest != "") {
+                    /*
+                    * Записываем путь к файлу в БД,
+                    * и вызываем экран с тестом:
+                    */
+                    db.createPathToFile(selectedTest);
+                    Intent intent = new Intent(MainActivity.this, TestScreen.class);
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Выберите один из тестов", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                break;
+
+        }
+
+
+
+
+
+
+
+
+        /* Если загружен список тестов, то:
         if(!testTitles.isEmpty()) {
 
             /*
             * Проверка - выбрал ли пользователь один из тестов:
-            */
+
             if (selectedTest != null) {
                 /*
                 * Записываем путь к файлу в БД,
                 * и вызываем экран с тестом:
-                */
+
                 db.createPathToFile(selectedTest);
                 Intent intent = new Intent(MainActivity.this, TestScreen.class);
                 startActivity(intent);
@@ -164,6 +213,7 @@ public class MainActivity extends ActionBarActivity {
 
             startDownloadActivity();
         }
+        */
     }
 
 
