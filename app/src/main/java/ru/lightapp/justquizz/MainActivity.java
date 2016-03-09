@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
             listTest = (ListView) findViewById(R.id.listTest);
             ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testTitles);
             listTest.setAdapter(mAdapter);
-
+            //listTest.setDivider(getResources().getDrawable(R.color.background_question_field));
             /*
             * Устанавливаем слушатель на однократное нажатие на названии теста:
             */

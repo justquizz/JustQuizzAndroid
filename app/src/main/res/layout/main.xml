@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/listTest"
         style="@style/TestListView"
-        android:listSelector="@color/background_question_field"
+
+        android:listSelector="@color/blue"
         android:layout_weight="0.60" />
 
     <Button
