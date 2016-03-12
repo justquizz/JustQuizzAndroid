@@ -444,7 +444,8 @@ public class DBManager {
                     "path_to_file TEXT, " +
                     "directory_md5 TEXT, " +
                     "file_extension TEXT, " +
-                    "test_result TEXT )");
+                    "test_result TEXT, " +
+                    "first_start TEXT )");
 
             /*
             * Создаем объект для наших данных и наполняем его:
@@ -456,6 +457,7 @@ public class DBManager {
             contentValues.put("directory_md5", "/justquizz/tests/");
             contentValues.put("file_extension", ".jqzz");
             contentValues.put("test_result", "");
+            contentValues.put("first_start", "0");
 
 
             // вставляем запись и получаем ее ID:
