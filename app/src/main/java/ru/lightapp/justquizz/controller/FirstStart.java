@@ -14,6 +14,7 @@ import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
 import ru.lightapp.justquizz.dataexchange.FileManager;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
+import ru.lightapp.justquizz.model.SingleTest;
 
 /**
  * Created by eugen on 12.03.2016.
@@ -45,13 +46,14 @@ public class FirstStart extends ActionBarActivity {
 
         System.out.println(" --- onClickDownloadAllDemo");
 
-        ArrayList<String>[] tests  = server.getTestsByCategory(1);
+
+        ArrayList<SingleTest> arrayTests  = server.getTestsByCategory(1);
 
 
         //if(tests[5] != null) {
-            ArrayList<String> titleTestArray = tests[0];
-            ArrayList<String> fileNameArray = tests[1];
-            ArrayList<String> descriptionArray = tests[2];
+            //ArrayList<String> titleTestArray = tests[0];
+            //ArrayList<String> fileNameArray = tests[1];
+            //ArrayList<String> descriptionArray = tests[2];
             //ArrayList<String> downloadsArray = tests[3];
 
             /*
@@ -64,16 +66,18 @@ public class FirstStart extends ActionBarActivity {
 
             // TODO получили массив со всеми именами файлов. Теперь проходим в цикле: скачиваем и заносим в базу.
 
-            for (int i = 0; i <= titleTestArray.size() - 1; i++) {
+            for (int i = 0; i <= arrayTests.size() - 1; i++) {
 
-                if (fileManager.downloadTest(fileNameArray.get(i))) {
+                if (fileManager.downloadTest(arrayTests.get(i).getFileName())) {
 
-                    String titleTest = titleTestArray.get(i);
-                    String fileNameTest = fileNameArray.get(i);
+                    String titleTest = arrayTests.get(i).getTitle();
+                    String fileNameTest = arrayTests.get(i).getFileName();
                     String category = "1";
                     String author = "Jack";
+                    //String author = arrayTests.get(i).getAuthor();
                     String linkAuthorPage = "http://lightapp.ru/justquizz/people/id7";
-                    String descrTest = descriptionArray.get(i);
+                    //String linkAuthorPage = arrayTests.get(i).getLinkAuthorPage();
+                    String descrTest = arrayTests.get(i).getDescription();
 
 
                     long num = db.insertNewTest(titleTest, fileNameTest, category, author, linkAuthorPage, descrTest);

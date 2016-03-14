@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
 import ru.lightapp.justquizz.dataexchange.DownloadTestFromServer;
-import ru.lightapp.justquizz.dataexchange.FileManager;
 import ru.lightapp.justquizz.dataexchange.ServerManager;
+import ru.lightapp.justquizz.model.SingleTest;
 
 
 /**
@@ -44,7 +44,7 @@ public class LoaderTestFromServer extends Activity {
     /*
     * Массив с тестами полученными от сервера:
     */
-    private ArrayList[] tests;
+    private ArrayList<SingleTest> tests;
 
     /*
     * Номер выбранного теста в массиве:
@@ -169,7 +169,15 @@ public class LoaderTestFromServer extends Activity {
                             TextView textView = (TextView) itemClicked;
                             selectedCategory = (String) textView.getText();
                             tests = server.getTestsByCategory(idCategory.get(position));
-                            ArrayList<String> titleTests = tests[0];
+                            //ArrayList<String> titleTests = tests[0];
+                            ArrayList<String> titleTests = new ArrayList<>();
+                            // Наполняем массив списком названий тестов:
+                            for(SingleTest singleTest: tests){
+
+                                titleTests.add(singleTest.getTitle());
+
+                            }
+
 
                         /*
                         * Создаем адаптер и выводим на экран этот список:
@@ -205,9 +213,9 @@ public class LoaderTestFromServer extends Activity {
                         public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
 
                             numberOfTest = position;
-                            currentTestTitle = (String) tests[0].get(numberOfTest);
-                            currentFileName = (String) tests[1].get(numberOfTest);
-                            currentDescription = (String) tests[2].get(numberOfTest);
+                            currentTestTitle = tests.get(numberOfTest).getTitle();
+                            currentFileName = tests.get(numberOfTest).getFileName();
+                            currentDescription = tests.get(numberOfTest).getDescription();
                             //currentAuthor = (String) tests[4].get(numberOfTest);
                             currentAuthor = "Jack";
                             currentLinkAuthor = "http://lightapp.ru/justquizz/people/id7";
