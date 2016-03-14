@@ -188,9 +188,8 @@ public class ServerManager {
         /*
         * Запускаем отдельнй поток, который получит xml-file с сервера,
         * разберет его и вернет все в виде массива.
-        *
         * Затем возвращаем полученные массивы в активити (или куда там еще...)
-         */
+        */
         GetTestsThread tread = new GetTestsThread();
         tread.execute();
         try {
@@ -199,6 +198,8 @@ public class ServerManager {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
+            System.out.println("--- ошибка исполнения ");
+
             e.printStackTrace();
         }
 

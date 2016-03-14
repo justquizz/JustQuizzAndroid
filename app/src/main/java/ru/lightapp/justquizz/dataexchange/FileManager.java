@@ -1,11 +1,17 @@
 package ru.lightapp.justquizz.dataexchange;
 
+import android.view.View;
+import android.widget.Toast;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Properties;
+
+import ru.lightapp.justquizz.R;
 
 /**
  * Created by eugen on 20.10.2015.
@@ -119,8 +125,25 @@ public class FileManager {
         return getDataFromTest("q" + numberOfQuestion + "." + numberAnswer, pathToFile);
     }
 
+    /*
+    * Метод загружает тест по имени файла
+    */
+    public boolean downloadTest(String fileName){
+
+        boolean flag = true;
+        DownloadTestFromServer loader = new DownloadTestFromServer(fileName);
 
 
+        try {
+            loader.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
+
+    }
 
 
     /*

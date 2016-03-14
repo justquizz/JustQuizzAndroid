@@ -25,7 +25,7 @@ public class DBManager {
     /*
     * Имя БД и ее версия:
     */
-    private static final String DATABASE_NAME = "jqzz12.db";
+    private static final String DATABASE_NAME = "jqzz13.db";
     private static final int DATABASE_VERSION = 1;
 
     /*
@@ -79,29 +79,34 @@ public class DBManager {
     */
     public long insertNewTest(String titleTest, String fileName, String category, String author, String link_author_page, String description){
 
-        openHelper = new OpenHelper(this.context);
+        long rowID = 0;
+        if(!isTestExist(fileName,titleTest)) {
 
-        System.out.println(" --- " + titleTest + " - " + fileName + " - " + category + " - " + author + " - " + link_author_page + " - " + description);
+            openHelper = new OpenHelper(this.context);
+
+            System.out.println(" --- " + titleTest + " - " + fileName + " - " + category + " - " + author + " - " + link_author_page + " - " + description);
 
         /*
         * Создаем объект для наших данных и наполняем его:
         */
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("title_test", titleTest);
-        contentValues.put("file_name", fileName);
-        contentValues.put("category", category);
-        contentValues.put("author", author);
-        contentValues.put("link_author_page", link_author_page);
-        contentValues.put("description", description);
-        //contentValues.put("deleted", "");
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("title_test", titleTest);
+            contentValues.put("file_name", fileName);
+            contentValues.put("category", category);
+            contentValues.put("author", author);
+            contentValues.put("link_author_page", link_author_page);
+            contentValues.put("description", description);
+            //contentValues.put("deleted", "");
 
 
-        // вставляем запись и получаем ее ID:
-        long rowID =  db.insert(TEST_TABLE, null, contentValues);
+            // вставляем запись и получаем ее ID:
+            rowID = db.insert(TEST_TABLE, null, contentValues);
 
-        System.out.println(" --- вставка в бд " + rowID);
+            System.out.println(" --- вставка в бд " + rowID);
 
-        openHelper.close();
+            openHelper.close();
+
+        }
         return rowID;
     }
 
@@ -365,7 +370,7 @@ public class DBManager {
     }
 
     /*
-    * Метод проверяет существует ли тест
+    * Метод проверяет существует ли тест в БД:
     * - пробуем получить имя тест-файла по названию теста;
     * - если оно равно имени файла с сервера, то тест существует:
     */
@@ -408,6 +413,75 @@ public class DBManager {
 
         openHelper.close();
 
+
+    }
+
+    /*
+    * Метод делает запрос в таблицу global_strings,
+    *  и проверяет флаг первого запуска приложения:
+    *  1 - первый запуск (true);
+    *  0 - не первый запуск.
+    */
+    public String getFirstStart() {
+
+        System.out.println(" --- получаем имя файла из БД...  " );
+
+        openHelper = new OpenHelper(this.context);
+
+        // Создадим строку, которую будем возвращать:
+        String firstStart = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[] {"first_start"},
+                "_id = ?",
+                new String[]{"1"},
+                null, null, null);
+
+        /*
+        * Если результат запроса существует, то
+        * получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("first_start");
+            firstStart = cursor.getString(columnFileName);
+        }
+
+        cursor.close();
+        openHelper.close();
+
+        System.out.println(" --- флаг признак первого запуска приложения - " + firstStart);
+
+        return firstStart;
+    }
+
+
+    /*
+    * Метод сбрасывает флаг первого запуска приложения,
+    * т.е. делает его "0"
+    */
+    public void resetFirstStart() {
+
+        openHelper = new OpenHelper(this.context);
+
+        System.out.println(" --- сбрасываем флаг первого запуска");
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("first_start", "0");
+
+        int rowId = db.update(GLOBAL_STRINGS,
+                contentValues,
+                "_id = ?",
+                new String[]{"1"});
+
+        System.out.println(" --- сбросили флаг первого запуска " + rowId);
+
+        openHelper.close();
 
     }
 
@@ -457,7 +531,7 @@ public class DBManager {
             contentValues.put("directory_md5", "/justquizz/tests/");
             contentValues.put("file_extension", ".jqzz");
             contentValues.put("test_result", "");
-            contentValues.put("first_start", "0");
+            contentValues.put("first_start", "1");
 
 
             // вставляем запись и получаем ее ID:

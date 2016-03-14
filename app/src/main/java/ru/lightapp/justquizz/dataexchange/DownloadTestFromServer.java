@@ -1,6 +1,5 @@
 package ru.lightapp.justquizz.dataexchange;
 
-import android.content.res.Resources;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -10,10 +9,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import org.apache.http.util.ByteArrayBuffer;
-
-import ru.lightapp.justquizz.R;
-
-
 /**
  * Created by eugen on 07.09.2015.
  *

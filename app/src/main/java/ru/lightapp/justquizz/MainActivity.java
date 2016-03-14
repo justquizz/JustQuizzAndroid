@@ -56,16 +56,42 @@ public class MainActivity extends ActionBarActivity {
        /*
        * Создаем объект занимающийся работой с данными:
        */
-       db = DBManager.getInstance(this);
+        db = DBManager.getInstance(this);
 
-        showTestTitles();
+        /*
+        * Проверяем запускалось ли ранее приложение,
+        * если нет, то выводми активити first_start.xml
+        * с информацией как пользоваться приложением
+        */
+        if("1".equals(db.getFirstStart())){
 
+            showFirstStartMessage();
+        }else {
+            showTestTitles();
+        }
+
+
+
+    }
+
+    /*
+    * Метод вызывает активити при самом первом запуске приложения.
+    * Которое содержит описание как пользоваться приложением,
+    * и кнопку автоматической загрузки тестов из категории
+    * "Демонстрационные":
+    * */
+    private void showFirstStartMessage() {
+
+        Intent intent = new Intent(MainActivity.this, FirstStart.class);
+        startActivityForResult(intent, 1);
     }
 
     /*
     * Метод наполняет экран названиями тестов из БД:
     */
     private void showTestTitles(){
+        System.out.println(" --- showTestTitles");
+
        /*
        * Получаем массив доступных тестов:
        */
@@ -225,6 +251,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onActivityResult(int request, int request2, Intent intent){
 
+        System.out.println(" --- ответ загрузки тестов, request=" + request + " request2=" + request2);
+
         showTestTitles();
     }
 
@@ -287,6 +315,6 @@ public class MainActivity extends ActionBarActivity {
     private void startDownloadActivity() {
 
         Intent intent = new Intent(MainActivity.this, LoaderTestFromServer.class);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, 16);
     }
 }

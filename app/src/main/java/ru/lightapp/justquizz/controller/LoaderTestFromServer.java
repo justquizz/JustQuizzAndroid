@@ -286,7 +286,7 @@ public class LoaderTestFromServer extends Activity {
             button_download.setVisibility(View.INVISIBLE);
         }
 
-        System.out.println(" --- файл скачан!");
+        System.out.println(" --- файл скачан! - " + currentFileName);
     }
 
 }
