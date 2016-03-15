@@ -273,12 +273,16 @@ public class MainActivity extends ActionBarActivity {
 
         switch (id){
 
+            case R.id.action_settings:
+                showSettings();
+                return true;
+
             case R.id.download_test_from_server:
                 startDownloadActivity();
                 return true;
 
-            case R.id.action_settings:
-                showSettings();
+            case R.id.show_first_start:
+                showFirstStartMessage();
                 return true;
 
             case R.id.how_to:

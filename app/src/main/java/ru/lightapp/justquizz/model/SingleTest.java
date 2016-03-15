@@ -3,13 +3,13 @@ package ru.lightapp.justquizz.model;
 /**
  * Created by eugen on 14.03.2016.
  *
- * Класс описывает свойства объекта, теста полученного от сервера:
- * - title - название теста;
+ * С„РґСЃРљР»Р°СЃСЃ РѕРїРёСЃС‹РІР°РµС‚ СЃРІРѕР№СЃС‚РІР° РѕР±СЉРµРєС‚Р°, С‚РµСЃС‚Р° РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ РѕС‚ СЃРµСЂРІРµСЂР°:
+ * - title - РЅР°Р·РІР°РЅРёРµ С‚РµСЃС‚Р°;
  */
 public class SingleTest {
 
     /*
-    * Поля с информацией:
+    * РџРѕР»СЏ СЃ РёРЅС„РѕСЂРјР°С†РёРµР№:
     */
     private String title;
     private String fileName;
@@ -19,7 +19,7 @@ public class SingleTest {
     private String linkAuthorPage;
 
     public SingleTest(){
-        System.out.println(" --- конструктор SingleTest");
+        System.out.println(" --- РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ SingleTest");
     }
 
 

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ru.lightapp.justquizz.MainActivity;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
 import ru.lightapp.justquizz.dataexchange.FileManager;
@@ -27,6 +28,8 @@ public class FirstStart extends ActionBarActivity {
     private FileManager fileManager;
     private DBManager db;
 
+    private Toast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +43,7 @@ public class FirstStart extends ActionBarActivity {
 
 
     /*
-    * Обработка нажатия кнопок:
+    * Обработка нажатия кнопоки загрузки демо тестов:
     */
     public void onClickDownloadAllDemo(View view) {
 
@@ -50,22 +53,9 @@ public class FirstStart extends ActionBarActivity {
         ArrayList<SingleTest> arrayTests  = server.getTestsByCategory(1);
 
 
-        //if(tests[5] != null) {
-            //ArrayList<String> titleTestArray = tests[0];
-            //ArrayList<String> fileNameArray = tests[1];
-            //ArrayList<String> descriptionArray = tests[2];
-            //ArrayList<String> downloadsArray = tests[3];
-
-            /*
-            tests[0] = titleArray;
-            tests[1] = fileNameArray;
-            tests[2] = descriptionArray;
-            tests[3] = downloadsArray;
-            */
-
-
             // TODO получили массив со всеми именами файлов. Теперь проходим в цикле: скачиваем и заносим в базу.
 
+        if(arrayTests != null){
             for (int i = 0; i <= arrayTests.size() - 1; i++) {
 
                 if (fileManager.downloadTest(arrayTests.get(i).getFileName())) {
@@ -80,22 +70,49 @@ public class FirstStart extends ActionBarActivity {
                     String descrTest = arrayTests.get(i).getDescription();
 
 
-                    long num = db.insertNewTest(titleTest, fileNameTest, category, author, linkAuthorPage, descrTest);
+                    long rowID = db.insertNewTest(titleTest, fileNameTest, category, author, linkAuthorPage, descrTest);
 
-                    if (num > 0) {
-                        Toast toast = Toast.makeText(getApplicationContext(), R.string.toast_download_success, Toast.LENGTH_SHORT);
-                        toast.show();
+                    if(rowID != -1){
+                        System.out.println(" --- файл скачан! - " + titleTest + " вставка в БД" + rowID);
 
+                    }else{
+                        System.out.println(" --- проблема с БД при вставке теста FirstStart.java ");
                     }
 
-                    System.out.println(" --- файл скачан! - " + titleTest);
                 }
             }
-        //}else{
-            //System.out.println(" --- tests == null" + tests[5].toString());
-        //}
             db.resetFirstStart();
+
+            toast = Toast.makeText(getApplicationContext(), R.string.toast_download_success, Toast.LENGTH_SHORT);
+            toast.show();
+
+        }else{
+            toast = Toast.makeText(getApplicationContext(), R.string.error_server_not_found, Toast.LENGTH_SHORT);
+            toast.show();
+            System.out.println(" --- arrayTests == null");
+        }
+
     }
 
+    /*
+    * Обработка нажатия клавиши самостоятельной загрузки тестов:
+    */
+    public void onClickDownloadTests(View view) {
 
+        Intent intent = new Intent(FirstStart.this, LoaderTestFromServer.class);
+        startActivityForResult(intent, 32);
+        //FirstStart.this.finish();
+    }
+
+    /*
+    * Метод вызывается по завершению активности для загрузки
+    * новых тестов с сервера (LoaderTestFromServer).
+    * Закрываем окно первого запуска, и тогда на MainActivity
+    * должен обновитьс список тестов:
+    * */
+    @Override
+    public void onActivityResult(int request, int request2, Intent intent){
+
+        FirstStart.this.finish();
+    }
 }

@@ -10,14 +10,34 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/first_start_text1"
-            android:id="@+id/first_start_textView_"
-            />
+            android:id="@+id/first_start_textView_1" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/first_start_button_download_demo_tests"
+            android:id="@+id/first_start_button_download_demo_tests"
+            android:onClick="onClickDownloadAllDemo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/first_start_text2"
+            android:id="@+id/first_start_textView_2" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/first_start_button_download_tests"
             android:id="@+id/first_start_button_download_tests"
-            android:onClick="onClickDownloadAllDemo" />
+            android:onClick="onClickDownloadTests" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/first_start_text3"
+            android:id="@+id/first_start_textView_3" />
 
 </LinearLayout>

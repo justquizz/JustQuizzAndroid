@@ -11,6 +11,10 @@
         android:title="@string/download_test_from_server"
         android:orderInCategory="10" app:showAsAction="never" />
 
+    <item android:id="@+id/show_first_start"
+          android:title="@string/show_first_start"
+          android:orderInCategory="10" app:showAsAction="never" />
+
     <item android:id="@+id/how_to"
           android:title="@string/how_to"
           android:orderInCategory="30" app:showAsAction="never" />
