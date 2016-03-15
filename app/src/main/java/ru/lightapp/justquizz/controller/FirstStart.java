@@ -86,6 +86,8 @@ public class FirstStart extends ActionBarActivity {
             toast = Toast.makeText(getApplicationContext(), R.string.toast_download_success, Toast.LENGTH_SHORT);
             toast.show();
 
+            FirstStart.this.finish();
+
         }else{
             toast = Toast.makeText(getApplicationContext(), R.string.error_server_not_found, Toast.LENGTH_SHORT);
             toast.show();
@@ -113,6 +115,7 @@ public class FirstStart extends ActionBarActivity {
     @Override
     public void onActivityResult(int request, int request2, Intent intent){
 
+        db.resetFirstStart();
         FirstStart.this.finish();
     }
 }
