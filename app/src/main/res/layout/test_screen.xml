@@ -14,7 +14,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/nameQuestion"
             android:id="@+id/nameQuestion"
@@ -87,7 +87,8 @@
             android:layout_weight="1"
             android:text="@string/button_previous"
             android:id="@+id/button_previous"
-            android:onClick="onClickPrevious" />
+            android:onClick="onClickPrevious"
+            />
 
         <Button
             android:layout_width="129dp"

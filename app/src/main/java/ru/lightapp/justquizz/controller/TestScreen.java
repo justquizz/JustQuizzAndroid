@@ -1,9 +1,12 @@
 package ru.lightapp.justquizz.controller;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +35,7 @@ public class TestScreen extends Activity {
     private TextView nameQuestion;  // Поле с текстом вопроса
     private TextView timer;         // Поле, в котором тикают секунды и считают время ответа юзера
     private Button button_next;     // Кнопка "Ответить/Далее"
+    private Drawable backgroundColor;
 
     private Question question;      // экземпляр класса сдержит информацию о текущем вопросе
     private ArrayList<CheckBox> checkBoxes = new ArrayList<>(4); // Масссив содержачий все checkbox
@@ -77,6 +81,7 @@ public class TestScreen extends Activity {
         * Описываем элементы на экране:
         */
         nameQuestion = (TextView) findViewById(R.id.nameQuestion);
+        nameQuestion.setTextColor(getResources().getColor(R.color.text_question_color));
         timer = (TextView) findViewById(R.id.timer);
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
         CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
@@ -92,12 +97,17 @@ public class TestScreen extends Activity {
         // Создаем часы:
         clock = new Clock();
 
+        // Запоминаем фон кнопки, цвет системы:
+        backgroundColor = button_next.getBackground();
+
         /*
         * Получаем текст первого вопроса и варианты ответов,
         * и загружаем их на экран:
         */
         question.nextQuestion();
         loadNextQuestion();
+
+
     }
 
     /*
@@ -203,6 +213,7 @@ public class TestScreen extends Activity {
                 isUserReply = true;
                 // Меняем надпись на кнопке
                 button_next.setText(R.string.button_next);
+                button_next.setBackgroundColor(getResources().getColor(R.color.background_right_answer));
             }
                 // Если же выбранного варианта нет, то сообщаем об этом:
             else{
@@ -386,7 +397,11 @@ public class TestScreen extends Activity {
     *   Метод наполняет элементы экрана содержимым - т.е. следующим вопросом.
     *
     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void loadNextQuestion(){
+
+        // возвращаем цвет кнопки на системный
+        button_next.setBackground(backgroundColor);
 
         // Запускаем часы и разрешаем вывод значений на экран:
         clock.startClock();

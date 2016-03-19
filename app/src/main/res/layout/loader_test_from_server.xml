@@ -53,14 +53,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/listCategories"
         style="@style/TestListView"
-        android:listSelector="@color/blue"/>
+        android:listSelector="@color/green"/>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listTests"
         style="@style/TestListView"
-        android:listSelector="@color/blue"/>
+        android:listSelector="@color/green"/>
 
 
 

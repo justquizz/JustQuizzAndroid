@@ -9,10 +9,12 @@
 
     <style name="TestListView" parent="@android:style/Widget.ListView">
         <item name="android:fastScrollEnabled">true</item>
-        <item name="android:divider">#FF33B5E5</item><!-- Цвет разделителя и его ширина -->
-        <item name="android:dividerHeight">5dp</item>
-        <item name="android:layout_margin">10dp</item><!-- отступ от ListView -->
-        <item name="android:background">#FFFFFF</item> <!-- Фон ListView -->
+        <item name="android:divider">@color/green</item><!-- Цвет разделителя и его ширина -->
+        <item name="android:dividerHeight">2dp</item>
+        <item name="android:headerDividersEnabled">false</item> <!-- разделитель над каждым -->
+        <item name="android:footerDividersEnabled">false</item> <!-- разделитель под каждым -->
+        <item name="android:layout_margin">10dp</item><!-- внешний отступ ListView -->
+        <item name="android:background">@color/white</item> <!-- Фон ListView -->
 
     </style>
 

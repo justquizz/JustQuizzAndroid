@@ -22,7 +22,8 @@
         android:id="@+id/button_download_test"
         android:onClick="onClick"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.10"/>
+        android:layout_weight="0.10"
+        android:background="@color/green"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/listTest"
         style="@style/TestListView"
-        android:listSelector="@color/blue"
+        android:listSelector="@color/green"
         android:layout_weight="0.60" />
 
     <Button
@@ -46,7 +47,8 @@
         android:id="@+id/button_start_test"
         android:onClick="onClick"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.10"/>
+        android:layout_weight="0.10"
+        android:background="@color/green"/>
 
 
 

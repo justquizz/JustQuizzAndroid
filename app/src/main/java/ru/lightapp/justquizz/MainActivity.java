@@ -100,7 +100,6 @@ public class MainActivity extends ActionBarActivity {
         selectedTest = "";
 
         if(!testTitles.isEmpty())  {
-
             /*
             * Находим список, создаем адаптер и присваиваем адаптер списку:
             */
@@ -192,7 +191,7 @@ public class MainActivity extends ActionBarActivity {
 
 
             case R.id.button_start_test:
-                if (selectedTest != "") {
+                if (!selectedTest.equals("")) {
                     /*
                     * Записываем путь к файлу в БД,
                     * и вызываем экран с тестом:
