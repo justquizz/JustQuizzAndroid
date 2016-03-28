@@ -140,6 +140,13 @@ public class TestScreen extends Activity {
     }
 
 
+    @Override
+    public void finish(){
+        stopService(timerService);
+        System.out.println(" --- finish() in TestScreen.class");
+        super.finish();
+    }
+
 
     /*
     *   Обработчик нажатия клавиши "Ответить/Далее"
