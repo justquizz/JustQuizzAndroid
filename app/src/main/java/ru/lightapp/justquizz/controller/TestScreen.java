@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Messenger;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import android.os.Handler;
 import android.os.Message;
 import ru.lightapp.justquizz.R;
+import ru.lightapp.justquizz.TimerService;
 import ru.lightapp.justquizz.dataexchange.DBManager;
 import ru.lightapp.justquizz.model.*;
 
@@ -31,35 +33,37 @@ public class TestScreen extends Activity {
 
     /*
     * Элементы экрана:
+    * - Поле с текстом вопроса;
+    * - Поле, в котором тикают секунды и считают время ответа юзера;
+    * - Кнопка "Ответить/Далее";
+    * - Системный цвет кнопок;
     */
-    private TextView nameQuestion;  // Поле с текстом вопроса
-    private TextView timer;         // Поле, в котором тикают секунды и считают время ответа юзера
-    private Button button_next;     // Кнопка "Ответить/Далее"
+    private TextView nameQuestion;
+    private static TextView textTimer;
+    private Button button_next;
     private Drawable backgroundColor;
 
-    private Question question;      // экземпляр класса сдержит информацию о текущем вопросе
-    private ArrayList<CheckBox> checkBoxes = new ArrayList<>(4); // Масссив содержачий все checkbox
-
-
-    // Флаг "Был ли обработан ответ юзера" (нажата кнопка "Ответить")
+    /* TODO Разделить кнопку на две: "Ответить" и "Далее"
+    * - экземпляр класса сдержит информацию о текущем вопросе;
+    * - Масссив содержачий все checkbox;
+    * - Флаг "Был ли обработан ответ юзера" (нажата кнопка "Ответить");
+    * - Флаг ошибся ли юзер в ответе;
+    * */
+    private Question question;
+    private ArrayList<CheckBox> checkBoxes = new ArrayList<>(4);
     private boolean isUserReply = false;
-
-    // Флаг ошибся ли юзер в ответе:
     private boolean rightAnswer = false;
 
-    //  Поток считающий затраченное время на ответ каждого вопроса
-    Clock clock;
-
-    // Создаем Handler  для передачи секунд из потока в поток:
-    private Handler handler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            String text = (String) msg.obj;
-            timer.setText(text);
-        }
-    };
-
+    /*
+    * - Сервис, считающий время ответа;
+    * - handler для обмена данными с сервисом;
+    * - Флаг, разрешающий вывод времени на экран;
+    * - Флаг, указывающий, что таймер-сервис запущен;
+    */
+    private Intent timerService;
+    private static Handler messageHandler = new MessageHandler();
+    private static boolean printTime = false;
+    private boolean isTimerRun = false;
 
     /*
     * Объект, содержащий все ответы и информацию о тесте:
@@ -67,10 +71,30 @@ public class TestScreen extends Activity {
     private  ArrayUsersAnswer arrayUsersAnswer = new ArrayUsersAnswer();
 
 
+    // Создаем Handler  для передачи секунд из потока в поток:
+    private static class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            if(printTime) {
+                String text = (String) message.obj;
+                textTimer.setText(text);
+            }
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_screen);
+
+        /*
+        * - Создаем, но пока не запускаем таймер-сервис;
+        * - Передаем в него handler;
+        */
+        timerService = new Intent(this, TimerService.class);
+        timerService.putExtra("MESSENGER", new Messenger(messageHandler));
+
 
         // Здесь получаем null, а заполнение объекта происходит методом question.nextQuestion();
         //question = Question.getInstance();
@@ -82,7 +106,7 @@ public class TestScreen extends Activity {
         */
         nameQuestion = (TextView) findViewById(R.id.nameQuestion);
         nameQuestion.setTextColor(getResources().getColor(R.color.text_question_color));
-        timer = (TextView) findViewById(R.id.timer);
+        textTimer = (TextView) findViewById(R.id.timer);
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
         CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
         CheckBox checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
@@ -94,8 +118,6 @@ public class TestScreen extends Activity {
         checkBoxes.add(checkBox3);
         checkBoxes.add(checkBox4);
 
-        // Создаем часы:
-        clock = new Clock();
 
         // Запоминаем фон кнопки, цвет системы:
         backgroundColor = button_next.getBackground();
@@ -106,9 +128,18 @@ public class TestScreen extends Activity {
         */
         question.nextQuestion();
         loadNextQuestion();
-
-
     }
+
+    /*
+    * Обработка нажатия аппаратной кнопки НАЗАД.
+    */
+    @Override
+    public void onBackPressed() {
+
+        openQuitDialog();
+    }
+
+
 
     /*
     *   Обработчик нажатия клавиши "Ответить/Далее"
@@ -127,7 +158,6 @@ public class TestScreen extends Activity {
 
             /*
             *    Обрабатываем нажатие "Ответить".
-            *
             *   т.е. юзер еще не дал ответ на вопрос:
             */
 
@@ -145,21 +175,23 @@ public class TestScreen extends Activity {
                 // Если какой-либо вариант был выбран, то обрабатываем ответ:
             if(isChecked) {
 
-                // Создаем объект, который будет содержать всю информацию об ответе юзера:
+                /*
+                * Создаем объект, который будет содержать всю информацию об ответе юзера.
+                * И далее заполняем его.
+                */
                 Answer answer = new Answer();
 
                 /*
                 * Работаем со временем:
+                * - Сохраняем время;
+                * - Выводим на экран сохраненное время;
                 * - Останавливаем часы считающие секунды;
-                * - сохраняем время;
-                * - выводим на экран сохраненное время;
-                * - обнуляем счетчик;
+                * - Сбрасываем флаг, что таймер-сервис запущен;
                 */
-                clock.stopClock();
-                answer.setTime(clock.getTime());
-                timer.setText(answer.getTime());
-                clock.resetClock();
-
+                answer.setTime(textTimer.getText().toString());
+                textTimer.setText(answer.getTime());
+                stopService(timerService);
+                isTimerRun = false;
 
                 // Сохраняем номер вопроса:
                 answer.setNumberOfQuestion(question.getNumberOfQuestion());
@@ -167,7 +199,6 @@ public class TestScreen extends Activity {
 
                 // устанавливаем флажок, что юзер дал верный ответ:
                 if(checkBoxes.get(question.getTrueAnswer() - 1).isChecked()) {
-                    //System.out.println("You make right choice" + " --- ");
                     rightAnswer = true;
                 }
 
@@ -205,15 +236,15 @@ public class TestScreen extends Activity {
                     arrayUsersAnswer.incrementFalseUserAnswer();
 
 
-                // Выделяем правильный вариант:
-                checkBoxes.get(question.getTrueAnswer() - 1).setBackgroundColor(getResources().getColor(R.color.background_right_answer));
-                // Кладем ответ пользователя в массив:
-                arrayUsersAnswer.addAnswerOfUser(answer);
-                // устанавливаем флажок, что ответ юзера был обработан
-                isUserReply = true;
-                // Меняем надпись на кнопке
-                button_next.setText(R.string.button_next);
-                button_next.setBackgroundColor(getResources().getColor(R.color.background_right_answer));
+                    // Выделяем правильный вариант:
+                    checkBoxes.get(question.getTrueAnswer() - 1).setBackgroundColor(getResources().getColor(R.color.background_right_answer));
+                    // Кладем ответ пользователя в массив:
+                    arrayUsersAnswer.addAnswerOfUser(answer);
+                    // устанавливаем флажок, что ответ юзера был обработан
+                    isUserReply = true;
+                    // Меняем надпись на кнопке
+                    button_next.setText(R.string.button_next);
+                    button_next.setBackgroundColor(getResources().getColor(R.color.background_right_answer));
             }
                 // Если же выбранного варианта нет, то сообщаем об этом:
             else{
@@ -249,7 +280,7 @@ public class TestScreen extends Activity {
                 *   иначе:
                 *  - выставляем флаг, что ответ еще не обработан;
                 *  - текст на кнопке меняем на "Ответить";
-                *  - перисовываем экран методом loadNextQuestion();
+                *  - перерисовываем экран методом loadNextQuestion();
                 */
 
                 if(arrayUsersAnswer.getSizeAnswerOfUser() > question.getNumberOfQuestion()){
@@ -304,10 +335,16 @@ public class TestScreen extends Activity {
             stringWithResult.append(oneItem.getNumberOfQuestion()); // Присоединяем номер вопроса
             stringWithResult.append(" - ");
 
-            if(oneItem.isRightUserAnswer())
-                stringWithResult.append("верно - " + oneItem.getTime() + ".\n");
-            else
-                stringWithResult.append("не верно - " + oneItem.getTime() + ".\n");
+            if(oneItem.isRightUserAnswer()) {
+                stringWithResult.append("верно - ");
+                stringWithResult.append(oneItem.getTime());
+                stringWithResult.append(".\n");
+            }
+            else {
+                stringWithResult.append("не верно - ");
+                stringWithResult.append(oneItem.getTime());
+                stringWithResult.append(".\n");
+            }
         }
 
         stringWithResult.append("\n \n");
@@ -329,52 +366,58 @@ public class TestScreen extends Activity {
     */
     public void onClickPrevious(View view){
 
-
         if(question.getNumberOfQuestion() == 1){
             /*
             * Подтверждение прерывания теста,
-            * т.е. во время первого вопроса нажата клавиша НАЗАД:
-            * - устанавливаем слушательн на кнопку ДА;
-            * - устанавливаем слушательн на кнопку НЕТ;
-             */
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.string_do_u_wanna_finish_test).setCancelable(false).
-                    setNegativeButton(R.string.string_yes, new DialogInterface.OnClickListener() {
+            * т.е. во время первого вопроса нажата клавиша НАЗАД
+            */
+            openQuitDialog();
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            TestScreen.this.finish();
-                        }
-
-
-                    }).
-                    setPositiveButton(R.string.string_no, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-
-                    })
-                    ;
-            AlertDialog alert = builder.create();
-            alert.show();
-
-
-            //Toast toast = Toast.makeText(getApplicationContext(),
-            //        R.string.toast_do_u_wanna_finish_test, Toast.LENGTH_SHORT);
-            //toast.show();
-            //this.finish();
         }else {
 
             /*
             * Если это не вопрос№1, то загружаем уже сохраненный ответ юзера:
             */
-            clock.stopPrintingTime();
+            // Делаем запрет на изменение TextField timer
+            printTime = false;
+
             question.previousQuestion();
             loadSavedUserAnswer();
         }
     }
+
+
+    /*
+    * Подтверждение прерывания теста,
+    * - устанавливаем слушатель на кнопку ДА;
+    * - устанавливаем слушатель на кнопку НЕТ;
+    */
+    private void openQuitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.string_do_u_wanna_finish_test).setCancelable(false).
+                setNegativeButton(R.string.string_yes, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        stopService(timerService);
+                        TestScreen.this.finish();
+                    }
+
+
+                }).
+                setPositiveButton(R.string.string_no, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+
+                })
+        ;
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 
     /*
     * Метод "очищает" chekbox'ы - снимат галочку, делает нейтральный фон
@@ -400,16 +443,20 @@ public class TestScreen extends Activity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void loadNextQuestion(){
 
+        // Стартуем таймер:
+        // Разрешаем печатать время на экран!
+        printTime = true;
+        if(!isTimerRun) {
+            startService(timerService);
+            isTimerRun = true;
+        }
+
         // возвращаем цвет кнопки на системный
         button_next.setBackground(backgroundColor);
 
-        // Запускаем часы и разрешаем вывод значений на экран:
-        clock.startClock();
-        clock.startPrintingTime();
-
         clearCheckBoxAndSetTitleOfQuestion();
 
-        timer.setText("00:00");
+        textTimer.setText(R.string.timer);
 
         // Заполняем checkbox текстом:
         for(int i = 0; i < checkBoxes.size(); i++)
@@ -425,7 +472,7 @@ public class TestScreen extends Activity {
 
         // Выводим на экран сохраненное время ответа на данный вопрос:
         String savedTime = arrayUsersAnswer.getAnswers().get(question.getNumberOfQuestion() - 1).getTime();
-        timer.setText(savedTime);
+        textTimer.setText(savedTime);
         clearCheckBoxAndSetTitleOfQuestion();
 
         /*
@@ -471,145 +518,4 @@ public class TestScreen extends Activity {
 
 
 
-    public class Clock extends Thread {
-
-        private int hours;
-        private int minutes;
-        private int seconds;
-
-        private boolean isStart = true;
-        private boolean isPrintingTime = true;
-
-        private StringBuilder stringWithTime = new StringBuilder();
-
-        public Clock() {
-
-            resetClock();
-            start();
-        }
-
-
-        public void run() {
-
-            try {
-                while (true){
-
-                    if(isStart){
-                        countTime();
-                    }
-                    Thread.sleep(1000);
-                }
-            } catch (InterruptedException e) {
-                System.out.println(" --- something wrong....hm");
-            }
-        }
-
-
-        private void countTime() throws InterruptedException {
-
-            if(isPrintingTime) {
-                String str = getTime();
-
-                Message msg = new Message();
-                msg.obj = str;
-                handler.sendMessage(msg);
-            }
-
-            seconds++;
-
-            if (seconds >= 60) {
-                seconds = 0;
-                minutes++;
-            }
-
-            if (minutes >= 60) {
-                minutes = 0;
-                hours++;
-            }
-
-            if (hours >= 24) {
-                hours = 0;
-            }
-        }
-
-
-        // Сброс значений часов на "ноль":
-        public void resetClock(){
-            this.hours = 0;
-            this.minutes = 0;
-            this.seconds = 0;
-
-            System.out.println(" --- обнуление");
-        }
-
-        // Остановить подсчет времени:
-        public void stopClock(){
-            isStart = false;
-            System.out.println(" --- стоп таймера");
-        }
-
-        // Запустить подсчет времени:
-        public void startClock(){
-            isStart = true;
-            System.out.println(" --- старт таймера");
-        }
-
-        // Разрешение вывода значений таймера на экран:
-        public void startPrintingTime(){
-            isPrintingTime = true;
-
-        }
-
-        // Запрет вывода значений таймера на экран:
-        public void stopPrintingTime(){
-            isPrintingTime = false;
-
-        }
-
-        // Получить значение часов:
-        // Собираем строку в формате 00:05 или 01:05:00:
-        public String getTime(){
-
-            stringWithTime.setLength(0);
-
-            if(hours > 0 && hours < 10){
-                stringWithTime.append("0");
-                stringWithTime.append(hours);
-                stringWithTime.append(":");
-            }
-
-            if(hours > 0 && hours > 10){
-                stringWithTime.append(hours);
-                stringWithTime.append(":");
-            }
-
-            if(minutes == 0){
-                stringWithTime.append("00");
-                stringWithTime.append(":");
-            }else {
-
-                if (minutes < 10) {
-                    stringWithTime.append("0");
-                    stringWithTime.append(minutes);
-                    stringWithTime.append(":");
-                }
-
-                if (minutes >= 10) {
-                    stringWithTime.append(minutes);
-                    stringWithTime.append(":");
-                }
-            }
-
-
-            if(seconds < 10){
-                stringWithTime.append("0");
-                stringWithTime.append(seconds);
-            }
-
-            if(seconds >= 10){
-                stringWithTime.append(seconds);
-            }
-            return stringWithTime.toString();
-        }
-    }
 }
