@@ -74,17 +74,29 @@ public class TimerService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-
+    /*
+    * Остановка сервиса.
+    * - выставляем флаг прерывания цикла;
+    * - ждем 1 секунду, пока поток таймера выйдет из цикла;
+    * - завершаем поток таймера;
+    * - завершаем поток сервиса;
+    */
     public void onDestroy()
     {
         isInterrupted = true;
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println(" --- error Thread.sleep in onDestroy() TimerService");
+            e.printStackTrace();
+        }
+
         threadTimer.interrupt();
 
         System.out.println(" --- clock.stopClock & onDestroy()");
         stopSelf(startId);
     }
-
-
 
 
 

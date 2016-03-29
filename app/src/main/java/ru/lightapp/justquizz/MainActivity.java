@@ -196,7 +196,7 @@ public class MainActivity extends ActionBarActivity {
                     * Записываем путь к файлу в БД,
                     * и вызываем экран с тестом:
                     */
-                    db.createPathToFile(selectedTest);
+                    db.initSelectedTest(selectedTest);
                     Intent intent = new Intent(MainActivity.this, TestScreen.class);
                     startActivity(intent);
                 } else {

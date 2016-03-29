@@ -14,6 +14,10 @@ import ru.lightapp.justquizz.R;
  *
  * Singleton.
  * Экземпляр класса предоставляет доступ к БД.
+ *
+ *
+ *
+ *
  */
 public class DBManager {
 
@@ -43,7 +47,7 @@ public class DBManager {
 
     /*
     * Реализация Singleton c двойной блокировкой:
-    * - context     - нужен для работы с БД, обычно передается просто 'this';
+    * - context  нужен для работы с БД, обычно передается просто 'this';
     */
     public static DBManager getInstance(Context context){
         if(instance == null){
@@ -95,6 +99,8 @@ public class DBManager {
             contentValues.put("category", category);
             contentValues.put("author", author);
             contentValues.put("link_author_page", link_author_page);
+            contentValues.put("start_test", "0");
+            contentValues.put("end_test", "0");
             contentValues.put("description", description);
             //contentValues.put("deleted", "");
 
@@ -149,6 +155,46 @@ public class DBManager {
         cursor.close();
         //openHelper.close();
         return list;
+    }
+
+
+    /*
+    * Инициализация при запуске теста:
+    * - записываем в БД имя файла выбранного теста;
+    * - записываем полный путь к этому файлу;
+    */
+    public void initSelectedTest(String selectedTest) {
+
+        saveFileNameSelectedTest(selectedTest);
+        createPathToFile(selectedTest);
+    }
+
+    /*
+    * Пишем в БД имя файла текущего теста:
+    */
+    public void saveFileNameSelectedTest(String selectedTest){
+
+        String fileName = getFileName(selectedTest);
+
+        openHelper = new OpenHelper(this.context);
+
+        System.out.println(" --- пишем имя файла - " + fileName);
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("file_name", fileName);
+
+        int rowId = db.update(GLOBAL_STRINGS,
+                contentValues,
+                "_id = ?",
+                new String[]{"1"});
+
+        System.out.println(" --- записали имя файла " + rowId);
+
+        openHelper.close();
+
     }
 
 
@@ -485,6 +531,21 @@ public class DBManager {
 
     }
 
+    public void incrementStartTest() {
+
+
+
+        /*
+        * TODO
+        * - получить из БД имя текущего файла
+        * - получить из БД кол-во запусков теста
+        * - увеличить на 1
+        * - записать в БД
+        * */
+
+
+    }
+
 
     private  static class OpenHelper extends SQLiteOpenHelper {
 
@@ -505,6 +566,8 @@ public class DBManager {
                     "category TEXT, " +
                     "author TEXT, " +
                     "link_author_page TEXT, " +
+                    "start_test TEXT, " +
+                    "end_test TEXT, " +
                     "description TEXT)");
                     //"deleted TEXT)");
 

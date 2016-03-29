@@ -89,6 +89,13 @@ public class TestScreen extends Activity {
         setContentView(R.layout.test_screen);
 
         /*
+        * Инкрементруем количество запусков теста в БД
+        */
+
+        DBManager db = DBManager.getInstance(this);
+        db.incrementStartTest();
+
+        /*
         * - Создаем, но пока не запускаем таймер-сервис;
         * - Передаем в него handler;
         */
@@ -139,12 +146,19 @@ public class TestScreen extends Activity {
         openQuitDialog();
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        stopService(timerService);
+        System.out.println(" --- onDestroy() in TestScreen.class");
+    }
+
 
     @Override
     public void finish(){
+        super.finish();
         stopService(timerService);
         System.out.println(" --- finish() in TestScreen.class");
-        super.finish();
     }
 
 
@@ -454,8 +468,11 @@ public class TestScreen extends Activity {
         // Разрешаем печатать время на экран!
         printTime = true;
         if(!isTimerRun) {
+            System.out.println(" --- !isTimerRun = false");
             startService(timerService);
             isTimerRun = true;
+        }else{
+            System.out.println(" --- isTimerRun = true");
         }
 
         // возвращаем цвет кнопки на системный
