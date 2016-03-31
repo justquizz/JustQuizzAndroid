@@ -37,7 +37,7 @@
 
 
 
-    <string name="text_your_result"><b>Ваши результаты:</b> \n \n</string>
+    <string name="text_your_result">Ваши результаты:</string>
     <string name="text_your_choice"> вариант </string>
 
     <string name="button_download">Загрузить</string>

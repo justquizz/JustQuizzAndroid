@@ -70,6 +70,10 @@ public class TestScreen extends Activity {
     */
     private  ArrayUsersAnswer arrayUsersAnswer = new ArrayUsersAnswer();
 
+    /*
+    * Флаг, разрешающий увеличить в БД количество раз прохождения теста
+    */
+    private boolean isPermissionIncrementTrue = true;
 
     // Создаем Handler  для передачи секунд из потока в поток:
     private static class MessageHandler extends Handler {
@@ -89,11 +93,12 @@ public class TestScreen extends Activity {
         setContentView(R.layout.test_screen);
 
         /*
-        * Инкрементруем количество запусков теста в БД
+        * - Инкрементруем количество запусков теста в БД;
+        * - Выставляем флаг разрешение;
         */
-
         DBManager db = DBManager.getInstance(this);
         db.incrementStartTest();
+        isPermissionIncrementTrue = true;
 
         /*
         * - Создаем, но пока не запускаем таймер-сервис;
@@ -136,6 +141,7 @@ public class TestScreen extends Activity {
         question.nextQuestion();
         loadNextQuestion();
     }
+
 
     /*
     * Обработка нажатия аппаратной кнопки НАЗАД.
@@ -327,7 +333,8 @@ public class TestScreen extends Activity {
     /*
     * Метод сохраняет результат теста в виде строки в БД.
     * - получаем строку с результатом теста;
-    * - записываем ее в БД.
+    * - записываем ее в БД;
+    * - если есть разрешение, то увеличиваем кол-во
     */
     private void saveTestResult() {
 
@@ -336,6 +343,11 @@ public class TestScreen extends Activity {
         //Объект для работы с БД:
         DBManager db = DBManager.getInstance(this);
         db.saveTestResult(result);
+
+        if(isPermissionIncrementTrue) {
+            db.incrementEndTest();
+            isPermissionIncrementTrue = false;
+        }
     }
 
     /*
@@ -347,10 +359,12 @@ public class TestScreen extends Activity {
 
         StringBuilder stringWithResult = new StringBuilder();
 
+        stringWithResult.append("<b>");
+        stringWithResult.append(getString(R.string.text_your_result)); // "Ваши результаты:"
+        stringWithResult.append("</b> <br/> <br/>");
+        //stringWithResult.append("<br/> <br/>"); // "Ваши результаты: \n"
 
-        stringWithResult.append(getString(R.string.text_your_result)); // "Ваши результаты: \n"
         for(Answer oneItem : arrayUsersAnswer.getAnswers()){
-
 
             stringWithResult.append(getString(R.string.text_number_of_question)); // "Вопрос №"
             stringWithResult.append(oneItem.getNumberOfQuestion()); // Присоединяем номер вопроса
@@ -359,23 +373,23 @@ public class TestScreen extends Activity {
             if(oneItem.isRightUserAnswer()) {
                 stringWithResult.append("верно - ");
                 stringWithResult.append(oneItem.getTime());
-                stringWithResult.append(".\n");
+                stringWithResult.append(".<br/>");
             }
             else {
                 stringWithResult.append("не верно - ");
                 stringWithResult.append(oneItem.getTime());
-                stringWithResult.append(".\n");
+                stringWithResult.append(".<br/>");
             }
         }
 
-        stringWithResult.append("\n \n");
+        stringWithResult.append("<br/>");
         stringWithResult.append("Правильных ответов - ");
         stringWithResult.append(arrayUsersAnswer.getQtyTrueAndFalseAnswers()[0]);
-        stringWithResult.append("\n");
+        stringWithResult.append("<br/>");
         stringWithResult.append("Неправильных ответов - ");
         stringWithResult.append(arrayUsersAnswer.getQtyTrueAndFalseAnswers()[1]);
 
-        System.out.println(" --- на экран: " + stringWithResult);
+        //System.out.println(" --- на экран: " + stringWithResult);
 
         return stringWithResult.toString();
 

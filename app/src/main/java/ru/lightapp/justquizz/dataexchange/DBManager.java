@@ -29,7 +29,7 @@ public class DBManager {
     /*
     * Имя БД и ее версия:
     */
-    private static final String DATABASE_NAME = "jqzz13.db";
+    private static final String DATABASE_NAME = "jqzz14.db";
     private static final int DATABASE_VERSION = 1;
 
     /*
@@ -531,9 +531,12 @@ public class DBManager {
 
     }
 
+    /*
+    * Увеличиваем на 1 количество запусков текущего теста:
+    */
     public void incrementStartTest() {
 
-
+        openHelper = new OpenHelper(this.context);
 
         /*
         * TODO
@@ -542,9 +545,260 @@ public class DBManager {
         * - увеличить на 1
         * - записать в БД
         * */
+        //String fileName = getCurrentFileName();
+        // Создадим строку, которую будем возвращать:
+        String fileName = "";
 
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[]{"file_name"},
+                //"title_test = ? or deleted = ?",
+                "_id = ?",
+                new String[]{"1"},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("file_name");
+            fileName = cursor.getString(columnFileName);
+            System.out.println(" --- fileName on a incrementStartTest()" + fileName);
+        }
+
+        // Кол-во запусков:
+        int quantityStart = 0;
+        // Делаем запрос в базу данных:
+        cursor = this.db.query(TEST_TABLE,
+                new String[]{"start_test"},
+                //"title_test = ? or deleted = ?",
+                "file_name = ?",
+                new String[]{fileName},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnStartTest = cursor.getColumnIndex("start_test");
+            String qString = cursor.getString(columnStartTest);
+            System.out.println(" --- qString = " + qString);
+            quantityStart = Integer.parseInt(qString);
+            System.out.println(" --- quantityStart on a incrementStartTest() = " + quantityStart);
+        }
+
+        quantityStart++;
+        //String quantityStartString = String.valueOf(quantityStart);
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("start_test", String.valueOf(quantityStart));
+
+        int rowId = db.update(TEST_TABLE,
+                contentValues,
+                "file_name = ?",
+                new String[]{fileName});
+
+
+
+        cursor.close();
+        openHelper.close();
+
+        System.out.println(" --- инкремент запуска = " + quantityStart + " rowId=" + rowId);
+
+        //return fileName;
 
     }
+
+    /*
+    * Увеличиваем на 1 количество запусков текущего теста:
+    */
+    public void incrementEndTest() {
+
+        openHelper = new OpenHelper(this.context);
+
+        /*
+        * TODO
+        * - получить из БД имя текущего файла
+        * - получить из БД кол-во запусков теста
+        * - увеличить на 1
+        * - записать в БД
+        * */
+        //String fileName = getCurrentFileName();
+        // Создадим строку, которую будем возвращать:
+        String fileName = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[]{"file_name"},
+                //"title_test = ? or deleted = ?",
+                "_id = ?",
+                new String[]{"1"},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("file_name");
+            fileName = cursor.getString(columnFileName);
+            System.out.println(" --- fileName on a incrementEndTest()" + fileName);
+        }
+
+        // Кол-во запусков:
+        int quantityEnd = 0;
+        // Делаем запрос в базу данных:
+        cursor = this.db.query(TEST_TABLE,
+                new String[]{"end_test"},
+                //"title_test = ? or deleted = ?",
+                "file_name = ?",
+                new String[]{fileName},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnStartTest = cursor.getColumnIndex("end_test");
+            String qString = cursor.getString(columnStartTest);
+            System.out.println(" --- qString = " + qString);
+            quantityEnd = Integer.parseInt(qString);
+            System.out.println(" --- quantityEnd on a incrementEndTest() = " + quantityEnd);
+        }
+
+        quantityEnd++;
+        //String quantityStartString = String.valueOf(quantityStart);
+
+        /*
+        * Создаем объект для наших данных и наполняем его:
+        */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("end_test", String.valueOf(quantityEnd));
+
+        int rowId = db.update(TEST_TABLE,
+                contentValues,
+                "file_name = ?",
+                new String[]{fileName});
+
+
+
+        cursor.close();
+        openHelper.close();
+
+        System.out.println(" --- инкремент прохождения теста = " + quantityEnd + " rowId=" + rowId);
+
+    }
+
+    /*
+    * Метод получает количество запусков текущего теста
+    */
+    public String getQuantityStart() {
+
+        openHelper = new OpenHelper(this.context);
+        String fileName = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[]{"file_name"},
+                //"title_test = ? or deleted = ?",
+                "_id = ?",
+                new String[]{"1"},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("file_name");
+            fileName = cursor.getString(columnFileName);
+            System.out.println(" --- fileName on a getQuantityStart()" + fileName);
+        }
+
+        // Кол-во запусков:
+        String quantityStart = "";
+        // Делаем запрос в базу данных:
+        cursor = this.db.query(TEST_TABLE,
+                new String[]{"start_test"},
+                //"title_test = ? or deleted = ?",
+                "file_name = ?",
+                new String[]{fileName},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnStartTest = cursor.getColumnIndex("start_test");
+            quantityStart = cursor.getString(columnStartTest);
+            //System.out.println(" --- qString = " + qString);
+            //quantityStart = Integer.parseInt(qString);
+            System.out.println(" --- quantityStart on a getQuantityStart() = " + quantityStart);
+        }
+
+        cursor.close();
+        openHelper.close();
+
+        return quantityStart;
+    }
+
+    /*
+    * Метод получает количество полного окончания текущего теста
+    */
+    public String getQuantityEnd() {
+
+        openHelper = new OpenHelper(this.context);
+        String fileName = "";
+
+
+        // Делаем запрос в базу данных:
+        Cursor  cursor = this.db.query(GLOBAL_STRINGS,
+                new String[]{"file_name"},
+                //"title_test = ? or deleted = ?",
+                "_id = ?",
+                new String[]{"1"},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnFileName = cursor.getColumnIndex("file_name");
+            fileName = cursor.getString(columnFileName);
+            System.out.println(" --- fileName on a getQuantityEnd()" + fileName);
+        }
+
+        // Кол-во запусков:
+        String quantityEnd = "";
+        // Делаем запрос в базу данных:
+        cursor = this.db.query(TEST_TABLE,
+                new String[]{"end_test"},
+                //"title_test = ? or deleted = ?",
+                "file_name = ?",
+                new String[]{fileName},
+                null, null, null);
+        /*
+        * Если результат запроса существует, то получаем его:
+        */
+        if(cursor.moveToFirst()){
+
+            int columnStartTest = cursor.getColumnIndex("end_test");
+            quantityEnd = cursor.getString(columnStartTest);
+            //System.out.println(" --- qString = " + qString);
+            //quantityStart = Integer.parseInt(qString);
+            System.out.println(" --- quantityEnd on a getQuantityEnd() = " + quantityEnd);
+        }
+
+        cursor.close();
+        openHelper.close();
+
+        return quantityEnd;
+    }
+
 
 
     private  static class OpenHelper extends SQLiteOpenHelper {
