@@ -24,7 +24,7 @@
     <string name="text_number_of_question">Вопрос №</string>
     <string name="timer">--:--</string>
     <string name="toast_must_make_choice">Вам нужно выбрать хотя бы один вариант ответа</string>
-    <string name="string_do_u_wanna_finish_test">Вы хотите прервать тест?</string>
+    <string name="string_do_u_wanna_finish_test">Закрыть тест?</string>
     <string name="string_yes">Да</string>
     <string name="string_no">Нет</string>
 
@@ -54,41 +54,27 @@
     <string name="file_extension">.jqzz</string>
 
     <string name="how_to_info">Описание всего проекта \n \n
-
         Вы бы хотели поделиться своими знаниями с другими людьми? \n \n
-
         Просто потому, что вам этого хочется. Хочется, но вы не знаете как.
         Тогда воспользуйтесь нашим сервисом Just Quizz - образовательные тесты. \n \n
-
         На нашем сайте lightapp.ru/justquizz вы можете составить тест. Сервер его запомнит.
         И затем любой желающий сможет его загрузить на свой телефон с помощью приложения Just Quizz \n \n
-
         Как видите, все просто. \n \n
-
         Вам, как автору теста, будет доступна его статистика. Например, сколько раз тест был скачан,
-        процент правильных ответов и так далее \n \n
+        процент правильных ответов и так далее. \n \n
     </string>
 
 
 
     <string name="first_start_text1">Добрый день! \n \n
-
         Данное приложение позволяет запускать на вашем устройстве образовательные тесты. \n
-
         Тесты находятся на нашем сервере и сначала их нужно загрузить в память телефона. \n
-
         Тесты делятся на разные категории. Выберите ту, которая вам наиболее интересна. \n \n
-
         Вы можете скачать себе сразу все тесты из категории "Демонстрационные тесты":
-
     </string>
-
     <string name="first_start_button_download_demo_tests">Загрузить демонстрационные тесты</string>
-
     <string name="first_start_text2">Либо самостоятельно выбрать понравившийся тест:</string>
-
     <string name="first_start_button_download_tests">Самостоятельно выбрать тесты</string>
-
     <string name="first_start_text3">В любом случае мы желаем вам успехов в обучении!</string>
 
 
