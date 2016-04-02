@@ -74,6 +74,18 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+
+    /*
+    * Метод для перерисовки экрана
+    */
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        showTestTitles();
+    }
+
+
+
     /*
     * Метод вызывает активити при самом первом запуске приложения.
     * Которое содержит описание как пользоваться приложением,
@@ -83,14 +95,15 @@ public class MainActivity extends ActionBarActivity {
     private void showFirstStartMessage() {
 
         Intent intent = new Intent(MainActivity.this, FirstStart.class);
-        startActivityForResult(intent, 1);
+        startActivity(intent);
     }
+
 
     /*
     * Метод наполняет экран названиями тестов из БД:
     */
     private void showTestTitles(){
-        System.out.println(" --- showTestTitles");
+        //System.out.println(" --- showTestTitles");
 
        /*
        * Получаем массив доступных тестов:
@@ -162,7 +175,6 @@ public class MainActivity extends ActionBarActivity {
 
             if(listTest != null)
                 listTest.setVisibility(View.INVISIBLE);
-            //buttonTestStart.setText(R.string.button_download_test);
 
         }
     }
@@ -179,7 +191,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /*
-    * Обработка нажатия кнопок:
+    * Обработка нажатия кнопок на экране:
     */
     public void onClick(View view){
 
@@ -208,54 +220,12 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
-
-
-
-
-
-
-
-        /* Если загружен список тестов, то:
-        if(!testTitles.isEmpty()) {
-
-            /*
-            * Проверка - выбрал ли пользователь один из тестов:
-
-            if (selectedTest != null) {
-                /*
-                * Записываем путь к файлу в БД,
-                * и вызываем экран с тестом:
-
-                db.createPathToFile(selectedTest);
-                Intent intent = new Intent(MainActivity.this, TestScreen.class);
-                startActivity(intent);
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Выберите один из тестов", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }else{
-
-            startDownloadActivity();
-        }
-        */
     }
 
 
     /*
-    * Метод вызывается по завершению активности для загрузки
-    * новых тестов с сервера (LoaderTestFromServer).
-    * И на экране обновляется список с названиями тестов:
-    * */
-    @Override
-    public void onActivityResult(int request, int request2, Intent intent){
-
-        System.out.println(" --- ответ загрузки тестов, request=" + request + " request2=" + request2);
-
-        showTestTitles();
-    }
-
-
+    * Вызов контекстного меню:
+    */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -263,6 +233,9 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    /*
+    * Обработка нажатия контекстного меню:
+    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -312,12 +285,10 @@ public class MainActivity extends ActionBarActivity {
 
     /*
     * Создаем активность для загрузки новых тестов с сервера - LoaderTestFromServer.
-    * По ее завершению запускается onActivityResult()
-     * и на экране обновляется список с названиями тестов:
-    * */
+    */
     private void startDownloadActivity() {
 
         Intent intent = new Intent(MainActivity.this, LoaderTestFromServer.class);
-        startActivityForResult(intent, 16);
+        startActivity(intent);
     }
 }
