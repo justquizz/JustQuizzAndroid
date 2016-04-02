@@ -118,6 +118,10 @@ public class TestScreen extends Activity {
         */
         nameQuestion = (TextView) findViewById(R.id.nameQuestion);
         nameQuestion.setTextColor(getResources().getColor(R.color.text_question_color));
+        //nameQuestion.setEnabled(true);
+        //nameQuestion.setMinLines(3);
+        //nameQuestion.setMaxLines(10);
+
         textTimer = (TextView) findViewById(R.id.timer);
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
         CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
