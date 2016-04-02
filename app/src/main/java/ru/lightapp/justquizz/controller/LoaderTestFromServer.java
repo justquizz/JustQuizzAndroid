@@ -39,7 +39,7 @@ public class LoaderTestFromServer extends Activity {
     private ArrayAdapter<String> mAdapterTests;
     private Button button_back;
     private Button button_download;
-    //private ProgressBar progressBar;
+    
 
     /*
     * Массив с тестами полученными от сервера:
@@ -92,10 +92,6 @@ public class LoaderTestFromServer extends Activity {
 
         button_back = (Button) findViewById(R.id.button_back);
         //button_back.setVisibility(View.INVISIBLE);
-
-        // делаем невидимым progressBarDownloader, пока что не нужен:
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBarDownloader);
-        progressBar.setVisibility(View.INVISIBLE);
 
         button_download = (Button) findViewById(R.id.button_download);
         button_download.setVisibility(View.INVISIBLE);

@@ -10,34 +10,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:background="@color/background_question_field"
-        android:gravity = "center_horizontal"
-        android:weightSum="1">
+        android:background="@color/background_question_field" >
 
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-
+            android:layout_weight="1"
             android:text="@string/button_back"
             android:textColor="#FFF"
             android:id="@+id/button_back"
             android:onClick="onClickButtonBack"/>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/progressBarDownloader"
-            android:layout_weight="1"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
-
+            android:layout_weight="1"
             android:text="@string/button_download"
             android:textColor="#FFF"
             android:id="@+id/button_download"
