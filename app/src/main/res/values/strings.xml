@@ -38,6 +38,8 @@
 
 
     <string name="text_your_result">Ваши результаты:</string>
+    <string name="button_close">Закрыть</string>
+    <string name="button_finish">Завершить</string>
     <string name="text_your_choice"> вариант </string>
 
     <string name="button_download">Загрузить</string>
@@ -66,7 +68,6 @@
         Вам, как автору теста, будет доступна его статистика. Например, сколько раз тест был скачан,
         процент правильных ответов и так далее. \n \n
     </string>
-
 
 
     <string name="first_start_text1">Добрый день! \n \n

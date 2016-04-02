@@ -147,6 +147,13 @@ public class TestScreen extends Activity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == 55)
+            TestScreen.this.finish();
+    }
+
+
     /*
     * Обработка нажатия аппаратной кнопки НАЗАД.
     */
@@ -300,9 +307,9 @@ public class TestScreen extends Activity {
             if(question.getNumberOfQuestion() >= question.getQuantityQuestions()){
 
                 saveTestResult();
-
+                // Запускаем экран с результатом и ждем от него команду:
                 Intent intent = new Intent(TestScreen.this, ShowUserResult.class);
-                startActivity(intent);
+                startActivityForResult(intent, 77);
             }else {
                 /*
                 * Т.к. это не поледний вопрос в тесте, то:

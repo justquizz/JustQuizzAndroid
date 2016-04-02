@@ -3,6 +3,7 @@ package ru.lightapp.justquizz.controller;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.view.View;
 import android.widget.TextView;
 import ru.lightapp.justquizz.R;
 import ru.lightapp.justquizz.dataexchange.DBManager;
@@ -65,9 +66,9 @@ public class ShowUserResult extends ActionBarActivity {
             char2 = numString.charAt(length - 2);
             String str3 = String.valueOf(char2) + String.valueOf(char1);
             num = Integer.parseInt(str3);
-            System.out.println(" --- str=" + str3 + " num=" + num);
+            //System.out.println(" --- str=" + str3 + " num=" + num);
         }catch (StringIndexOutOfBoundsException e){
-            System.out.println(" --- число меньше 10");
+            //System.out.println(" --- число меньше 10");
         }
 
         if(num == 12 || num == 13 || num == 14) {
@@ -80,5 +81,25 @@ public class ShowUserResult extends ActionBarActivity {
                 count = " раза.";
         }
         return count;
+    }
+
+
+    /*
+    * Обработка нажатия кнопок:
+    */
+    public void onClickResultScreen(View view) {
+
+        switch (view.getId()) {
+
+            case R.id.buttonBack:
+                ShowUserResult.this.finish();
+                break;
+
+            case R.id.buttonFinish:
+                setResult(55);
+                ShowUserResult.this.finish();
+                break;
+
+        }
     }
 }
