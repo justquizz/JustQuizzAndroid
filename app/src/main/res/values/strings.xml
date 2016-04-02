@@ -44,9 +44,12 @@
     <string name="button_back">Назад</string>
     <string name="toast_download_start">Загрузка теста</string>
     <string name="toast_download_success">Загрузка завершена</string>
-    <string name="toast_test_exist">Тест был скачан ранее</string>
+    <string name="toast_test_exist">Тест был загружен ранее</string>
     <string name="press_key">Для загрузки нажми кнопку</string>
+    <string name="download_manager">Загрузчик новых тестов</string>
     <string name="choice_category">Выбери категорию:</string>
+    <string name="text_description">Описание категории с тестами:</string>
+
 
     <string name="error_server_not_found">Сервер не найден, проверьте ваше интернет соединение.</string>
 

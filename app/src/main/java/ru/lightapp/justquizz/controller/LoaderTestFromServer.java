@@ -33,7 +33,7 @@ public class LoaderTestFromServer extends Activity {
     /*
     * Элементы Activity:
     */
-    private TextView info;
+    private TextView textInfo;
     private ListView listCategories;
     private ListView listTests;
     private ArrayAdapter<String> mAdapterTests;
@@ -83,7 +83,7 @@ public class LoaderTestFromServer extends Activity {
     * - список, в который загрузим категории, доступные на севере;
     * - список, в который загрузим доступные на севере тесты для данной категории(скрываем его);
     *
-    * getCateogies() наполняет элементы экрана информацией.
+    * getCategories() наполняет элементы экрана информацией.
     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +100,8 @@ public class LoaderTestFromServer extends Activity {
         button_download = (Button) findViewById(R.id.button_download);
         button_download.setVisibility(View.INVISIBLE);
 
-        info = (TextView) findViewById(R.id.download_txt_info);
-        //info.setText(R.string.press_key);
+        textInfo = (TextView) findViewById(R.id.download_txt_info);
+        textInfo.setText(R.string.choice_category);
 
         listCategories = (ListView) findViewById(R.id.listCategories);
 
@@ -141,7 +141,7 @@ public class LoaderTestFromServer extends Activity {
                 toast = Toast.makeText(getApplicationContext(),
                         R.string.error_server_not_found, Toast.LENGTH_LONG);
                 toast.show();
-                info.setText(R.string.error_server_not_found);
+                textInfo.setText(R.string.error_server_not_found);
 
             } else {
                 final ArrayList<Integer> idCategory = categories[0];
@@ -165,7 +165,7 @@ public class LoaderTestFromServer extends Activity {
                         * При выборе категории теста, из массива извлекается  ее id.
                         * И по id с сервера получается масссив со список доступных тестов этой категории.
                         */
-                            info.setText(descriptionCategories.get(position));
+                            textInfo.setText(descriptionCategories.get(position));
                             TextView textView = (TextView) itemClicked;
                             selectedCategory = (String) textView.getText();
                             tests = server.getTestsByCategory(idCategory.get(position));
@@ -242,7 +242,7 @@ public class LoaderTestFromServer extends Activity {
                 }
 
                 // Выводим ообщение о необходимости выбора категории:
-                info.setText(R.string.choice_category);
+                textInfo.setText(R.string.choice_category);
             }
     }
 
@@ -251,7 +251,6 @@ public class LoaderTestFromServer extends Activity {
     * Обработчик кноки НАЗАД.
     * - скрывает список с доступными тестами,
     * - показывает список с категориями,
-    * - деактивизирует кнопку НАЗАД,
     * - скрывает кнопку ЗАГРУЗИТЬ,
     * - выводит сообщение о необходимости выбора категории.
     */
@@ -261,10 +260,9 @@ public class LoaderTestFromServer extends Activity {
             LoaderTestFromServer.this.finish();
 
         listTests.setVisibility(View.GONE);
-        //button_back.setVisibility(View.INVISIBLE);
         listCategories.setVisibility(View.VISIBLE);
         button_download.setVisibility(View.INVISIBLE);
-        info.setText(R.string.choice_category);
+        textInfo.setText(R.string.choice_category);
     }
 
 

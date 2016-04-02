@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         android:background="@color/background_question_field"
         android:gravity = "center_horizontal"
@@ -17,9 +18,11 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="start"
+
             android:text="@string/button_back"
+            android:textColor="#FFF"
             android:id="@+id/button_back"
             android:onClick="onClickButtonBack"/>
 
@@ -32,21 +35,26 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="end"
+
             android:text="@string/button_download"
+            android:textColor="#FFF"
             android:id="@+id/button_download"
             android:onClick="onClickDownloadTest"/>
 
     </LinearLayout>
 
+
+
     <TextView
         android:id="@+id/download_txt_info"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="60dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text=""
         android:background="@color/background_name_test" />
+
 
     <ListView
         android:layout_width="match_parent"
