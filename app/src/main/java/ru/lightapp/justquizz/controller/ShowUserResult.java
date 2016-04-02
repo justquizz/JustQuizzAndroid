@@ -1,7 +1,7 @@
 package ru.lightapp.justquizz.controller;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.widget.TextView;
 import ru.lightapp.justquizz.R;
@@ -13,7 +13,7 @@ import ru.lightapp.justquizz.dataexchange.DBManager;
  * Активити выводит результаты теста на экран.
  *
  */
-public class ShowUserResult extends Activity {
+public class ShowUserResult extends ActionBarActivity {
 
 
 
