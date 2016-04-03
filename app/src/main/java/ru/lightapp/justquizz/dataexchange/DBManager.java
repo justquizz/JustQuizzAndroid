@@ -54,11 +54,11 @@ public class DBManager {
             synchronized (DBManager.class) {
                 if(instance == null){
                     instance = new DBManager(context);
-                    System.out.println(" --- делаем объект DBManager");
+                    //System.out.println(" --- делаем объект DBManager");
                 }
             }
         }
-        System.out.println(" --- отдаем объект DBManager");
+        //System.out.println(" --- отдаем объект DBManager");
         return instance;
     }
 
@@ -88,7 +88,7 @@ public class DBManager {
 
             openHelper = new OpenHelper(this.context);
 
-            System.out.println(" --- " + titleTest + " - " + fileName + " - " + category + " - " + author + " - " + link_author_page + " - " + description);
+            //System.out.println(" --- " + titleTest + " - " + fileName + " - " + category + " - " + author + " - " + link_author_page + " - " + description);
 
         /*
         * Создаем объект для наших данных и наполняем его:
@@ -108,7 +108,7 @@ public class DBManager {
             // вставляем запись и получаем ее ID:
             rowID = db.insert(TEST_TABLE, null, contentValues);
 
-            System.out.println(" --- вставка в бд " + rowID);
+            //System.out.println(" --- вставка в бд " + rowID);
 
             openHelper.close();
 
@@ -178,7 +178,7 @@ public class DBManager {
 
         openHelper = new OpenHelper(this.context);
 
-        System.out.println(" --- пишем имя файла - " + fileName);
+        //System.out.println(" --- пишем имя файла - " + fileName);
 
         /*
         * Создаем объект для наших данных и наполняем его:
@@ -191,7 +191,7 @@ public class DBManager {
                 "_id = ?",
                 new String[]{"1"});
 
-        System.out.println(" --- записали имя файла " + rowId);
+        //System.out.println(" --- записали имя файла " + rowId);
 
         openHelper.close();
 
@@ -209,11 +209,11 @@ public class DBManager {
         String fileExtension = context.getString(R.string.file_extension);
         String pathToFileWithTest = directoryMD5 + getFileName(selectedTest) + fileExtension;
 
-        System.out.println(" --- имя файла " + pathToFileWithTest);
+        //System.out.println(" --- имя файла " + pathToFileWithTest);
 
         openHelper = new OpenHelper(this.context);
 
-        System.out.println(" --- пишем путь к файлу - " + pathToFileWithTest);
+        //System.out.println(" --- пишем путь к файлу - " + pathToFileWithTest);
 
         /*
         * Создаем объект для наших данных и наполняем его:
@@ -226,7 +226,7 @@ public class DBManager {
                 "_id = ?",
                 new String[]{"1"});
 
-        System.out.println(" --- записали путь к файлу " + rowId);
+        //System.out.println(" --- записали путь к файлу " + rowId);
 
         openHelper.close();
 
@@ -293,7 +293,7 @@ public class DBManager {
         cursor.close();
         openHelper.close();
 
-        System.out.println(" ---  из базы данных - " + fileName);
+        //System.out.println(" ---  из базы данных - " + fileName);
 
         return fileName;
     }
@@ -314,7 +314,7 @@ public class DBManager {
     */
     public String getPathToFile() {
 
-        System.out.println(" --- получаем имя файла из БД...  " );
+        //System.out.println(" --- получаем имя файла из БД...  " );
 
         openHelper = new OpenHelper(this.context);
 
@@ -343,7 +343,7 @@ public class DBManager {
         cursor.close();
         openHelper.close();
 
-        System.out.println(" --- путь к файл-тесту  из базы данных - " + pathToFile);
+        //System.out.println(" --- путь к файл-тесту  из базы данных - " + pathToFile);
 
         return pathToFile;
     }
@@ -356,7 +356,7 @@ public class DBManager {
 
         openHelper = new OpenHelper(this.context);
 
-        System.out.println(" --- пишем результат теста");
+        //System.out.println(" --- пишем результат теста");
 
         /*
         * Создаем объект для наших данных и наполняем его:
@@ -369,7 +369,7 @@ public class DBManager {
                 "_id = ?",
                 new String[]{"1"});
 
-        System.out.println(" --- записали путь к файлу " + rowId);
+        //System.out.println(" --- записали путь к файлу " + rowId);
 
         openHelper.close();
 
@@ -380,7 +380,7 @@ public class DBManager {
     */
     public String getSavedResult() {
 
-        System.out.println(" --- получаем строку с результатом теста из БД..." );
+        //System.out.println(" --- получаем строку с результатом теста из БД..." );
 
         openHelper = new OpenHelper(this.context);
 
@@ -409,7 +409,7 @@ public class DBManager {
         cursor.close();
         openHelper.close();
 
-        System.out.println(" --- строка с результатом теста из БД получена");
+        //System.out.println(" --- строка с результатом теста из БД получена");
 
         return savedResult;
 
@@ -433,7 +433,7 @@ public class DBManager {
     */
     public void deleteTest(String selectedTest) {
 
-        System.out.println(" --- здесь пишем код, помечаем запись о тесте как удаленную");
+        //System.out.println(" --- здесь пишем код, помечаем запись о тесте как удаленную");
 
         openHelper = new OpenHelper(this.context);
 
@@ -455,7 +455,7 @@ public class DBManager {
                 "title_test = ?",
                 new String[]{selectedTest});
         */
-        System.out.println(" --- запрос в БД при удалении теста - " + rowId);
+        //System.out.println(" --- запрос в БД при удалении теста - " + rowId);
 
         openHelper.close();
 
@@ -470,7 +470,7 @@ public class DBManager {
     */
     public String getFirstStart() {
 
-        System.out.println(" --- получаем имя файла из БД...  " );
+        //System.out.println(" --- получаем имя файла из БД...  " );
 
         openHelper = new OpenHelper(this.context);
 
@@ -498,7 +498,7 @@ public class DBManager {
         cursor.close();
         openHelper.close();
 
-        System.out.println(" --- флаг признак первого запуска приложения - " + firstStart);
+        //System.out.println(" --- флаг признак первого запуска приложения - " + firstStart);
 
         return firstStart;
     }
@@ -512,7 +512,7 @@ public class DBManager {
 
         openHelper = new OpenHelper(this.context);
 
-        System.out.println(" --- сбрасываем флаг первого запуска");
+        //System.out.println(" --- сбрасываем флаг первого запуска");
 
         /*
         * Создаем объект для наших данных и наполняем его:
@@ -525,7 +525,7 @@ public class DBManager {
                 "_id = ?",
                 new String[]{"1"});
 
-        System.out.println(" --- сбросили флаг первого запуска " + rowId);
+        //System.out.println(" --- сбросили флаг первого запуска " + rowId);
 
         openHelper.close();
 
@@ -564,7 +564,7 @@ public class DBManager {
 
             int columnFileName = cursor.getColumnIndex("file_name");
             fileName = cursor.getString(columnFileName);
-            System.out.println(" --- fileName on a incrementStartTest()" + fileName);
+            //System.out.println(" --- fileName on a incrementStartTest()" + fileName);
         }
 
         // Кол-во запусков:
@@ -583,9 +583,9 @@ public class DBManager {
 
             int columnStartTest = cursor.getColumnIndex("start_test");
             String qString = cursor.getString(columnStartTest);
-            System.out.println(" --- qString = " + qString);
+            //System.out.println(" --- qString = " + qString);
             quantityStart = Integer.parseInt(qString);
-            System.out.println(" --- quantityStart on a incrementStartTest() = " + quantityStart);
+            //System.out.println(" --- quantityStart on a incrementStartTest() = " + quantityStart);
         }
 
         quantityStart++;
@@ -607,7 +607,7 @@ public class DBManager {
         cursor.close();
         openHelper.close();
 
-        System.out.println(" --- инкремент запуска = " + quantityStart + " rowId=" + rowId);
+        //System.out.println(" --- инкремент запуска = " + quantityStart + " rowId=" + rowId);
 
         //return fileName;
 
@@ -646,7 +646,7 @@ public class DBManager {
 
             int columnFileName = cursor.getColumnIndex("file_name");
             fileName = cursor.getString(columnFileName);
-            System.out.println(" --- fileName on a incrementEndTest()" + fileName);
+            //System.out.println(" --- fileName on a incrementEndTest()" + fileName);
         }
 
         // Кол-во запусков:
@@ -665,9 +665,9 @@ public class DBManager {
 
             int columnStartTest = cursor.getColumnIndex("end_test");
             String qString = cursor.getString(columnStartTest);
-            System.out.println(" --- qString = " + qString);
+            //System.out.println(" --- qString = " + qString);
             quantityEnd = Integer.parseInt(qString);
-            System.out.println(" --- quantityEnd on a incrementEndTest() = " + quantityEnd);
+            //System.out.println(" --- quantityEnd on a incrementEndTest() = " + quantityEnd);
         }
 
         quantityEnd++;
@@ -689,7 +689,7 @@ public class DBManager {
         cursor.close();
         openHelper.close();
 
-        System.out.println(" --- инкремент прохождения теста = " + quantityEnd + " rowId=" + rowId);
+        //System.out.println(" --- инкремент прохождения теста = " + quantityEnd + " rowId=" + rowId);
 
     }
 
@@ -716,7 +716,7 @@ public class DBManager {
 
             int columnFileName = cursor.getColumnIndex("file_name");
             fileName = cursor.getString(columnFileName);
-            System.out.println(" --- fileName on a getQuantityStart()" + fileName);
+            //System.out.println(" --- fileName on a getQuantityStart()" + fileName);
         }
 
         // Кол-во запусков:
@@ -737,7 +737,7 @@ public class DBManager {
             quantityStart = cursor.getString(columnStartTest);
             //System.out.println(" --- qString = " + qString);
             //quantityStart = Integer.parseInt(qString);
-            System.out.println(" --- quantityStart on a getQuantityStart() = " + quantityStart);
+            //System.out.println(" --- quantityStart on a getQuantityStart() = " + quantityStart);
         }
 
         cursor.close();
@@ -769,7 +769,7 @@ public class DBManager {
 
             int columnFileName = cursor.getColumnIndex("file_name");
             fileName = cursor.getString(columnFileName);
-            System.out.println(" --- fileName on a getQuantityEnd()" + fileName);
+            //System.out.println(" --- fileName on a getQuantityEnd()" + fileName);
         }
 
         // Кол-во запусков:
@@ -790,7 +790,7 @@ public class DBManager {
             quantityEnd = cursor.getString(columnStartTest);
             //System.out.println(" --- qString = " + qString);
             //quantityStart = Integer.parseInt(qString);
-            System.out.println(" --- quantityEnd on a getQuantityEnd() = " + quantityEnd);
+            //System.out.println(" --- quantityEnd on a getQuantityEnd() = " + quantityEnd);
         }
 
         cursor.close();
@@ -854,7 +854,7 @@ public class DBManager {
             // вставляем запись и получаем ее ID:
             long rowID =  db.insert(GLOBAL_STRINGS, null, contentValues);
 
-            System.out.println(" --- вставка в таблицу global_strings " + rowID);
+            //System.out.println(" --- вставка в таблицу global_strings " + rowID);
 
         }
 

@@ -63,10 +63,10 @@ public class Tests {
 
         // проверяем доступность SD карты
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            System.out.println(" --- error: SD card not mounted");
+            //System.out.println(" --- error: SD card not mounted");
 
         } else{
-            System.out.println(" --- error: SD card  mounted");
+            //System.out.println(" --- error: SD card  mounted");
         }
 
         // получаем путь к SD

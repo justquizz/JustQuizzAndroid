@@ -47,7 +47,7 @@ public class FirstStart extends ActionBarActivity {
     */
     public void onClickDownloadAllDemo(View view) {
 
-        System.out.println(" --- onClickDownloadAllDemo");
+        //System.out.println(" --- onClickDownloadAllDemo");
 
 
         ArrayList<SingleTest> arrayTests  = server.getTestsByCategory(1);
@@ -73,10 +73,10 @@ public class FirstStart extends ActionBarActivity {
                     long rowID = db.insertNewTest(titleTest, fileNameTest, category, author, linkAuthorPage, descrTest);
 
                     if(rowID != -1){
-                        System.out.println(" --- файл скачан! - " + titleTest + " вставка в БД" + rowID);
+                        //System.out.println(" --- файл скачан! - " + titleTest + " вставка в БД" + rowID);
 
                     }else{
-                        System.out.println(" --- проблема с БД при вставке теста FirstStart.java ");
+                        //System.out.println(" --- проблема с БД при вставке теста FirstStart.java ");
                     }
 
                 }
@@ -91,7 +91,7 @@ public class FirstStart extends ActionBarActivity {
         }else{
             toast = Toast.makeText(getApplicationContext(), R.string.error_server_not_found, Toast.LENGTH_SHORT);
             toast.show();
-            System.out.println(" --- arrayTests == null");
+            //System.out.println(" --- arrayTests == null");
         }
 
     }

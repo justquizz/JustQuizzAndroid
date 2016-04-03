@@ -19,7 +19,7 @@ public class SingleTest {
     private String linkAuthorPage;
 
     public SingleTest(){
-        System.out.println(" --- конструктор SingleTest");
+        //System.out.println(" --- конструктор SingleTest");
     }
 
 

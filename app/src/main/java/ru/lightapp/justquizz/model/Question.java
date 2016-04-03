@@ -81,7 +81,7 @@ public class Question {
         // Собираем массив с вариантами ответов
         for(int i = 1; i <= quantityAnswers; i++){
             arrayAnswers[i] = fileManager.getAnswer(numberOfQuestion, i);
-            System.out.println(i + " --- " + arrayAnswers[i]);
+            //System.out.println(i + " --- " + arrayAnswers[i]);
         }
     }
 
@@ -99,7 +99,7 @@ public class Question {
         // Собираем массив с вариантами ответов
         for(int i = 1; i <= quantityAnswers; i++){
             arrayAnswers[i] = fileManager.getAnswer(numberOfQuestion, i);
-            System.out.println(i + " --- " + arrayAnswers[i]);
+            //System.out.println(i + " --- " + arrayAnswers[i]);
         }
     }
 

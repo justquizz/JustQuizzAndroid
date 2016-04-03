@@ -43,14 +43,14 @@ public class FileManager {
         if(instance == null){
             synchronized (FileManager.class) {
                 if(instance == null){
-                    System.out.println(" --- делаем объект FileManager");
+                    //System.out.println(" --- делаем объект FileManager");
                     instance = new FileManager();
                 }
             }
         }
 
         initPathToFile();
-        System.out.println(" --- отдаем объект FileManager");
+        //System.out.println(" --- отдаем объект FileManager");
         return instance;
     }
 

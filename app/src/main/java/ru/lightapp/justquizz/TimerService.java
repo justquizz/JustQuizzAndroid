@@ -68,7 +68,7 @@ public class TimerService extends Service {
             threadTimer = new Thread(clock);
             threadTimer.start();
 
-            System.out.println(" --- старт сервиса onStartCommand " + startId);
+            //System.out.println(" --- старт сервиса onStartCommand " + startId);
 
         }
         return super.onStartCommand(intent, flags, startId);
@@ -88,13 +88,13 @@ public class TimerService extends Service {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            System.out.println(" --- error Thread.sleep in onDestroy() TimerService");
+            //System.out.println(" --- error Thread.sleep in onDestroy() TimerService");
             e.printStackTrace();
         }
 
         threadTimer.interrupt();
 
-        System.out.println(" --- clock.stopClock & onDestroy()");
+        //System.out.println(" --- clock.stopClock & onDestroy()");
         stopSelf(startId);
     }
 
@@ -129,7 +129,7 @@ public class TimerService extends Service {
         public void run() {
 
             if(!isRun) {
-                System.out.println(" --- старт Clock!");
+                //System.out.println(" --- старт Clock!");
                 isRun = true;
                 while (!isInterrupted) {
 
@@ -138,7 +138,7 @@ public class TimerService extends Service {
                         Thread.sleep(1000);
 
                     } catch (InterruptedException e) {
-                        System.out.println(" --- error Thread.sleep in TimerService");
+                        //System.out.println(" --- error Thread.sleep in TimerService");
                         e.printStackTrace();
                     }
                 }
@@ -157,7 +157,7 @@ public class TimerService extends Service {
                 Message msg = new Message();
                 msg.obj = str;
 
-                System.out.println(" --- " + str);
+                //System.out.println(" --- " + str);
                 //handler.sendMessage(msg);
                 sendMessage(str);
 

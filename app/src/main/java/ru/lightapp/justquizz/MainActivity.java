@@ -149,7 +149,7 @@ public class MainActivity extends ActionBarActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
 
-                                    System.out.println(" --- удаляем - " + selectedTest);
+                                    //System.out.println(" --- удаляем - " + selectedTest);
                                     deleteTest(selectedTest);
                                 }
                             }).

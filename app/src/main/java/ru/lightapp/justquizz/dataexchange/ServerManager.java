@@ -50,11 +50,11 @@ public class ServerManager {
             synchronized (ServerManager.class) {
                 if(instance == null){
                     instance = new ServerManager();
-                    System.out.println(" --- делаем объект ServerManager");
+                    //System.out.println(" --- делаем объект ServerManager");
                 }
             }
         }
-        System.out.println(" --- отдаем объект ServerManager");
+        //System.out.println(" --- отдаем объект ServerManager");
         return instance;
     }
 
@@ -85,7 +85,7 @@ public class ServerManager {
             e.printStackTrace();
         }
 
-        System.out.println(((new Date().getTime()) - start) + " ms --- xml processing......");
+        //System.out.println(((new Date().getTime()) - start) + " ms --- xml processing......");
 
         return categories;
     }
@@ -157,16 +157,16 @@ public class ServerManager {
                 categories[1] = title;
                 categories[2] = description;
             }catch (UnknownHostException e) {
-                System.out.println(" --- Unable to resolve host lightapp.ru");
+                //System.out.println(" --- Unable to resolve host lightapp.ru");
                 error.add("check your Internet connection.....");
                 categories[3] = error;
 
             }catch (Exception e) {
-                System.out.println(" --- Что еще за ошибка?)");
+                //System.out.println(" --- Что еще за ошибка?)");
                 e.printStackTrace();
                 error.add("Server have problem, try later.....");
                 categories[3] = error;
-                System.out.println(" --- end trace");
+               // System.out.println(" --- end trace");
             }
 
             return categories;
@@ -199,12 +199,12 @@ public class ServerManager {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
-            System.out.println("--- ошибка исполнения потока, получающего тесты от сервера");
+            //System.out.println("--- ошибка исполнения потока, получающего тесты от сервера");
 
             e.printStackTrace();
         }
 
-        System.out.println(((new Date().getTime()) - start) + " ms --- xml processing......");
+        //System.out.println(((new Date().getTime()) - start) + " ms --- xml processing......");
 
         /*
         ArrayList<String> title = tests[0];
@@ -255,7 +255,7 @@ public class ServerManager {
                 готовим API, позволяющий выполнять разбор документа
                 загружаем в парсер полученный ответ и вызываем метод parse
                 */
-                System.out.println(" --- " + urlGetTestsByCategory);
+                //System.out.println(" --- " + urlGetTestsByCategory);
 
                 URL url = new URL(urlGetTestsByCategory);
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -267,7 +267,7 @@ public class ServerManager {
                 // Получаем массив со всеми тегами <test />:
                 NodeList nodeList = doc.getElementsByTagName("test");
 
-                System.out.println(" --- кол-во элементов" + nodeList.getLength() );
+                //System.out.println(" --- кол-во элементов" + nodeList.getLength() );
 
                 /*
                 * Проходим в цикле по массиву с тегами и считывем атрибуты
@@ -276,7 +276,7 @@ public class ServerManager {
                  */
                 for(int i=0; i<nodeList.getLength(); i++){
 
-                    System.out.print(" --- " + i + " --- ");
+                    //System.out.print(" --- " + i + " --- ");
 
                     SingleTest singleTest = new SingleTest();
 
@@ -315,7 +315,7 @@ public class ServerManager {
                     // Кладем singleTest в массив с тестами:
                     arrayTest.add(singleTest);
 
-                    System.out.println(singleTest.getTitle() + " --- " + singleTest.getFileName());
+                    //System.out.println(singleTest.getTitle() + " --- " + singleTest.getFileName());
                 }
 
                 /*
@@ -327,133 +327,21 @@ public class ServerManager {
 
 
             }catch (UnknownHostException e) {
-                System.out.println(" --- Unable to resolve host lightapp.ru");
+                //System.out.println(" --- Unable to resolve host lightapp.ru");
                 //error.add("check your Internet connection.....");
                 //categories[2] = error;
                 arrayTest = null;
 
             }catch (Exception e) {
-                System.out.println(" --- Что еще за ошибка?)");
+                //System.out.println(" --- Что еще за ошибка?)");
                 e.printStackTrace();
                 //error.add("Something wrong.... hmm.");
-                System.out.println(" --- end trace");
+                //System.out.println(" --- end trace");
                 //tests[5] = error;
                 arrayTest = null;
             }
 
             return arrayTest;
-        }
-    }
-
-
-
-
-
-
-
-    class GetTestsThread extends AsyncTask<Void, Void, ArrayList[]>{
-
-        @Override
-        protected ArrayList[] doInBackground(Void... voids) {
-            /*
-            * Готовим массивы:
-            * - объект, содержащий два ArrayList'a;
-            * - один ArrayList - содержит названия тестов;
-            * - второй - имена файлов;
-            * - третий - описание,
-            * - четвертый - количество скачиваний,
-            * - пятый - имя автора
-            * - шестой - ошибки при загрузке.
-             */
-            ArrayList[] tests = new ArrayList[6];
-            ArrayList<String> titleArray = new ArrayList<>();
-            ArrayList<String> fileNameArray = new ArrayList<>();
-            ArrayList<String> descriptionArray = new ArrayList<>();
-            ArrayList<Integer> downloadsArray = new ArrayList<>();
-            ArrayList<String> authorArray = new ArrayList<>();
-
-            ArrayList<String> error = new ArrayList<>();
-
-            try{
-                /*
-                готовим API, позволяющий выполнять разбор документа
-                загружаем в парсер полученный ответ и вызываем метод parse
-                */
-                System.out.println(" --- " + urlGetTestsByCategory);
-
-                URL url = new URL(urlGetTestsByCategory);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                // Читаем из потока xml-данные:
-                Document doc = db.parse(new InputSource(url.openStream()));
-                // Что это?
-                doc.getDocumentElement().normalize();
-                // Получаем массив со всеми тегами <test />:
-                NodeList nodeList = doc.getElementsByTagName("test");
-
-                System.out.println(" --- кол-во элементов" + nodeList.getLength() );
-
-                /*
-                * Проходим в цикле по массиву с тегами и считывем атрибуты
-                * с названием теста и его описанием.
-                * Названия складываем в один массив, описание в другой:
-                 */
-                for(int i=0; i<nodeList.getLength(); i++){
-
-                    System.out.print(" --- " + i + " --- ");
-
-                    // Получаем узел из массива:
-                    Node node = nodeList.item(i);
-                    // Затем список его атрибутов:
-                    NamedNodeMap attributes = node.getAttributes();
-
-                    //Получаем атрибут title и его значение:
-                    Node titleAttribute  = attributes.getNamedItem("test_title");
-                    String testTitle = titleAttribute.getNodeValue();
-
-                    //Получаем атрибут file_name и его значение:
-                    Node fileNameAttribute  = attributes.getNamedItem("file_name");
-                    String fileName = fileNameAttribute.getNodeValue();
-
-                    //Получаем атрибут description и его значение:
-                    Node descriptionAttribute  = attributes.getNamedItem("description");
-                    String description = descriptionAttribute.getNodeValue();
-
-                    //Получаем атрибут downloads и его значение:
-                    Node downloadsAttribute  = attributes.getNamedItem("downloads");
-                    int downloads = Integer.parseInt(downloadsAttribute.getNodeValue());
-
-                    // Кладем все полученное в массивы:
-                    titleArray.add(testTitle);
-                    fileNameArray.add(fileName);
-                    descriptionArray.add(description);
-                    downloadsArray.add(downloads);
-
-
-                    System.out.println(testTitle + " --- " + fileName);
-                }
-
-                tests[0] = titleArray;
-                tests[1] = fileNameArray;
-                tests[2] = descriptionArray;
-                tests[3] = downloadsArray;
-
-
-
-            }catch (UnknownHostException e) {
-                System.out.println(" --- Unable to resolve host lightapp.ru");
-                error.add("check your Internet connection.....");
-                //categories[2] = error;
-
-            }catch (Exception e) {
-                System.out.println(" --- Что еще за ошибка?)");
-                e.printStackTrace();
-                error.add("Something wrong.... hmm.");
-                System.out.println(" --- end trace");
-                tests[5] = error;
-            }
-
-            return tests;
         }
     }
 

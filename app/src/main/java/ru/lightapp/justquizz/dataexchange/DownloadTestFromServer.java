@@ -93,12 +93,12 @@ public class DownloadTestFromServer extends Thread {
             fos.flush();
             fos.close();
 
-            System.out.println(" --- Done!");
+            //System.out.println(" --- Done!");
 
         } catch (IOException e) {
-            System.out.println(" --- start trace");
+            //System.out.println(" --- start trace");
             e.printStackTrace();
-            System.out.println(" --- end trace");
+            //System.out.println(" --- end trace");
 
         }
     }

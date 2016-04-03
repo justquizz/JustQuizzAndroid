@@ -26,7 +26,7 @@ public class ArrayUsersAnswer{
 
     public ArrayUsersAnswer(){
 
-        System.out.println(" --- конструктор ArrayUsersAnswer");
+        //System.out.println(" --- конструктор ArrayUsersAnswer");
 
         // Сбрасываем кол-во правильных и неправильных ответов:
         qtyTrueAndFalseAnswers = new int[]{0, 0};

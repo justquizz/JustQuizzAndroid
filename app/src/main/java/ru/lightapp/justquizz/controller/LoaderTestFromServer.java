@@ -216,7 +216,7 @@ public class LoaderTestFromServer extends Activity {
                             currentAuthor = "Jack";
                             currentLinkAuthor = "http://lightapp.ru/justquizz/people/id7";
 
-                            System.out.println(" --- " + currentTestTitle + " - " + currentFileName);
+                            //System.out.println(" --- " + currentTestTitle + " - " + currentFileName);
 
                             if (db.isTestExist(currentFileName, currentTestTitle)) {
                                 toast = Toast.makeText(getApplicationContext(),
@@ -288,7 +288,7 @@ public class LoaderTestFromServer extends Activity {
             button_download.setVisibility(View.INVISIBLE);
         }
 
-        System.out.println(" --- файл скачан! - " + currentFileName);
+        //System.out.println(" --- файл скачан! - " + currentFileName);
     }
 
 }

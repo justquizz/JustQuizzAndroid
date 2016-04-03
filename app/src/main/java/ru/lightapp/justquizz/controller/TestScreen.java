@@ -167,7 +167,7 @@ public class TestScreen extends Activity {
     public void onDestroy(){
         super.onDestroy();
         stopService(timerService);
-        System.out.println(" --- onDestroy() in TestScreen.class");
+        //System.out.println(" --- onDestroy() in TestScreen.class");
     }
 
 
@@ -175,7 +175,7 @@ public class TestScreen extends Activity {
     public void finish(){
         super.finish();
         stopService(timerService);
-        System.out.println(" --- finish() in TestScreen.class");
+        //System.out.println(" --- finish() in TestScreen.class");
     }
 
 
@@ -493,11 +493,11 @@ public class TestScreen extends Activity {
         // Разрешаем печатать время на экран!
         printTime = true;
         if(!isTimerRun) {
-            System.out.println(" --- !isTimerRun = false");
+            //System.out.println(" --- !isTimerRun = false");
             startService(timerService);
             isTimerRun = true;
         }else{
-            System.out.println(" --- isTimerRun = true");
+            //System.out.println(" --- isTimerRun = true");
         }
 
         // возвращаем цвет кнопки на системный
