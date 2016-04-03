@@ -49,7 +49,7 @@
     <string name="toast_test_exist">Тест был загружен ранее</string>
     <string name="press_key">Для загрузки нажми кнопку</string>
     <string name="download_manager">Загрузчик новых тестов</string>
-    <string name="choice_category">Выбери категорию:</string>
+    <string name="choice_category">Тесты делятся по категориям, выбери ту, которая тебе интересна:</string>
     <string name="text_description">Описание категории с тестами:</string>
 
 
